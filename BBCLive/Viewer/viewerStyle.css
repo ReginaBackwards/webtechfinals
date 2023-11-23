@@ -30,3 +30,14 @@ header{
     height: auto;
    
 }
+.video{
+    width: 75%;
+    height: 75%;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+mux-player {
+    
+}
