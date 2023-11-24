@@ -1,0 +1,29 @@
+body{
+  background-image: url('edit_profile_bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: auto;
+  background-attachment: fixed;
+}
+
+.defaultdp {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  border-radius: 50%;
+}
+
+
+.form-control {
+  font-size: 0.8rem;
+  border-radius: 10rem;
+  padding: 1rem;
+}
+
+#button {
+  font-size: 0.8rem;
+  border-radius: 10rem;
+  padding: 0.8rem;
+}
