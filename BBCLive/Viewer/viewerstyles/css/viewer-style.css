@@ -31,13 +31,15 @@ header{
    
 }
 .video{
-    width: 75%;
-    height: 75%;
     align-items: center;
-    display: flex;
+    align-content: center;
+    justify-content: center;
     text-align: center;
 }
-
-mux-player {
-    
-}
+/* 
+video {
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+} */
