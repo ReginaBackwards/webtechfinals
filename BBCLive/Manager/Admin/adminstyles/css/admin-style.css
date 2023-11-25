@@ -592,9 +592,6 @@ pre code {
 
 .container,
 .container-fluid,
-.container-sm,
-.container-md,
-.container-lg,
 .container-xl {
   width: 100%;
   padding-right: 0.75rem;
@@ -6229,24 +6226,8 @@ button.bg-dark:focus {
   flex-shrink: 1 !important;
 }
 
-.justify-content-start {
-  justify-content: flex-start !important;
-}
-
-.justify-content-end {
-  justify-content: flex-end !important;
-}
-
 .justify-content-center {
   justify-content: center !important;
-}
-
-.justify-content-between {
-  justify-content: space-between !important;
-}
-
-.justify-content-around {
-  justify-content: space-around !important;
 }
 
 .align-items-start {
@@ -6935,27 +6916,6 @@ button.bg-dark:focus {
   .float-xl-none {
     float: none !important;
   }
-}
-
-.user-select-all {
-  -webkit-user-select: all !important;
-  -moz-user-select: all !important;
-  -ms-user-select: all !important;
-  user-select: all !important;
-}
-
-.user-select-auto {
-  -webkit-user-select: auto !important;
-  -moz-user-select: auto !important;
-  -ms-user-select: auto !important;
-  user-select: auto !important;
-}
-
-.user-select-none {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
 }
 
 .overflow-auto {
