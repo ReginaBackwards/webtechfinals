@@ -26,7 +26,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="style/sb-admin-2.css" rel="stylesheet">
+    <link href="./../../../BBCLive\Manager\Admin\adminstyles\css\admin-style.css" rel="stylesheet">
 
 </head>
 
@@ -52,7 +52,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="adminstyles\images\avatar.png">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -131,7 +131,7 @@
                                 <tbody>
                                     <tr>
                                         <td>1</td>
-                                        <td><a href="#"><img src="style/media/avatar.png" class="avatar"
+                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
                                                     alt="Avatar"> Michael Holz</a></td>
                                         <td>amiqt123</td>
                                         <td>Monday</td>
@@ -148,7 +148,7 @@
                                     </tr>
                                     <tr>
                                         <td>2</td>
-                                        <td><a href="#"><img src="style/media/avatar.png" class="avatar"
+                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
                                                     alt="Avatar"> Paula Wilson</a></td>
                                         <td>amiqt123</td>
                                         <td>Tuesday</td>
@@ -165,7 +165,7 @@
                                     </tr>
                                     <tr>
                                         <td>3</td>
-                                        <td><a href="#"><img src="style/media/avatar.png" class="avatar"
+                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
                                                     alt="Avatar"> Antonio Moreno</a></td>
                                         <td>amiqt123</td>
                                         <td>Wednesday</td>
@@ -182,7 +182,7 @@
                                     </tr>
                                     <tr>
                                         <td>4</td>
-                                        <td><a href="#"><img src="style/media/avatar.png" class="avatar"
+                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
                                                     alt="Avatar"> Mary Saveley</a></td>
                                         <td>amiqt123</td>
                                         <td>Thursday</td>
@@ -199,7 +199,7 @@
                                     </tr>
                                     <tr>
                                         <td>5</td>
-                                        <td><a href="#"><img src="style/media/avatar.png" class="avatar"
+                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
                                                     alt="Avatar"> Martin Sommer</a></td>
                                         <td>amiqt123</td>
                                         <td>Friday</td>
@@ -236,7 +236,7 @@
                     </div>
                 </footer> -->
                 <?php
-                    include('./../../res/footer.html')
+                    include('./../../../BBCLive\res\footer.html')
                 ?>
                 <!-- End of Footer -->
 
@@ -265,21 +265,21 @@
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+                        <a class="btn btn-primary" href="./../index.html">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\jquery\jquery.min.js"></script>
+        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\bootstrap\js\bootstrap.bundle.min.js"></script>
 
         <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\jquery-easing\jquery.easing.min.js"></script>
 
         <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin-2.min.js"></script>
+        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\js\sb-admin-2.min.js"></script>
 
 </body>
 
