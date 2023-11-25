@@ -15,9 +15,6 @@ body{
   border-radius: 50%;
 }
 
-.form-group {
-  padding: 0 0 1rem 1rem;
-}
 
 .form-control {
   font-size: 0.8rem;
@@ -26,21 +23,7 @@ body{
 }
 
 #button {
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 10rem;
-  padding: 0.7rem 2.5rem;
-}
-
-#buttonSave {
-  font-size: 1rem;
-  border-radius: 10rem;
-  padding: 0.7rem 2.8rem;
-}
-
-h1 {
-  padding: 1.5rem 0px 0px 1.5rem;
-}
-
-#button-container {
-  padding: 1rem;
+  padding: 0.8rem;
 }
