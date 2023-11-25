@@ -76,7 +76,7 @@ body {
   color: #858796;
   text-align: left;
   background-color: #fff;
-  background-image: url(media/login-bg.png);
+  background-image: url(./../../../../res/bg.png);
   height: 100%; 
   background-position: center;
   background-repeat: no-repeat;
@@ -85,7 +85,7 @@ body {
 }
 
 #page-top {
-  background-image: url(media/admin-bg.png);
+  background-image: url(./../images/admin-bg.png);
   height: 100%; 
   background-position: center;
   background-repeat: no-repeat;
@@ -10165,7 +10165,7 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("https://source.unsplash.com/K4mSJ7kc0As/600x800");
+  background: url("./../../../../res/bbc-logo.png");
   background-position: center;
   background-size: cover;
 }
