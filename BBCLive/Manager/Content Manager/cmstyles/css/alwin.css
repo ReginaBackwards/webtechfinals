@@ -1,0 +1,16 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url('../images/cm-bg.png');
+  background-size: cover;
+}
+
+.uploadContainer {
+  width: auto;
+  min-height: 200px;
+  margin: 20px;
+  border: 2px dashed #000066;
+}
