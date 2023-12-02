@@ -65,7 +65,7 @@ app.post('/home', (req, res) => {
             userListHTML += `
               <tr>
                 <td>${index + 1}</td>
-                <td><img src="./../../../${user.dp}" class="avatar" alt="Avatar"> ${user.firstname} ${user.lastname}</td>
+                <td><img src="${user.dp}" class="avatar" alt="Avatar"> ${user.firstname} ${user.lastname}</td>
                 <td>${user.username}</td>
                 <td>
                 ${scheduleDaysArray.map(day => `<div>${day.trim()}</div>`).join('')}
