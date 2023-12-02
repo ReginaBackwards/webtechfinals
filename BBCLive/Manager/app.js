@@ -71,7 +71,10 @@ app.post('/home', (req, res) => {
                 ${scheduleDaysArray.map(day => `<div>${day.trim()}</div>`).join('')}
                 </td>
                 <td>${user.sessions}</td>
-                <td><span class="status text-${user.banstatus === 'Active' ? 'success' : 'danger'}">&bull;</span> ${user.banstatus}</td>
+                <td>
+                  <span class="status text-${user.banstatus === 0 ? 'success' : 'danger'}">&bull;</span>
+                  ${user.banstatus === 0 ? 'Active' : 'Suspended'}
+                </td>
                 <td>
                   <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i class="material-icons">&#xF053;</i></a>
                   <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
