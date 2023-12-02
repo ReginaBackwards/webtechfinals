@@ -23,7 +23,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="./../../../BBCLive\Manager\Admin\adminstyles\css\admin-style.css" rel="stylesheet">
+    <link href="./adminstyles/css/admin-style.css" rel="stylesheet">
 
 </head>
 
@@ -49,7 +49,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle" src="adminstyles\images\avatar.png">
+                                <img class="img-profile rounded-circle" src="adminstyles/images/avatar.png">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -89,13 +89,7 @@
                 <div class="container-xl">
                     <form class="form-inline">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search"
-                                aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
+                            <input type="text" class="form-control" id="userSearch" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                         </div>
                     </form>
                     <div class="table-responsive">
@@ -125,93 +119,9 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
-                                                    alt="Avatar"> Michael Holz</a></td>
-                                        <td>amiqt123</td>
-                                        <td>Monday</td>
-                                        <td>0</td>
-                                        <td><span class="status text-success">&bull;</span> Active</td>
-                                        <td>
-                                            <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xF053;</i></a>
-                                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE872;</i></a>
-                                            <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE14B;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
-                                                    alt="Avatar"> Paula Wilson</a></td>
-                                        <td>amiqt123</td>
-                                        <td>Tuesday</td>
-                                        <td>0</td>
-                                        <td><span class="status text-success">&bull;</span> Active</td>
-                                        <td>
-                                            <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xF053;</i></a>
-                                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE872;</i></a>
-                                            <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE14B;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
-                                                    alt="Avatar"> Antonio Moreno</a></td>
-                                        <td>amiqt123</td>
-                                        <td>Wednesday</td>
-                                        <td>0</td>
-                                        <td><span class="status text-danger">&bull;</span> Suspended</td>
-                                        <td>
-                                            <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xF053;</i></a>
-                                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE872;</i></a>
-                                            <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE14B;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>4</td>
-                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
-                                                    alt="Avatar"> Mary Saveley</a></td>
-                                        <td>amiqt123</td>
-                                        <td>Thursday</td>
-                                        <td>0</td>
-                                        <td><span class="status text-success">&bull;</span> Active</td>
-                                        <td>
-                                            <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xF053;</i></a>
-                                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE872;</i></a>
-                                            <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE14B;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>5</td>
-                                        <td><a href="#"><img src="adminstyles\images\avatar.png" class="avatar"
-                                                    alt="Avatar"> Martin Sommer</a></td>
-                                        <td>amiqt123</td>
-                                        <td>Friday</td>
-                                        <td>0</td>
-                                        <td><span class="status text-danger">&bull;</span> Suspended</td>
-                                        <td>
-                                            <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xF053;</i></a>
-                                            <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE872;</i></a>
-                                            <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i
-                                                    class="material-icons">&#xE14B;</i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="userListBody">
+                                    <!-- USER_LIST_PLACEHOLDER -->
+                                  </tbody>
                             </table>
                             <script>
                                 $(document).ready(function () {
@@ -233,7 +143,7 @@
                     </div>
                 </footer> -->
                 <?php
-                    include('./../../../BBCLive\res\footer.html')
+                    include('./../../../BBCLive/res/footer.html')
                 ?>
                 <!-- End of Footer -->
 
@@ -269,15 +179,35 @@
         </div>
 
         <!-- Bootstrap core JavaScript-->
-        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\jquery\jquery.min.js"></script>
-        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\bootstrap\js\bootstrap.bundle.min.js"></script>
+        <script src="./adminstyles/bootstrap/vendor/jquery/jquery.min.js"></script>
+        <script src="./adminstyles/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <!-- Core plugin JavaScript-->
-        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\vendor\jquery-easing\jquery.easing.min.js"></script>
+        <script src="./adminstyles/bootstrap/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
         <!-- Custom scripts for all pages-->
-        <script src="./../../../BBCLive\Manager\Admin\adminstyles\bootstrap\js\sb-admin-2.min.js"></script>
+        <script src="./adminstyles/bootstrap/js/sb-admin-2.min.js"></script>
 
+        <!-- Additional script for dynamic filtering -->
+        <script>
+            $(document).ready(function () {
+                // Function to filter table rows based on search input
+                $('#userSearch').on('input', function () {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Loop through each row in the table body
+                    $('#userListBody tr').filter(function () {
+                        // Hide rows that do not match the search input
+                        $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                    });
+                });
+            });
+        </script>         
 </body>
 
 </html>
