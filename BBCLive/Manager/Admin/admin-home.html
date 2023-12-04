@@ -207,43 +207,56 @@
                 // Tooltip initialization
                 $('[data-toggle="tooltip"]').tooltip();
 
-                // Function to handle reset password confirmation
+                // Function to handle reset user confirmation
                 $('#userListBody').on('click', '.reset', function () {
                     const username = $(this).data('username');
                     $('#resetUsername').text(username);
-                    $('#resetPasswordModal').modal('show');
+                    $('#resetUserModal').modal('show');
 
                     // Set the username in a data attribute to be used when confirming
-                    $('#confirmResetPassword').data('username', username);
+                    $('#confirmresetUser').data('username', username);
                 });
 
-                // Function to handle reset password confirmation
-                $('#confirmResetPassword').on('click', function () {
+                // Function to handle reset confirmation
+                $('#confirmresetUser').on('click', function () {
                     const username = $(this).data('username');
-                    resetPassword(username);
-                    $('#resetPasswordModal').modal('hide');
+                    resetUser(username);
+                    $('#resetUserModal').modal('hide');
                 });
 
                 // Function to filter table rows based on search input
                 $('#userSearch').on('input', function () {
                 });
 
-                // Function to reset password via AJAX
-                function resetPassword(username) {
-                    // Make an AJAX request to reset the password
+                // Function to reset user password and ban status via AJAX
+                function resetUser(username) {
+                    // Make an AJAX request to reset the user
                     $.ajax({
                         method: 'POST',
-                        url: `/resetPassword/${username}`,
+                        url: `/resetUser/${username}`,
                         success: function (response) {
                             // Show success message
-                            alert(`Password of ${username} reset successfully`);
+                            alert(`Account of ${username} has been reset successfully`);
+
+                            const userRow = $(`#userListBody tr:contains('${username}')`);
+
+                            // Update the username in the table (assuming the username is in the 3rd column)
+                            userRow.find('td:nth-child(3)').text(username);
+
+                            // Reset ban status in the table
+                            const banStatusCell = userRow.find('td:nth-child(6)');
+                            banStatusCell.html('<span class="status text-success">&bull;</span> Active');
+
+                            // Enable the ban button
+                            const banButton = userRow.find('.ban');
+                            banButton.removeClass('banned').attr('disabled', false);
                         },
                         error: function (error) {
-                            console.error('Error resetting password:', error);
-                            alert('Failed to reset password. Please try again.');
+                            alert('Failed to reset. Please try again.');
                         }
                     });
                 }
+
 
                 // Function to handle delete user confirmation
                 $('#userListBody').on('click', '.delete', function () {
@@ -282,14 +295,22 @@
                     });
                 }
 
-                // Function to handle ban user confirmation
+                // Function to handle ban/unban user confirmation
                 $('#userListBody').on('click', '.ban', function () {
                     const username = $(this).data('username');
-                    $('#banUsername').text(username);
-                    $('#banUserModal').modal('show');
+                    const banButton = $(this);
 
-                    // Set the username in a data attribute to be used when confirming
-                    $('#confirmBanUser').data('username', username);
+                    // Check if the user is already banned
+                    const isBanned = banButton.hasClass('banned');
+
+                    if (!isBanned) {
+                        // Show ban confirmation modal
+                        $('#banUsername').text(username);
+                        $('#banUserModal').modal('show');
+
+                        // Set the username in a data attribute to be used when confirming
+                        $('#confirmBanUser').data('username', username);
+                    }
                 });
 
                 // Function to handle ban user confirmation
@@ -298,7 +319,6 @@
                     banUser(username);
                     $('#banUserModal').modal('hide');
                 });
-
 
                 // Function to ban user via AJAX
                 function banUser(username) {
@@ -311,8 +331,13 @@
                             alert(`User ${username} banned successfully`);
 
                             // Update the ban status in the table
-                            const banStatusCell = $(`#userListBody tr:contains('${username}') td:nth-child(6)`);
+                            const userRow = $(`#userListBody tr:contains('${username}')`);
+                            const banStatusCell = userRow.find('td:nth-child(6)');
                             banStatusCell.html('<span class="status text-danger">&bull;</span> Suspended');
+
+                            // Toggle the 'banned' class and disable the ban button
+                            const banButton = userRow.find('.ban');
+                            banButton.toggleClass('banned').attr('disabled', true);
                         },
                         error: function (error) {
                             console.error('Error banning user:', error);
@@ -321,27 +346,29 @@
                     });
                 }
 
+
             });
 
         </script>
 
-        <!-- Reset Password Confirmation Modal -->
-        <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog"
-            aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+        <!-- Reset User Confirmation Modal -->
+        <div class="modal fade" id="resetUserModal" tabindex="-1" role="dialog" aria-labelledby="resetUserModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="resetPasswordModalLabel">Confirm Password Reset</h5>
+                        <h5 class="modal-title" id="resetUserModalLabel">Confirm User Reset</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to reset the password for <span id="resetUsername"></span>?
+                        Are you sure you want to Unsuspend and/or reset the password for <span
+                            id="resetUsername"></span>?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="confirmResetPassword">Confirm</button>
+                        <button type="button" class="btn btn-primary" id="confirmresetUser">Confirm</button>
                     </div>
                 </div>
             </div>

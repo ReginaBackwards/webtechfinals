@@ -120,10 +120,10 @@ app.post('/home', (req, res) => {
   });
 });
 
-// Endpoint for handling reset password action
-app.post('/resetPassword/:username', (req, res) => {
+// Endpoint for handling reset password action and unbanning user
+app.post('/resetUser/:username', (req, res) => {
   const username = req.params.username;
-  const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
+  const updateQuery = 'UPDATE users SET password = ?, banstatus = 0 WHERE username = ?';
 
   db.query(updateQuery, [username, username], (err, results) => {
     if (err) {
@@ -131,9 +131,10 @@ app.post('/resetPassword/:username', (req, res) => {
       return res.status(500).json({ message: 'Server Error' });
     }
 
-    res.json({ message: 'Password reset successfully' });
+    res.json({ message: 'User reset successfully' });
   });
 });
+
 
 // Endpoint for handling user deletion
 app.post('/deleteUser/:username', (req, res) => {
@@ -141,12 +142,12 @@ app.post('/deleteUser/:username', (req, res) => {
   const deleteQuery = 'DELETE FROM users WHERE username = ?';
 
   db.query(deleteQuery, [username], (err, results) => {
-      if (err) {
-          console.error('Error deleting user:', err);
-          return res.status(500).json({ message: 'Server Error' });
-      }
+    if (err) {
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
 
-      res.json({ message: 'User deleted successfully' });
+    res.json({ message: 'User deleted successfully' });
   });
 });
 
@@ -156,18 +157,14 @@ app.post('/banUser/:username', (req, res) => {
   const updateQuery = 'UPDATE users SET banstatus = 1 WHERE username = ?';
 
   db.query(updateQuery, [username], (err, results) => {
-      if (err) {
-          console.error('Error updating ban status:', err);
-          return res.status(500).json({ message: 'Server Error' });
-      }
+    if (err) {
+      console.error('Error updating ban status:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
 
-      res.json({ message: 'User banned successfully' });
+    res.json({ message: 'User banned successfully' });
   });
 });
-
-
-
-
 
 const uploadDir = path.join('uploads');
 
