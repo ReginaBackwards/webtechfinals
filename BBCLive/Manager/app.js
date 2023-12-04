@@ -166,6 +166,42 @@ app.post('/banUser/:username', (req, res) => {
   });
 });
 
+// Endpoint to check if the username already exists
+app.get('/checkUsernameExists/:username', (req, res) => {
+  const username = req.params.username;
+
+  const checkQuery = 'SELECT COUNT(*) AS count FROM users WHERE username = ?';
+
+  db.query(checkQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error checking username existence:', err);
+      return res.status(500).json({ exists: false });
+    }
+
+    const count = results[0].count;
+    res.json({ exists: count > 0 });
+  });
+});
+
+
+// Endpoint to handle adding a user
+app.post('/addUser', (req, res) => {
+  const defaultDp = '/res/avatars/default.png'
+  // Extract form data from the request body
+  const { firstName, lastName, userName } = req.body;
+  const addQuery = 'INSERT INTO users VALUES (?,?,?,?,?,?,?,?)'
+  //username as the default password
+  db.query(addQuery, [userName, defaultDp, userName, firstName, lastName, 'cm', 0, 0], (err, results) => {
+    if (err) {
+      console.error('Error adding user to the database:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+    res.json({ message: 'User added successfully' });
+  });
+});
+
+
+
 const uploadDir = path.join('uploads');
 
 if (!fs.existsSync(uploadDir)) {

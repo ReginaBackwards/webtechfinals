@@ -89,8 +89,12 @@
                                         <h2><b>User Management</b></h2>
                                     </div>
                                     <div class="col-sm-7">
-                                        <a href="#" class="btn btn-secondary"><i class="material-icons">&#xE147;</i>
-                                            <span>Add New User</span></a>
+                                        <a href="#" class="btn btn-secondary" data-toggle="modal"
+                                            data-target="#addUserModal">
+                                            <i class="material-icons">&#xE147;</i>
+                                            <span>Add New User</span>
+                                        </a>
+
                                         <a href="#" class="btn btn-secondary"><i class="material-icons">&#xE24D;</i>
                                             <span>Set Schedule</span></a>
                                     </div>
@@ -340,13 +344,98 @@
                             banButton.toggleClass('banned').attr('disabled', true);
                         },
                         error: function (error) {
-                            console.error('Error banning user:', error);
                             alert('Failed to ban user. Please try again.');
                         }
                     });
                 }
 
+                // Input field for username
+                const userNameInput = $('#userName');
 
+                // Function to update UI based on username availability
+                function updateUsernameAvailability(isAvailable) {
+                    const feedbackMessage = isAvailable ? 'Username is available' : 'Username is already taken';
+                    const feedbackClass = isAvailable ? 'text-success' : 'text-danger';
+
+                    // Display the feedback message
+                    $('#usernameFeedback').text(feedbackMessage).removeClass().addClass(feedbackClass);
+                }
+
+                // Event listener for username input
+                userNameInput.on('keyup', function () {
+                    const username = userNameInput.val();
+
+                    if (username) {
+                        // Make an AJAX request to check if the username exists
+                        $.ajax({
+                            method: 'GET',
+                            url: `/checkUsernameExists/${username}`,
+                            success: function (response) {
+                                updateUsernameAvailability(!response.exists);
+                            },
+                            error: function (error) {
+                                console.error('Error checking username:', error);
+                                updateUsernameAvailability(false);
+                            }
+                        });
+                    } else {
+                        // Reset feedback if the username is empty
+                        updateUsernameAvailability(true);
+                    }
+                });
+
+                // Event listener for when the add user modal is hidden
+                $('#addUserModal').on('hidden.bs.modal', function () {
+                    // Reload the page
+                    location.reload();
+                });
+
+
+                // Handle form submission
+                $('#addUserForm').submit(function (event) {
+                    event.preventDefault();
+
+                    const username = userNameInput.val();
+
+                    // Check username availability before submitting the form
+                    $.ajax({
+                        method: 'GET',
+                        url: `/checkUsernameExists/${username}`,
+                        success: function (response) {
+                            if (response.exists) {
+                                alert('Username is already taken. Please choose a different username.');
+                            } else {
+                                // Collect form data
+                                const formData = {
+                                    firstName: $('#firstName').val(),
+                                    lastName: $('#lastName').val(),
+                                    userName: username,
+                                };
+
+                                // Make an AJAX request to add the new user
+                                $.ajax({
+                                    method: 'POST',
+                                    url: `/addUser`,
+                                    data: formData,
+                                    success: function (response) {
+                                        alert(`User ${formData.userName} added successfully`);
+                                        $('#firstName').val('');
+                                        $('#lastName').val('');
+                                        $('#userName').val('');
+
+                                    },
+                                    error: function (error) {
+                                        alert('Failed to add user. Please try again.');
+                                    }
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error checking username:', error);
+                            alert('Failed to check username. Please try again.');
+                        }
+                    });
+                });
             });
 
         </script>
@@ -414,6 +503,35 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-danger" id="confirmBanUser">Suspend</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New User Modal -->
+        <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">Please fill out all the necessary fields.</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="form-group">
+                                <label for="userName">First Name:</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required><br>
+                                <label for="userName">Last Name:</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required><br>
+                                <label for="userName">User Name:</label>
+                                <input type="text" class="form-control" id="userName" name="userName" required><br>
+                                <label for="note">*The initial password will automatically be set.</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add User</button>
+                        </form>
                     </div>
                 </div>
             </div>
