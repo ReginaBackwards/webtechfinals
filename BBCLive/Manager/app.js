@@ -138,9 +138,6 @@ app.post('/resetPassword/:username', (req, res) => {
 // Endpoint for handling user deletion
 app.post('/deleteUser/:username', (req, res) => {
   const username = req.params.username;
-  
-  // You may want to add additional logic to check if the user can be deleted or if they have dependencies
-
   const deleteQuery = 'DELETE FROM users WHERE username = ?';
 
   db.query(deleteQuery, [username], (err, results) => {
@@ -150,6 +147,21 @@ app.post('/deleteUser/:username', (req, res) => {
       }
 
       res.json({ message: 'User deleted successfully' });
+  });
+});
+
+// Endpoint for handling ban user action
+app.post('/banUser/:username', (req, res) => {
+  const username = req.params.username;
+  const updateQuery = 'UPDATE users SET banstatus = 1 WHERE username = ?';
+
+  db.query(updateQuery, [username], (err, results) => {
+      if (err) {
+          console.error('Error updating ban status:', err);
+          return res.status(500).json({ message: 'Server Error' });
+      }
+
+      res.json({ message: 'User banned successfully' });
   });
 });
 

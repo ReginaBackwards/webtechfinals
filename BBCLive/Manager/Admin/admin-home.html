@@ -282,6 +282,45 @@
                     });
                 }
 
+                // Function to handle ban user confirmation
+                $('#userListBody').on('click', '.ban', function () {
+                    const username = $(this).data('username');
+                    $('#banUsername').text(username);
+                    $('#banUserModal').modal('show');
+
+                    // Set the username in a data attribute to be used when confirming
+                    $('#confirmBanUser').data('username', username);
+                });
+
+                // Function to handle ban user confirmation
+                $('#confirmBanUser').on('click', function () {
+                    const username = $(this).data('username');
+                    banUser(username);
+                    $('#banUserModal').modal('hide');
+                });
+
+
+                // Function to ban user via AJAX
+                function banUser(username) {
+                    // Make an AJAX request to ban the user
+                    $.ajax({
+                        method: 'POST',
+                        url: `/banUser/${username}`,
+                        success: function (response) {
+                            // Show success message
+                            alert(`User ${username} banned successfully`);
+
+                            // Update the ban status in the table
+                            const banStatusCell = $(`#userListBody tr:contains('${username}') td:nth-child(6)`);
+                            banStatusCell.html('<span class="status text-danger">&bull;</span> Suspended');
+                        },
+                        error: function (error) {
+                            console.error('Error banning user:', error);
+                            alert('Failed to ban user. Please try again.');
+                        }
+                    });
+                }
+
             });
 
         </script>
@@ -330,6 +369,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Ban User Confirmation Modal -->
+        <div class="modal fade" id="banUserModal" tabindex="-1" role="dialog" aria-labelledby="banUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="banUserModalLabel">Confirm Ban User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to suspend the user <span id="banUsername"></span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmBanUser">Suspend</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 </body>
 
 </html>
