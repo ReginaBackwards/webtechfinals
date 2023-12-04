@@ -32,6 +32,18 @@ db.connect((err) => {
   console.log('Connected to the database');
 });
 
+// Endpoint for handling requests for admin details
+app.get('/getAdminDetails', (req, res) => {
+  // Retrieve admin details from the session
+  const adminDetails = req.session.admin || {
+    dp: './../res/avatars/default.png', // Default image URL
+    firstname: 'Admin', // Default first name
+    lastname: 'Name', // Default last name
+  };
+
+  res.json(adminDetails);
+});
+
 // Endpoint for handling login requests
 app.post('/home', (req, res) => {
   const { username, password } = req.body;
@@ -48,8 +60,14 @@ app.post('/home', (req, res) => {
     if (results.length > 0) {
       const user = results[0];
     
-      // Assuming you have a 'role' field in your users table
       if (user.role === 'admin') {
+
+        req.session.admin = {
+          dp: user.dp,
+          firstname: user.firstname,
+          lastname: user.lastname,
+        };
+
         // Fetch the list of content managers from the database
         const userListQuery = 'SELECT users.*, GROUP_CONCAT(schedules.day) AS schedule_days FROM users LEFT JOIN schedules ON users.username = schedules.username WHERE users.role = ? GROUP BY users.username';
         
@@ -87,13 +105,8 @@ app.post('/home', (req, res) => {
             `;
           });
     
-          // Read the admin-home.html file
           const adminHomeHTML = require('fs').readFileSync(path.join(__dirname, './Admin/admin-home.html'), 'utf8');
-
-          // Replace the placeholder with the generated user list HTML
           const finalHTML = adminHomeHTML.replace('<!-- USER_LIST_PLACEHOLDER -->', userListHTML);
-
-          // Send the modified HTML to the client
           res.send(finalHTML);
         });
       } else if (user.role === 'cm') {
@@ -101,8 +114,8 @@ app.post('/home', (req, res) => {
         return res.sendFile(path.join(__dirname, './Content Manager/cm-home.html'));
       }
     } else {
-      // Inform the user about invalid credentials
-      return res.status(401).json({ message: 'Invalid credentials' });
+      // invalid credentials
+      return res.sendFile(path.join(__dirname, 'index.html'));
     }
   });
 });

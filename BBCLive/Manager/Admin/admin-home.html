@@ -48,8 +48,8 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle" src="adminstyles/images/avatar.png">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small" id="adminName">Admin Name</span>
+                                <img class="img-profile rounded-circle" src="" id="adminImage">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -66,7 +66,6 @@
 
                 </nav>
                 <!-- End of Topbar -->
-
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -160,42 +159,55 @@
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="./../index.html">Logout</a>
+                        <a class="btn btn-primary" href="localhost:3000">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
 
+
         <!-- Bootstrap core JavaScript-->
         <script src="Manager/Admin/adminstyles/bootstrap/vendor/jquery/jquery.min.js"></script>
         <script src="Manager/Admin/adminstyles/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Core plugin JavaScript-->
+        <!-- Additional scripts -->
         <script src="Manager/Admin/adminstyles/bootstrap/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Bootstrap core JavaScript-->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
         <script src="Manager/Admin/adminstyles/bootstrap/js/sb-admin-2.min.js"></script>
 
-        <!-- Additional script for dynamic filtering -->
-        <script>
-            $(document).ready(function () {
-                // Function to filter table rows based on search input
-                $('#userSearch').on('input', function () {
-                    var searchText = $(this).val().toLowerCase();
+<!-- Additional script for dynamic filtering -->
+<script>
+    $(document).ready(function () {
+        // Function to filter table rows based on search input
+        $('#userSearch').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
 
-                    // Loop through each row in the table body
-                    $('#userListBody tr').filter(function () {
-                        // Hide rows that do not match the search input
-                        $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
-                    });
-                });
+            // Loop through each row in the table body
+            $('#userListBody tr').filter(function () {
+                // Hide rows that do not match the search input
+                $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
             });
-        </script>         
+        });
+
+        // Make an AJAX request to get the admin details from the server
+        $.ajax({
+            method: 'GET',
+            url: '/getAdminDetails', // You may need to adjust the URL
+            success: function (admin) {
+                // Update the admin's image and name on the page
+                $('#adminImage').attr('src', admin.dp);
+                $('#adminName').text(`${admin.firstname} ${admin.lastname}`);
+            },
+            error: function (error) {
+                console.error('Error fetching admin details:', error);
+            }
+        });
+
+        // Tooltip initialization
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+</body>
+      
 </body>
 
 </html>
