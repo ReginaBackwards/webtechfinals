@@ -231,42 +231,45 @@ app.get('/getSchedules', (req, res) => {
 });
 
 
-// Add this route in your Node.js server file
+// Endpoint for updating the schedule
 app.post('/setSchedule', (req, res) => {
-  const { day, username } = req.body;
+  const selectedUsers = req.body.selectedUsers; // Access the array directly
 
-  // Check if the schedule already exists
-  const checkQuery = 'SELECT * FROM schedules WHERE day = ? AND username = ?;';
-  db.query(checkQuery, [day, username], (checkError, checkResults) => {
-      if (checkError) {
-          console.error('Error checking existing schedule:', checkError);
-          res.status(500).send('Server Error');
-      } else {
-          if (checkResults.length > 0) {
-              // Schedule already exists, update it
-              const updateQuery = 'UPDATE schedules SET day = ?, username = ? WHERE day = ? AND username = ?;';
-              db.query(updateQuery, [day, username, day, username], (updateError) => {
-                  if (updateError) {
-                      console.error('Error updating schedule:', updateError);
-                      res.status(500).send('Server Error');
+  if (selectedUsers && selectedUsers.length > 0) {
+      // Array to store promises for each query
+      const queryPromises = [];
+
+      selectedUsers.forEach(({ day, username }) => {
+          const query = 'UPDATE schedules SET username = ? WHERE day = ?';
+          const values = [username, day];
+
+          // Creating a promise for each query
+          const queryPromise = new Promise((resolve, reject) => {
+              db.query(query, values, (error, results) => {
+                  if (error) {
+                      console.error(`Error updating schedule for ${day}:`, error);
+                      reject(`Failed to update schedule for ${day}.`);
                   } else {
-                      res.send('Schedule updated successfully');
+                      resolve();
                   }
               });
-          } else {
-              // Schedule does not exist, insert it
-              const insertQuery = 'INSERT INTO schedules (day, username) VALUES (?, ?);';
-              db.query(insertQuery, [day, username], (insertError) => {
-                  if (insertError) {
-                      console.error('Error inserting schedule:', insertError);
-                      res.status(500).send('Internal Server Error');
-                  } else {
-                      res.send('Schedule set successfully');
-                  }
-              });
-          }
-      }
-  });
+          });
+
+          queryPromises.push(queryPromise);
+      });
+
+      // Waiting for all promises to resolve before sending the response
+      Promise.all(queryPromises)
+          .then(() => {
+              res.status(200).json({ success: true, message: 'Schedules updated successfully.' });
+          })
+          .catch((error) => {
+              res.status(500).json({ error });
+          });
+  } else {
+      console.error('Selected users array is undefined or empty');
+      res.status(400).json({ error: 'Selected users array is undefined or empty' });
+  }
 });
 
 
