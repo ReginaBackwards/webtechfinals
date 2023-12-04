@@ -3,6 +3,9 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mysql = require('mysql');
+const multer = require('multer');
+const fs = require('fs');
+const sharp = require('sharp');
 
 const app = express();
 const port = 3000;
@@ -103,6 +106,101 @@ app.post('/home', (req, res) => {
     }
   });
 });
+
+const uploadDir = path.join('uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+app.use(express.json());
+
+app.post('/upload', upload.array('file'), async (req, res) => {
+  try {
+    const files = req.files;
+    const username = 'alwin'; // This for testing only
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    for (const file of files) {
+      const fileExtension = path.extname(file.originalname).toLowerCase();
+      const allowedTypes = ['.mp3', '.mp4', '.jpg', '.jpeg', '.png'];
+
+      if (!allowedTypes.includes(fileExtension)) {
+        console.log('Unsupported file type:', fileExtension);
+        return res.status(400).json({ error: 'Unsupported file type' });
+      }
+
+      const fileType = getFileType(fileExtension);
+      const userUploadDir = path.join(uploadDir, username, 'resources', fileType, `${Date.now()}_${file.originalname}`);
+
+      if (!fs.existsSync(userUploadDir)) {
+        fs.mkdirSync(userUploadDir, { recursive: true });
+      }
+
+      let filename;
+
+      if (fileType === 'images') {
+        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        await sharp(file.buffer).toFile(filename);
+      } else {
+        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        fs.writeFileSync(filename, file.buffer);
+      }
+
+      const insertQuery = 'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
+      const values = [file.originalname, userUploadDir, username, fileType];
+
+      db.query(insertQuery, values, (err, result) => {
+        if (err) {
+          console.error('MySQL insert error:', err);
+          return res.status(500).json({ error: 'Error inserting into database', details: err });
+        } else {
+          console.log('File inserted into database:', result);
+        }
+      });
+    }
+
+    res.status(200).json({ message: 'Files uploaded successfully' });
+  } catch (error) {
+    console.error('Error handling file upload:', error);
+    res.status(500).json({ error: 'Internal server error', details: error });
+  }
+});
+
+app.get('/resources', (req, res) => {
+  const acceptHeader = req.headers.accept || '';
+
+  if (acceptHeader.includes('text/html')) {
+    res.sendFile(path.join(__dirname, './../../BBCLive/Manager/Content Manager/resources.html'));
+  } else {
+    const fetchQuery = 'SELECT dateuploaded, filename, type FROM resources';
+
+    db.query(fetchQuery, (err, results) => {
+      if (err) {
+        console.error('MySQL fetch error:', err);
+        res.status(500).json({ error: 'Error fetching resources from database', details: err });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  }
+});
+
+function getFileType(fileExtension) {
+  if (fileExtension === '.mp3') {
+    return 'Audio';
+  } else if (fileExtension === '.mp4') {
+    return 'video';
+  } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
+    return 'image';
+  } 
+}
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
