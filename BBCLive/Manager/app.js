@@ -98,8 +98,8 @@ app.post('/home', (req, res) => {
                 </td>
                 <td>
                 <a href="#" class="reset" title="Reset" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xF053;</i></a>
-                  <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                  <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i class="material-icons">&#xE14B;</i></a>
+                  <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE872;</i></a>
+                  <a href="#" class="ban" title="Ban" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE14B;</i></a>
                 </td>
               </tr>
             `;
@@ -134,6 +134,28 @@ app.post('/resetPassword/:username', (req, res) => {
     res.json({ message: 'Password reset successfully' });
   });
 });
+
+// Endpoint for handling user deletion
+app.post('/deleteUser/:username', (req, res) => {
+  const username = req.params.username;
+  
+  // You may want to add additional logic to check if the user can be deleted or if they have dependencies
+
+  const deleteQuery = 'DELETE FROM users WHERE username = ?';
+
+  db.query(deleteQuery, [username], (err, results) => {
+      if (err) {
+          console.error('Error deleting user:', err);
+          return res.status(500).json({ message: 'Server Error' });
+      }
+
+      res.json({ message: 'User deleted successfully' });
+  });
+});
+
+
+
+
 
 const uploadDir = path.join('uploads');
 
