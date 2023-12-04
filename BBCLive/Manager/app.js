@@ -59,7 +59,7 @@ app.post('/home', (req, res) => {
 
     if (results.length > 0) {
       const user = results[0];
-    
+
       if (user.role === 'admin') {
 
         req.session.admin = {
@@ -70,18 +70,18 @@ app.post('/home', (req, res) => {
 
         // Fetch the list of content managers from the database
         const userListQuery = 'SELECT users.*, GROUP_CONCAT(schedules.day) AS schedule_days FROM users LEFT JOIN schedules ON users.username = schedules.username WHERE users.role = ? GROUP BY users.username';
-        
+
         db.query(userListQuery, ['cm'], (err, userList) => {
           if (err) {
             console.error('Error fetching user list:', err);
             return res.status(500).json({ message: 'Server Error' });
           }
-    
+
           // Construct HTML for user list
           let userListHTML = '';
           userList.forEach((user, index) => {
             // Split the concatenated days into an array
-        const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
+            const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
 
             userListHTML += `
               <tr>
@@ -97,14 +97,14 @@ app.post('/home', (req, res) => {
                   ${user.banstatus === 0 ? 'Active' : 'Suspended'}
                 </td>
                 <td>
-                  <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i class="material-icons">&#xF053;</i></a>
-                  <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                  <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i class="material-icons">&#xE14B;</i></a>
+                <a href="#" class="reset" title="Reset" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xF053;</i></a>
+                  <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE872;</i></a>
+                  <a href="#" class="ban" title="Ban" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE14B;</i></a>
                 </td>
               </tr>
             `;
           });
-    
+
           const adminHomeHTML = require('fs').readFileSync(path.join(__dirname, './Admin/admin-home.html'), 'utf8');
           const finalHTML = adminHomeHTML.replace('<!-- USER_LIST_PLACEHOLDER -->', userListHTML);
           res.send(finalHTML);
@@ -119,6 +119,156 @@ app.post('/home', (req, res) => {
     }
   });
 });
+
+// Endpoint for handling reset password action and unbanning user
+app.post('/resetUser/:username', (req, res) => {
+  const username = req.params.username;
+  const updateQuery = 'UPDATE users SET password = ?, banstatus = 0 WHERE username = ?';
+
+  db.query(updateQuery, [username, username], (err, results) => {
+    if (err) {
+      console.error('Error updating password:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+
+    res.json({ message: 'User reset successfully' });
+  });
+});
+
+
+// Endpoint for handling user deletion
+app.post('/deleteUser/:username', (req, res) => {
+  const username = req.params.username;
+  const deleteQuery = 'DELETE FROM users WHERE username = ?';
+
+  db.query(deleteQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  });
+});
+
+// Endpoint for handling ban user action
+app.post('/banUser/:username', (req, res) => {
+  const username = req.params.username;
+  const updateQuery = 'UPDATE users SET banstatus = 1 WHERE username = ?';
+
+  db.query(updateQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error updating ban status:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+
+    res.json({ message: 'User banned successfully' });
+  });
+});
+
+// Endpoint to check if the username already exists
+app.get('/checkUsernameExists/:username', (req, res) => {
+  const username = req.params.username;
+
+  const checkQuery = 'SELECT COUNT(*) AS count FROM users WHERE username = ?';
+
+  db.query(checkQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error checking username existence:', err);
+      return res.status(500).json({ exists: false });
+    }
+
+    const count = results[0].count;
+    res.json({ exists: count > 0 });
+  });
+});
+
+
+// Endpoint to handle adding a user
+app.post('/addUser', (req, res) => {
+  const defaultDp = '/res/avatars/default.png'
+  // Extract form data from the request body
+  const { firstName, lastName, userName } = req.body;
+  const addQuery = 'INSERT INTO users VALUES (?,?,?,?,?,?,?,?)'
+  //username as the default password
+  db.query(addQuery, [userName, defaultDp, userName, firstName, lastName, 'cm', 0, 0], (err, results) => {
+    if (err) {
+      console.error('Error adding user to the database:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+    res.json({ message: 'User added successfully' });
+  });
+});
+
+// Endpoint to get all users that are not banned/suspended
+app.get('/getActiveUsers', (req, res) => {
+  const query = 'SELECT username FROM users WHERE banstatus = 0;';
+
+  db.query(query, (error, results) => {
+      if (error) {
+          console.error('Error fetching active users:', error);
+          res.status(500).send('Server Error');
+      } else {
+          const userList = results.map(result => ({ username: result.username }));
+          res.json(userList);
+      }
+  });
+});
+
+// Add this route in your Node.js server file
+app.get('/getSchedules', (req, res) => {
+  const query = 'SELECT day, username FROM schedules;';
+
+  db.query(query, (error, results) => {
+      if (error) {
+          console.error('Error fetching schedules:', error);
+          res.status(500).send('Server Error');
+      } else {
+          const schedules = results.map(result => ({ day: result.day, username: result.username }));
+          res.json(schedules);
+      }
+  });
+});
+
+
+// Add this route in your Node.js server file
+app.post('/setSchedule', (req, res) => {
+  const { day, username } = req.body;
+
+  // Check if the schedule already exists
+  const checkQuery = 'SELECT * FROM schedules WHERE day = ? AND username = ?;';
+  db.query(checkQuery, [day, username], (checkError, checkResults) => {
+      if (checkError) {
+          console.error('Error checking existing schedule:', checkError);
+          res.status(500).send('Server Error');
+      } else {
+          if (checkResults.length > 0) {
+              // Schedule already exists, update it
+              const updateQuery = 'UPDATE schedules SET day = ?, username = ? WHERE day = ? AND username = ?;';
+              db.query(updateQuery, [day, username, day, username], (updateError) => {
+                  if (updateError) {
+                      console.error('Error updating schedule:', updateError);
+                      res.status(500).send('Server Error');
+                  } else {
+                      res.send('Schedule updated successfully');
+                  }
+              });
+          } else {
+              // Schedule does not exist, insert it
+              const insertQuery = 'INSERT INTO schedules (day, username) VALUES (?, ?);';
+              db.query(insertQuery, [day, username], (insertError) => {
+                  if (insertError) {
+                      console.error('Error inserting schedule:', insertError);
+                      res.status(500).send('Internal Server Error');
+                  } else {
+                      res.send('Schedule set successfully');
+                  }
+              });
+          }
+      }
+  });
+});
+
 
 const uploadDir = path.join('uploads');
 
@@ -212,7 +362,7 @@ function getFileType(fileExtension) {
     return 'video';
   } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
     return 'image';
-  } 
+  }
 }
 
 app.get('/', (req, res) => {
