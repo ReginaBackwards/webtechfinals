@@ -2612,6 +2612,11 @@ textarea.form-control.is-invalid {
   }
 }
 
+.btn-light-blue {
+  background-color: #add8e6; /* Light Blue */
+  color: #000000; /* Black */
+}
+
 .btn:hover {
   color: #858796;
   text-decoration: none;

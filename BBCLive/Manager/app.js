@@ -202,7 +202,7 @@ app.post('/addUser', (req, res) => {
 
 // Endpoint to get all users that are not banned/suspended
 app.get('/getActiveUsers', (req, res) => {
-  const query = 'SELECT username FROM users WHERE banstatus = 0;';
+  const query = "SELECT username FROM users WHERE role = 'cm' AND banstatus = 0;";
 
   db.query(query, (error, results) => {
       if (error) {
