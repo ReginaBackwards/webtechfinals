@@ -200,6 +200,74 @@ app.post('/addUser', (req, res) => {
   });
 });
 
+// Endpoint to get all users that are not banned/suspended
+app.get('/getActiveUsers', (req, res) => {
+  const query = 'SELECT username FROM users WHERE banstatus = 0;';
+
+  db.query(query, (error, results) => {
+      if (error) {
+          console.error('Error fetching active users:', error);
+          res.status(500).send('Server Error');
+      } else {
+          const userList = results.map(result => ({ username: result.username }));
+          res.json(userList);
+      }
+  });
+});
+
+// Add this route in your Node.js server file
+app.get('/getSchedules', (req, res) => {
+  const query = 'SELECT day, username FROM schedules;';
+
+  db.query(query, (error, results) => {
+      if (error) {
+          console.error('Error fetching schedules:', error);
+          res.status(500).send('Server Error');
+      } else {
+          const schedules = results.map(result => ({ day: result.day, username: result.username }));
+          res.json(schedules);
+      }
+  });
+});
+
+
+// Add this route in your Node.js server file
+app.post('/setSchedule', (req, res) => {
+  const { day, username } = req.body;
+
+  // Check if the schedule already exists
+  const checkQuery = 'SELECT * FROM schedules WHERE day = ? AND username = ?;';
+  db.query(checkQuery, [day, username], (checkError, checkResults) => {
+      if (checkError) {
+          console.error('Error checking existing schedule:', checkError);
+          res.status(500).send('Server Error');
+      } else {
+          if (checkResults.length > 0) {
+              // Schedule already exists, update it
+              const updateQuery = 'UPDATE schedules SET day = ?, username = ? WHERE day = ? AND username = ?;';
+              db.query(updateQuery, [day, username, day, username], (updateError) => {
+                  if (updateError) {
+                      console.error('Error updating schedule:', updateError);
+                      res.status(500).send('Server Error');
+                  } else {
+                      res.send('Schedule updated successfully');
+                  }
+              });
+          } else {
+              // Schedule does not exist, insert it
+              const insertQuery = 'INSERT INTO schedules (day, username) VALUES (?, ?);';
+              db.query(insertQuery, [day, username], (insertError) => {
+                  if (insertError) {
+                      console.error('Error inserting schedule:', insertError);
+                      res.status(500).send('Internal Server Error');
+                  } else {
+                      res.send('Schedule set successfully');
+                  }
+              });
+          }
+      }
+  });
+});
 
 
 const uploadDir = path.join('uploads');
