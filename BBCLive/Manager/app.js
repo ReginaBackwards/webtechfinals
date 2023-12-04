@@ -272,6 +272,20 @@ app.post('/setSchedule', (req, res) => {
   }
 });
 
+// Session handler
+app.get('/home', (req, res) => {
+  // Perform log-out actions
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      // Redirect the user to the login page
+      res.redirect('/home');
+    }
+  });
+});
+
 
 const uploadDir = path.join('uploads');
 
