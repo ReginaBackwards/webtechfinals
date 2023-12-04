@@ -59,7 +59,7 @@ app.post('/home', (req, res) => {
 
     if (results.length > 0) {
       const user = results[0];
-    
+
       if (user.role === 'admin') {
 
         req.session.admin = {
@@ -70,18 +70,18 @@ app.post('/home', (req, res) => {
 
         // Fetch the list of content managers from the database
         const userListQuery = 'SELECT users.*, GROUP_CONCAT(schedules.day) AS schedule_days FROM users LEFT JOIN schedules ON users.username = schedules.username WHERE users.role = ? GROUP BY users.username';
-        
+
         db.query(userListQuery, ['cm'], (err, userList) => {
           if (err) {
             console.error('Error fetching user list:', err);
             return res.status(500).json({ message: 'Server Error' });
           }
-    
+
           // Construct HTML for user list
           let userListHTML = '';
           userList.forEach((user, index) => {
             // Split the concatenated days into an array
-        const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
+            const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
 
             userListHTML += `
               <tr>
@@ -97,14 +97,14 @@ app.post('/home', (req, res) => {
                   ${user.banstatus === 0 ? 'Active' : 'Suspended'}
                 </td>
                 <td>
-                  <a href="#" class="reset" title="Reset" data-toggle="tooltip"><i class="material-icons">&#xF053;</i></a>
+                <a href="#" class="reset" title="Reset" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xF053;</i></a>
                   <a href="#" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                   <a href="#" class="ban" title="Ban" data-toggle="tooltip"><i class="material-icons">&#xE14B;</i></a>
                 </td>
               </tr>
             `;
           });
-    
+
           const adminHomeHTML = require('fs').readFileSync(path.join(__dirname, './Admin/admin-home.html'), 'utf8');
           const finalHTML = adminHomeHTML.replace('<!-- USER_LIST_PLACEHOLDER -->', userListHTML);
           res.send(finalHTML);
@@ -117,6 +117,21 @@ app.post('/home', (req, res) => {
       // invalid credentials
       return res.sendFile(path.join(__dirname, 'index.html'));
     }
+  });
+});
+
+// Endpoint for handling reset password action
+app.post('/resetPassword/:username', (req, res) => {
+  const username = req.params.username;
+  const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
+
+  db.query(updateQuery, [username, username], (err, results) => {
+    if (err) {
+      console.error('Error updating password:', err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+
+    res.json({ message: 'Password reset successfully' });
   });
 });
 
@@ -212,7 +227,7 @@ function getFileType(fileExtension) {
     return 'video';
   } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
     return 'image';
-  } 
+  }
 }
 
 app.get('/', (req, res) => {
