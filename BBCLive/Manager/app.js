@@ -31,7 +31,12 @@ db.connect((err) => {
   }
   console.log('Connected to the database');
 });
-// if(req.session.theuser)
+
+app.listen(port, 'localhost', () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+
+
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
   // Retrieve admin details from the session
@@ -45,7 +50,7 @@ app.get('/getAdminDetails', (req, res) => {
 });
 
 // Endpoint for handling login requests
-app.post('/home', (req, res) => {
+app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   // Query the database to verify credentials
@@ -60,66 +65,75 @@ app.post('/home', (req, res) => {
     if (results.length > 0) {
       const user = results[0];
       req.session.theuser = user;
-      
-      if (user.role === 'admin') {
 
-        req.session.admin = {
-          dp: user.dp,
-          firstname: user.firstname,
-          lastname: user.lastname,
-        };
-
-        // Fetch the list of content managers from the database
-        const userListQuery = 'SELECT users.*, GROUP_CONCAT(schedules.day) AS schedule_days FROM users LEFT JOIN schedules ON users.username = schedules.username WHERE users.role = ? GROUP BY users.username';
-
-        db.query(userListQuery, ['cm'], (err, userList) => {
-          if (err) {
-            console.error('Error fetching user list:', err);
-            return res.status(500).json({ message: 'Server Error' });
-          }
-
-          // Construct HTML for user list
-          let userListHTML = '';
-          userList.forEach((user, index) => {
-            // Split the concatenated days into an array
-            const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
-
-            userListHTML += `
-              <tr>
-                <td>${index + 1}</td>
-                <td><img src="${user.dp}" class="avatar" alt="Avatar"> ${user.firstname} ${user.lastname}</td>
-                <td>${user.username}</td>
-                <td>
-                ${scheduleDaysArray.map(day => `<div>${day.trim()}</div>`).join('')}
-                </td>
-                <td>${user.sessions}</td>
-                <td>
-                  <span class="status text-${user.banstatus === 0 ? 'success' : 'danger'}">&bull;</span>
-                  ${user.banstatus === 0 ? 'Active' : 'Suspended'}
-                </td>
-                <td>
-                <a href="#" class="reset" title="Reset" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xF053;</i></a>
-                  <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE872;</i></a>
-                  <a href="#" class="ban" title="Ban" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE14B;</i></a>
-                </td>
-              </tr>
-            `;
-          });
-
-          const adminHomeHTML = require('fs').readFileSync(path.join(__dirname, './Admin/admin-home.html'), 'utf8');
-          const finalHTML = adminHomeHTML.replace('<!-- USER_LIST_PLACEHOLDER -->', userListHTML);
-          res.send(finalHTML);
-        });
-      } else if (user.role === 'cm') {
-        // Redirect to cm page
-        return res.sendFile(path.join(__dirname, './Content Manager/cm-home.html'));
-      }
+      // Redirect to the root URL '/'
+      res.redirect('/');
     } else {
-      // invalid credentials
-      return res.sendFile(path.join(__dirname, 'index.html'));
+      // Invalid credentials, redirect to login page
+      res.sendFile(path.join(__dirname, 'index.html'));
     }
   });
 });
+
+// Entry point for the root URL '/'
+app.get('/', (req, res) => {
+  // Check if user session exists
+  if (req.session.theuser) {
+    // User session exists
+    const user = req.session.theuser;
+
+    if (user.role === 'admin') {
+      // Fetch the list of content managers from the database
+      const userListQuery = 'SELECT users.*, GROUP_CONCAT(schedules.day) AS schedule_days FROM users LEFT JOIN schedules ON users.username = schedules.username WHERE users.role = ? GROUP BY users.username';
+
+      db.query(userListQuery, ['cm'], (err, userList) => {
+        if (err) {
+          console.error('Error fetching user list:', err);
+          return res.status(500).json({ message: 'Server Error' });
+        }
+
+        // Construct HTML for user list
+        let userListHTML = '';
+        userList.forEach((user, index) => {
+          // Split the concatenated days into an array
+          const scheduleDaysArray = user.schedule_days ? user.schedule_days.split(',') : [];
+
+          userListHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td><img src="${user.dp}" class="avatar" alt="Avatar"> ${user.firstname} ${user.lastname}</td>
+              <td>${user.username}</td>
+              <td>
+              ${scheduleDaysArray.map(day => `<div>${day.trim()}</div>`).join('')}
+              </td>
+              <td>${user.sessions}</td>
+              <td>
+                <span class="status text-${user.banstatus === 0 ? 'success' : 'danger'}">&bull;</span>
+                ${user.banstatus === 0 ? 'Active' : 'Suspended'}
+              </td>
+              <td>
+                <a href="#" class="reset" title="Reset" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xF053;</i></a>
+                <a href="#" class="delete" title="Delete" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE872;</i></a>
+                <a href="#" class="ban" title="Ban" data-toggle="tooltip" data-username="${user.username}"><i class="material-icons">&#xE14B;</i></a>
+              </td>
+            </tr>
+          `;
+        });
+
+        const adminHomeHTML = require('fs').readFileSync(path.join(__dirname, './Admin/admin-home.html'), 'utf8');
+        const finalHTML = adminHomeHTML.replace('<!-- USER_LIST_PLACEHOLDER -->', userListHTML);
+        res.send(finalHTML);
+      });
+    } else if (user.role === 'cm') {
+      // Redirect to cm page
+      return res.sendFile(path.join(__dirname, './Content Manager/cm-home.html'));
+    }
+  } else {
+    // User session does not exist, redirect to login page
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
 
 // Endpoint for handling reset password action and unbanning user
 app.post('/resetUser/:username', (req, res) => {
@@ -276,7 +290,7 @@ app.post('/setSchedule', (req, res) => {
 // Log out endpoint
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('./index.html');
 });
 
 
@@ -377,10 +391,3 @@ function getFileType(fileExtension) {
   }
 }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(port, 'localhost', () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});

@@ -576,24 +576,18 @@ $('#addUserForm').submit(function (event) {
             }
 
                 $('#logoutButton').click(function () {
+                    console.log("THIS PRINTS")
                     $.ajax({
                         method: 'GET',
                         url: '/logout',
                         success: function () {
-                            // Redirect to the login page after successful log out
-                            $.ajax({
-                                method: 'GET',
-                                url: '/',
-        
-                            });
+                            window.location.herf = '/index.html'
                         },
                         error: function (error) {
                             console.error('Error logging out:', error);
-                            // Handle error if needed
                         }
                     });
                 });
-
         </script>
 
         <!-- Reset User Confirmation Modal -->
@@ -723,7 +717,5 @@ $('#addUserForm').submit(function (event) {
                 location.reload();
             });
         </script>
-
 </body>
-
 </html>

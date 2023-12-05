@@ -13,6 +13,8 @@
 
     <!-- Custom styles for this template-->
     <link href="/Manager/Admin/adminstyles/css/admin-style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 </head>
 
 <body>
@@ -33,21 +35,22 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Login</h1>
                                     </div>
-                                    <form class="user" action="http://localhost:3000/home" method="POST">
+                                    <form class="user">
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
-                                                   id="exampleInputUsername" aria-describedby="usernameHelp"
-                                                   placeholder="Username" name="username">
+                                                id="exampleInputUsername" aria-describedby="usernameHelp"
+                                                placeholder="Username" name="username">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                   id="exampleInputPassword" placeholder="Password" name="password">
+                                                id="exampleInputPassword" placeholder="Password" name="password">
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" id="loginButton"
+                                            class="btn btn-primary btn-user btn-block">
                                             Login
                                         </button>
                                     </form>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -59,17 +62,41 @@
         </div>
 
     </div>
-
-        <!-- Bootstrap core JavaScript-->
-        <!-- <script src="/bootstrap/vendor/jquery/jquery.min.js"></script>
-        <script src="/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-
-        <!-- Core plugin JavaScript-->
-        <!-- <script src="/bootstrap/vendor/jquery-easing/jquery.easing.min.js"></script> -->
-
-        <!-- Custom scripts for all pages-->
-        <!-- <script src="/bootstrap/js/sb-admin-2.min.js"></script> -->
-
+    <script>
+        $(document).ready(function () {
+            $('#loginButton').click(function (event) {
+                // Prevent the default form submission
+                event.preventDefault();
+    
+                // Get the values of username and password
+                var username = $('#exampleInputUsername').val();
+                var password = $('#exampleInputPassword').val();
+    
+                // Make the AJAX request
+                $.ajax({
+                    method: 'POST',
+                    url: '/login',
+                    data: { username, password },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log("PUMASOK")
+                            alert('Login successful');
+                            // Redirect to the appropriate page if needed
+                            window.location.href = response.redirectURL;
+                        } else {
+                            console.log(error)
+                            // Display an alert for invalid credentials
+                            alert('Invalid credentials');
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error logging in:', error);
+                    }
+                });
+            });
+        });
+    </script>
+    
 </body>
 
 </html>
