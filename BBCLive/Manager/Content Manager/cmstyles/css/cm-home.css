@@ -1,0 +1,93 @@
+:root {
+    --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+  
+  body {
+    font-family: sans-serif;
+    background-image: url('../images/cm-bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: auto;
+    background-attachment: fixed;
+  }
+  
+  *{
+    margin: 0%;
+    box-sizing: border-box;
+}
+header{
+    width: 100%;
+    height: 70px;
+    background-color: #000066;
+    color: white;
+    flex-direction: row;
+    display:flex;
+    align-items: center;
+}
+.logo{
+    background-color: white;
+    border-radius: 1000px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+#sluLogo{
+    width: 45px;
+    height: auto;
+   
+}
+section{
+    padding: 2%;
+    margin-left: 5%;
+    margin-right: 5%;  
+}
+
+
+.container {
+    margin-top: 20px;
+    background-color: white;
+    border: 2px solid blue;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+    overflow:auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    min-width: 32%;
+    margin-bottom: 20px;
+    margin: 1%;
+  }
+
+  th, td {
+    border: 1px solid #000066;
+    padding: 20px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #000066;
+    color: white;
+  }
+  #addTableBtn {
+    background-color: #000066;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #addTableBtn:hover {
+    background-color: #1111d8;
+  }
+  
+  h1{
+    color: #000066;
+  }
+
+
+
+  

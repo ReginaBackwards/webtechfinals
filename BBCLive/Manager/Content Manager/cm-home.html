@@ -1,3 +1,86 @@
-<html>
-    <h1>HOME PAGE TO NG CONTENT MANAGER</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cmstyles/css/cm-home.css">
+    <title>HOME</title>
+</head>
+<body>
+    <header>
+        
+        <div class="logo"><img src="../../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
+
+    </header>
+
+    <section>
+        <h1>Home</h1>
+        <div class="container" id="tablesContainer">
+            <table>
+                <tr>
+                  <th>Time</th>
+                  <th>Title</th>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+          </div>
+
+          <button id="addTableBtn" onclick="addTable()">Add Table (temporary button)</button>
+    </section>
+
+    <script>
+        function addTable() {
+
+        var newTable = document.createElement("table");
+
+
+        var headerRow = newTable.insertRow(0);
+        var headerCell1 = document.createElement("th");
+        headerCell1.innerHTML = "Time";
+        headerRow.appendChild(headerCell1);
+
+        var headerCell2 = document.createElement("th");
+        headerCell2.innerHTML = "Title";
+        headerRow.appendChild(headerCell2);
+        
+
+          for (var i = 0; i < 7; i++) {
+            var dataRow = newTable.insertRow(i + 1);
+            var dataCell1 = dataRow.insertCell(0);
+            var dataCell2 = dataRow.insertCell(1);
+            dataCell1.innerHTML = "";
+            dataCell2.innerHTML = "";
+            }
+
+          document.getElementById("tablesContainer").appendChild(newTable);
+        }
+      </script>
+</body>
 </html>
