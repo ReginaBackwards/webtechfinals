@@ -56,7 +56,7 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item"  href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -166,7 +166,7 @@
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" id = "logoutButton">Logout</a>
+                        <a class="btn btn-primary" id="logoutButton">Logout</a>
                     </div>
                 </div>
             </div>
@@ -392,51 +392,71 @@
                 });
 
 
-                // Handle form submission
-                $('#addUserForm').submit(function (event) {
-                    event.preventDefault();
+// Handle form submission
+$('#addUserForm').submit(function (event) {
+    event.preventDefault();
 
-                    const username = userNameInput.val();
+    // Get the input values
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const userNameInput = document.getElementById('userName');
 
-                    // Check username availability before submitting the form
-                    $.ajax({
-                        method: 'GET',
-                        url: `/checkUsernameExists/${username}`,
-                        success: function (response) {
-                            if (response.exists) {
-                                alert('Username is already taken. Please choose a different username.');
-                            } else {
-                                // Collect form data
-                                const formData = {
-                                    firstName: $('#firstName').val(),
-                                    lastName: $('#lastName').val(),
-                                    userName: username,
-                                };
+    // Trim leading and trailing spaces from input values
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+    const userName = userNameInput.value.trim();
 
-                                // Make an AJAX request to add the new user
-                                $.ajax({
-                                    method: 'POST',
-                                    url: `/addUser`,
-                                    data: formData,
-                                    success: function (response) {
-                                        alert(`User ${formData.userName} added successfully`);
-                                        $('#firstName').val('');
-                                        $('#lastName').val('');
-                                        $('#userName').val('');
+    if (userName.length < 3 || userName.length > 20) {
+        alert('Username must be between 3 and 20 characters.');
+    } else {
+        if (firstName.length < 1 || firstName.length > 50) {
+            alert('First Name must be between 1 and 50 characters.');
+        } else {
+            if (lastName.length < 1 || lastName.length > 50) {
+                alert('Last Name must be between 1 and 50 characters.');
+            } else {
+                // Check username availability before submitting the form
+                $.ajax({
+                    method: 'GET',
+                    url: `/checkUsernameExists/${userName}`, // Fixed variable name here
+                    success: function (response) {
+                        if (response.exists) {
+                            alert('Username is already taken. Please choose a different username.');
+                        } else {
+                            // Collect form data
+                            const formData = {
+                                firstName: $('#firstName').val(),
+                                lastName: $('#lastName').val(),
+                                userName: userName, // Fixed variable name here
+                            };
 
-                                    },
-                                    error: function (error) {
-                                        alert('Failed to add user. Please try again.');
-                                    }
-                                });
-                            }
-                        },
-                        error: function (error) {
-                            console.error('Error checking username:', error);
-                            alert('Failed to check username. Please try again.');
+                            // Make an AJAX request to add the new user
+                            $.ajax({
+                                method: 'POST',
+                                url: `/addUser`,
+                                data: formData,
+                                success: function (response) {
+                                    alert(`User ${formData.userName} added successfully`);
+                                    $('#firstName').val('');
+                                    $('#lastName').val('');
+                                    $('#userName').val('');
+                                },
+                                error: function (error) {
+                                    alert('Failed to add user. Please try again.');
+                                }
+                            });
                         }
-                    });
+                    },
+                    error: function (error) {
+                        console.error('Error checking username:', error);
+                        alert('Failed to check username. Please try again.');
+                    }
                 });
+            }
+        }
+    }
+});
+
             });
 
             // Array to store the selected user for each day
@@ -555,21 +575,24 @@
                 }
             }
 
-$('#logoutButton').click(function () {
-  $.ajax({
-    method: 'GET',
-    url: '/logout',
-    success: function () {
-      // Redirect to the login page after successful log out
-      window.location.href = '/login';
-    },
-    error: function (error) {
-      console.error('Error logging out:', error);
-      // Handle error if needed
-    }
-  });
-});
-
+                $('#logoutButton').click(function () {
+                    $.ajax({
+                        method: 'GET',
+                        url: '/logout',
+                        success: function () {
+                            // Redirect to the login page after successful log out
+                            $.ajax({
+                                method: 'GET',
+                                url: '/',
+        
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error logging out:', error);
+                            // Handle error if needed
+                        }
+                    });
+                });
 
         </script>
 

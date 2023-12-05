@@ -31,7 +31,7 @@ db.connect((err) => {
   }
   console.log('Connected to the database');
 });
-
+// if(req.session.theuser)
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
   // Retrieve admin details from the session
@@ -59,7 +59,8 @@ app.post('/home', (req, res) => {
 
     if (results.length > 0) {
       const user = results[0];
-
+      req.session.theuser = user;
+      
       if (user.role === 'admin') {
 
         req.session.admin = {
@@ -205,13 +206,13 @@ app.get('/getActiveUsers', (req, res) => {
   const query = "SELECT username FROM users WHERE role = 'cm' AND banstatus = 0;";
 
   db.query(query, (error, results) => {
-      if (error) {
-          console.error('Error fetching active users:', error);
-          res.status(500).send('Server Error');
-      } else {
-          const userList = results.map(result => ({ username: result.username }));
-          res.json(userList);
-      }
+    if (error) {
+      console.error('Error fetching active users:', error);
+      res.status(500).send('Server Error');
+    } else {
+      const userList = results.map(result => ({ username: result.username }));
+      res.json(userList);
+    }
   });
 });
 
@@ -220,13 +221,13 @@ app.get('/getSchedules', (req, res) => {
   const query = 'SELECT day, username FROM schedules;';
 
   db.query(query, (error, results) => {
-      if (error) {
-          console.error('Error fetching schedules:', error);
-          res.status(500).send('Server Error');
-      } else {
-          const schedules = results.map(result => ({ day: result.day, username: result.username }));
-          res.json(schedules);
-      }
+    if (error) {
+      console.error('Error fetching schedules:', error);
+      res.status(500).send('Server Error');
+    } else {
+      const schedules = results.map(result => ({ day: result.day, username: result.username }));
+      res.json(schedules);
+    }
   });
 });
 
@@ -236,56 +237,50 @@ app.post('/setSchedule', (req, res) => {
   const selectedUsers = req.body.selectedUsers; // Access the array directly
 
   if (selectedUsers && selectedUsers.length > 0) {
-      // Array to store promises for each query
-      const queryPromises = [];
+    // Array to store promises for each query
+    const queryPromises = [];
 
-      selectedUsers.forEach(({ day, username }) => {
-          const query = 'UPDATE schedules SET username = ? WHERE day = ?';
-          const values = [username, day];
+    selectedUsers.forEach(({ day, username }) => {
+      const query = 'UPDATE schedules SET username = ? WHERE day = ?';
+      const values = [username, day];
 
-          // Creating a promise for each query
-          const queryPromise = new Promise((resolve, reject) => {
-              db.query(query, values, (error, results) => {
-                  if (error) {
-                      console.error(`Error updating schedule for ${day}:`, error);
-                      reject(`Failed to update schedule for ${day}.`);
-                  } else {
-                      resolve();
-                  }
-              });
-          });
-
-          queryPromises.push(queryPromise);
+      // Creating a promise for each query
+      const queryPromise = new Promise((resolve, reject) => {
+        db.query(query, values, (error, results) => {
+          if (error) {
+            console.error(`Error updating schedule for ${day}:`, error);
+            reject(`Failed to update schedule for ${day}.`);
+          } else {
+            resolve();
+          }
+        });
       });
 
-      // Waiting for all promises to resolve before sending the response
-      Promise.all(queryPromises)
-          .then(() => {
-              res.status(200).json({ success: true, message: 'Schedules updated successfully.' });
-          })
-          .catch((error) => {
-              res.status(500).json({ error });
-          });
+      queryPromises.push(queryPromise);
+    });
+
+    // Waiting for all promises to resolve before sending the response
+    Promise.all(queryPromises)
+      .then(() => {
+        res.status(200).json({ success: true, message: 'Schedules updated successfully.' });
+      })
+      .catch((error) => {
+        res.status(500).json({ error });
+      });
   } else {
-      console.error('Selected users array is undefined or empty');
-      res.status(400).json({ error: 'Selected users array is undefined or empty' });
+    console.error('Selected users array is undefined or empty');
+    res.status(400).json({ error: 'Selected users array is undefined or empty' });
   }
 });
 
-// Session handler
-app.get('/home', (req, res) => {
-  // Perform log-out actions
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      // Redirect the user to the login page
-      res.redirect('/home');
-    }
-  });
+// Log out endpoint
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
+
+// ALWIN MALWIN
 
 const uploadDir = path.join('uploads');
 
