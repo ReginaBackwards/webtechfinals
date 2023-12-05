@@ -32,7 +32,7 @@ $stmt->bind_result($filename, $filepath, $author, $dateuploaded, $type);
         height='500'
         width='1000'
         controls
-        poster='../res/dog style.jpg'
+        poster='../res/bbc-logo.png'
         data-setup='{}'
         >
 
