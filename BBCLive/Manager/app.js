@@ -326,7 +326,7 @@ app.post('/upload', upload.array('file'), async (req, res) => {
       }
 
       const fileType = getFileType(fileExtension);
-      const userUploadDir = path.join(uploadDir, username, 'resources', fileType, `${Date.now()}_${file.originalname}`);
+      const userUploadDir = path.join(uploadDir, username, 'resources', fileType, file.originalname);
 
       if (!fs.existsSync(userUploadDir)) {
         fs.mkdirSync(userUploadDir, { recursive: true });
@@ -335,10 +335,10 @@ app.post('/upload', upload.array('file'), async (req, res) => {
       let filename;
 
       if (fileType === 'images') {
-        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        filename = path.join(userUploadDir, file.originalname);
         await sharp(file.buffer).toFile(filename);
       } else {
-        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        filename = path.join(userUploadDir, file.originalname);
         fs.writeFileSync(filename, file.buffer);
       }
 
