@@ -84,7 +84,7 @@
                             // Redirect to the appropriate page if needed
                             window.location.href = response.redirectURL;
                         } else {
-                            console.log(error)
+                            console.log(response.error)
                             // Display an alert for invalid credentials
                             alert('Invalid credentials');
                         }

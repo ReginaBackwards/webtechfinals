@@ -40,13 +40,20 @@ app.listen(port, 'localhost', () => {
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
   // Retrieve admin details from the session
-  const adminDetails = req.session.admin || {
-    dp: './../res/avatars/default.png', // Default image URL
-    firstname: 'Admin', // Default first name
-    lastname: 'Name', // Default last name
-  };
+  // Check if the admin session exists
+  if (req.session.theuser && req.session.theuser.role === 'admin') {
+    // Admin session exists, send admin details
+    const adminDetails = {
+      dp: req.session.theuser.dp || './../res/avatars/default.png', // Default image URL
+      firstname: req.session.theuser.firstname || 'Admin', // Default first name
+      lastname: req.session.theuser.lastname || 'Name', // Default last name
+    };
 
-  res.json(adminDetails);
+    res.json(adminDetails);
+  } else {
+    // Admin session does not exist, send an empty response or an appropriate status code
+    res.status(401).json({ error: 'Admin session not found' });
+  }
 });
 
 // Endpoint for handling login requests
@@ -67,7 +74,8 @@ app.post('/login', (req, res) => {
       req.session.theuser = user;
 
       // Redirect to the root URL '/'
-      res.redirect('/');
+      // res.redirect('/');
+      res.json({success:true, redirectURL: '/'})
     } else {
       // Invalid credentials, redirect to login page
       res.sendFile(path.join(__dirname, 'index.html'));
@@ -290,7 +298,7 @@ app.post('/setSchedule', (req, res) => {
 // Log out endpoint
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.redirect('./index.html');
+  res.redirect('/');
 });
 
 
