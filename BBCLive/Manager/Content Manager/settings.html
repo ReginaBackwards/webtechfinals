@@ -56,11 +56,16 @@
                                 </div>
                             </div>
                             <div class="col-xs-6 col-md-6 text-center">
-                                <div class="col-md-12 my-5 text-center">
-                                    <img src="./../Admin/adminstyles/images/avatar.png" class="defaultdp" alt="profile pic">
-                                </div>
-                                <div class="col-md-12 my-5 text-center">
-                                    <button type="editdp" class="btn btn-primary" id="button">Edit Profile Picture</button>
+                                <div>
+                                    <div class="col-md-12 my-5 text-center">
+                                        <img src="./../../res/avatars/default.png" class="defaultdp" alt="profile pic">
+                                    </div>
+                                    <div class="col-md-12 my-5 text-center">
+                                        <div class="btn btn-primary" id="editdp-container">
+                                            <label class="form-label text-white m-1" for="editbutton">Edit Profile Picture</label>
+                                            <input type="file" class="form-control d-none" id="editbutton" onchange="displaySelectedImage(event, 'selectedAvatar')" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
