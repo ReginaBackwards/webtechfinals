@@ -56,6 +56,19 @@ app.get('/getAdminDetails', (req, res) => {
   }
 });
 
+// Endpoint for handling requests for content manager details
+app.get('/getCmDetails', (req, res) => {
+  // Retrieve content manager details from the session
+  const cmDetails = req.session.theuser || {
+    dp: './../../res/avatars/default.png', // Default image URL
+    firstname: 'Content', // Default first name
+    lastname: 'Manager', // Default last name
+  };
+
+  res.json(cmDetails);
+});
+
+
 // Endpoint for handling login requests
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -134,6 +147,7 @@ app.get('/', (req, res) => {
       });
     } else if (user.role === 'cm') {
       // Redirect to cm page
+      // return res.sendFile(path.join(__dirname, './Content Manager/resources.html'));
       return res.sendFile(path.join(__dirname, './Content Manager/cm-home.html'));
     }
   } else {
@@ -334,7 +348,7 @@ app.post('/upload', upload.array('file'), async (req, res) => {
       }
 
       const fileType = getFileType(fileExtension);
-      const userUploadDir = path.join(uploadDir, username, 'resources', fileType, `${Date.now()}_${file.originalname}`);
+      const userUploadDir = path.join(uploadDir, username, 'resources', fileType, file.originalname);
 
       if (!fs.existsSync(userUploadDir)) {
         fs.mkdirSync(userUploadDir, { recursive: true });
@@ -343,10 +357,10 @@ app.post('/upload', upload.array('file'), async (req, res) => {
       let filename;
 
       if (fileType === 'images') {
-        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        filename = path.join(userUploadDir, file.originalname);
         await sharp(file.buffer).toFile(filename);
       } else {
-        filename = path.join(userUploadDir, `${Date.now()}_${file.originalname}`);
+        filename = path.join(userUploadDir, file.originalname);
         fs.writeFileSync(filename, file.buffer);
       }
 
@@ -398,4 +412,17 @@ function getFileType(fileExtension) {
     return 'image';
   }
 }
+
+// Endpoint to handle the redirect to resources.html
+app.get('/gotoresources', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
+// Endpoint to handle the redirect to cm-home.html
+app.get('/cm-home', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
 
