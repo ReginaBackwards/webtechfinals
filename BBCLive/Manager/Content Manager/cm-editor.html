@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-editor.css">
+  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+  <title>HOME</title>
+</head>
+
+<body>
+  <header class="top-nav">
+    <div class="header-container">
+      <nav>
+        <div class="header-logo">   
+          <a href=".">
+            <img src="../../res/slu-logo.png" alt="slu-Logo">
+          </a>
+        </div>
+  
+        <ul>
+          <li><a href="cm-home.html">Home</a></li>
+          <li><button onclick="goToResources()" id="btn">Resources</button></li>
+          <li><a href="cm-logs.html">Logs</a></li>
+        </ul>
+  
+        <div class="header-profile">
+          <!-- <img src="pathofdadp" alt="user-dp"> -->
+          <div id="cmDetails" class="cmDets">
+            <!-- Content manager avatar and name will be displayed here -->
+          </div>
+          <div class="line"></div>
+          <div class="user-info">
+            <a href="">Username</a>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <body>
+    <video
+        id='my-video'
+        class='video-js'
+        preload='auto'
+        height='950'
+        width='700'
+        controls
+        poster='../res/dog style.jpg'
+        data-setup='{}'
+        >
+
+        <!-- <source src='' type ='video/mp4' /> -->
+
+        <p>
+            <a href = 'https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+        </p>
+        </video>
+
+        <div class="container" id="tablesContainer">
+            <table>
+                <tr>
+                    <th>Resources</th>
+                    <th></th>
+                </tr>
+                <tbody id="tablesContainer1">
+        
+                </tbody>
+            </table>        
+        <script src="./../../Manager/Content Manager/cmstyles/js/editor.js"></script>
+        <script>
+            function fetchVideo() {
+                fetch('/editorFetch') 
+                .then(response => response.json())
+                .then(data =>{
+                    const filepath = data.filepath;
+                    const player = videojs('my-video');
+                    player.src({ src: filepath, type: 'video/mp4'});
+                })
+            }
+        </script>
+  </body>

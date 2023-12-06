@@ -160,6 +160,41 @@
             });
     }
 
+    function goToResources() {
+        // Make an AJAX request to the server to handle the redirection
+        fetch('/gotoresources')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to resources.html after successful request
+                    window.location.href = '/Manager/Content%20Manager/resources.html';
+                } else {
+                    alert('Failed to go to Resources');
+                }
+            })
+            .catch(error => {
+                console.error('Error during request to go to Resources:', error);
+            });
+    }
+
+    function goToEditor() {
+        // Make an AJAX request to the server to handle the redirection
+        fetch('/gotoeditor')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to resources.html after successful request
+                    window.location.href = '/Manager/Content%20Manager/cm-editor.html';
+                } else {
+                    alert('Failed to go to Resources');
+                }
+            })
+            .catch(error => {
+                console.error('Error during request to go to Resources:', error);
+            });
+    }
+
+
     // Function to handle logout
     function logout() {
       // Make an AJAX request to the logout endpoint

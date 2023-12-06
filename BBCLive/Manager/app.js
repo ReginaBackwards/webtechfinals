@@ -485,6 +485,11 @@ app.get('/cm-home', (req, res) => {
   // res.json({ success: true });
 });
 
+app.get('/gotoeditor', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
 app.get('/settings', (req, res) => {
   const { username, currentPassword, newPassword, confirmPassword, newProfilePicture } = req.body;
   
@@ -567,3 +572,63 @@ app.get('/settings', (req, res) => {
     }
   });
 });
+
+app.get('/editor', (req, res) => {
+  if (req.session.theuser) {
+    const acceptHeader = req.headers.accept || '';
+    
+    if (acceptHeader.includes('text/html')) {
+      res.sendFile(path.join(__dirname, './../../BBCLive/Manager/Content Manager/cm-editor.html'));
+    } else {
+      const username = req.session.theuser.username;
+      const fetchQuery = 'SELECT filename, filepath, type FROM resources WHERE author = ?';
+      
+      db.query(fetchQuery, [username], (err, results) => {
+        if (err) {
+          console.error('MySQL fetch error:', err);
+          res.status(500).json({ error: 'Error fetching resources from database', details: err });
+        } else {
+          console.log(username);
+          res.status(200).json(results);
+        }
+      });
+    }
+  } else {
+    response.redirect('/')
+  }
+});
+
+app.get('/inserToScene', (req, res) => {
+  const fetchVidQuery = 'SELECT filepath FROM resources';
+
+  db.query(fetchVidQuery, (err, results) => {
+    if(err) {
+      console.error("video unavailable");
+      return
+    }
+    const insertQuery = 'INSERT INTO filepath(scenes) VALUES ?';
+  
+    const videoV = results.map((row) => [row.filePath]);
+  
+    db.query(insertQuery, [videoV], (err, results) => {
+      if (err) {
+        console.error("Can't insert video");  
+      }
+    });
+  });
+});
+
+app.get('/fetchFromRes', (req, res) => {
+  const fetchQuery = 'SELECT filepath, filename, type FROM resources';
+
+  db.query(fetchQuery, (err, results) => {
+    if (err) {
+      console.error(err + "Unable to retrieve from Database");
+      return
+    } else {
+
+    }
+  })
+})
+
+
