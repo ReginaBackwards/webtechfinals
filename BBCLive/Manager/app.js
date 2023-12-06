@@ -39,61 +39,73 @@ app.listen(port, 'localhost', () => {
 
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
-  // Retrieve admin details from the session
-  // Check if the admin session exists
-  if (req.session.theuser && req.session.theuser.role === 'admin') {
-    // Admin session exists, send admin details
-    const adminDetails = {
-      dp: req.session.theuser.dp || './../res/avatars/default.png', // Default image URL
-      firstname: req.session.theuser.firstname || 'Admin', // Default first name
-      lastname: req.session.theuser.lastname || 'Name', // Default last name
-    };
-    
-    res.json(adminDetails);
+  if (req.session.theuser) {
+    // Retrieve admin details from the session
+    // Check if the admin session exists
+    if (req.session.theuser && req.session.theuser.role === 'admin') {
+      // Admin session exists, send admin details
+      const adminDetails = {
+        dp: req.session.theuser.dp || './../res/avatars/default.png', // Default image URL
+        firstname: req.session.theuser.firstname || 'Admin', // Default first name
+        lastname: req.session.theuser.lastname || 'Name', // Default last name
+      };
+      
+      res.json(adminDetails);
+    } else {
+      // Admin session does not exist, send an empty response or an appropriate status code
+      res.status(401).json({ error: 'Admin session not found' });
+    }
   } else {
-    // Admin session does not exist, send an empty response or an appropriate status code
-    res.status(401).json({ error: 'Admin session not found' });
+    response.redirect('/')
   }
 });
 
 // Endpoint for handling requests for content manager details
 app.get('/getCmDetails', (req, res) => {
-  // Retrieve content manager details from the session
-  const cmDetails = req.session.theuser || {
-    dp: './../../res/avatars/default.png', // Default image URL
-    firstname: 'Content', // Default first name
-    lastname: 'Manager', // Default last name
-  };
-  
-  res.json(cmDetails);
+  if (req.session.theuser) {
+    // Retrieve content manager details from the session
+    const cmDetails = req.session.theuser || {
+      dp: './../../res/avatars/default.png', // Default image URL
+      firstname: 'Content', // Default first name
+      lastname: 'Manager', // Default last name
+    };
+    
+    res.json(cmDetails);
+  } else {
+    response.redirect('/')
+  }
 });
 
 
 // Endpoint for handling login requests
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  
-  // Query the database to verify credentials
-  const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-  
-  db.query(query, [username, password], (err, results) => {
-    if (err) {
-      console.error('Error executing database query:', err);
-      return res.status(500).json({ message: 'Server Error' });
-    }
+  if (req.session.theuser) {
+    const { username, password } = req.body;
     
-    if (results.length > 0) {
-      const user = results[0];
-      req.session.theuser = user;
+    // Query the database to verify credentials
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+    
+    db.query(query, [username, password], (err, results) => {
+      if (err) {
+        console.error('Error executing database query:', err);
+        return res.status(500).json({ message: 'Server Error' });
+      }
       
-      // Redirect to the root URL '/'
-      // res.redirect('/');
-      res.json({success:true, redirectURL: '/'})
-    } else {
-      // Invalid credentials, redirect to login page
-      res.sendFile(path.join(__dirname, 'index.html'));
-    }
-  });
+      if (results.length > 0) {
+        const user = results[0];
+        req.session.theuser = user;
+        
+        // Redirect to the root URL '/'
+        // res.redirect('/');
+        res.json({success:true, redirectURL: '/'})
+      } else {
+        // Invalid credentials, redirect to login page
+        res.sendFile(path.join(__dirname, 'index.html'));
+      }
+    });
+  } else {
+    response.redirect('/')
+  }
 });
 
 // Entry point for the root URL '/'
@@ -427,7 +439,6 @@ app.post('/upload', upload.array('file'), async (req, res) => {
   } else {
     response.redirect('/');
   }
-  
 });
 
 app.get('/resources', (req, res) => {
@@ -459,7 +470,7 @@ function getFileType(fileExtension) {
   if (fileExtension === '.mp3') {
     return 'audio';
   } else if (fileExtension === '.mp4') {
-    return 'videos';
+    return 'videos/clips';
   } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
     return 'images';
   }
@@ -480,78 +491,78 @@ app.get('/cm-home', (req, res) => {
 
 app.get('/settings', (req, res) => {
   const { username, currentPassword, newPassword, confirmPassword, newProfilePicture } = req.body;
-
+  
   // Query the database to get the current user's information
   const query = 'SELECT * FROM users WHERE username = ?';
-
+  
   db.query(query, [username], (err, results) => {
     if (err) {
       console.error('Error executing database query:', err);
       return res.status(500).json({ message: 'Server Error' });
     }
-
+    
     if (results.length > 0) {
       const user = results[0];
-
+      
       // Check if the db password matches the current
       if (currentPassword == password) {
         if (newPassword == confirmPassword) {
-            // Update the password in the database
-            const updatePasswordQuery = 'UPDATE users SET password = ? WHERE username = ?';
-
-            db.query(updatePasswordQuery, [newPassword, username], (updateErr) => {
-              if (updateErr) {
-                console.error('Error updating password:', updateErr);
-                return res.status(500).json({ message: 'Error updating password' });
-              }
-            });
+          // Update the password in the database
+          const updatePasswordQuery = 'UPDATE users SET password = ? WHERE username = ?';
+          
+          db.query(updatePasswordQuery, [newPassword, username], (updateErr) => {
+            if (updateErr) {
+              console.error('Error updating password:', updateErr);
+              return res.status(500).json({ message: 'Error updating password' });
+            }
+          });
         } else {
           
           alert("Password does not match!");
         }
       } else { 
-          alert("Wrong password!");
+        alert("Wrong password!");
       }
-
+      
       if (newProfilePicture) {
         const uploadProfileDir = path.join(__dirname, './../res/avatars');
-      
+        
         const profile = req.files;
-      
+        
         if (!profile || profile.length === 0) {
           return res.status(400).json({ error: 'No picture uploaded' });
         }
-      
+        
         const fileExtension = path.extname(profile[0].originalname).toLowerCase();
         const allowedTypes = ['.jpg', '.jpeg', '.png'];
-      
+        
         if (!allowedTypes.includes(fileExtension)) {
           console.log('Unsupported file type:', fileExtension);
           return res.status(400).json({ error: 'Unsupported file type' });
         }
-      
+        
         const filePath = path.join(uploadProfileDir, username);
-
+        
         // Check if the file with the same name already exists
         if (fs.existsSync(filePath)) {
           // Delete the existing file
           fs.unlinkSync(filePath);
         }
-      
+        
         fs.writeFileSync(filePath, profile[0].buffer);
-      
+        
         const updateProfilePictureQuery = 'UPDATE users SET dp = ? WHERE username = ?';
-      
+        
         db.query(updateProfilePictureQuery, [filePath, username], (updateErr) => {
           if (updateErr) {
             console.error('Error updating profile picture:', updateErr);
             return res.status(500).json({ message: 'Error updating profile picture' });
           }
-      
+          
           res.status(200).json({ message: 'Profile picture updated successfully' });
         });
       }
-
+      
       // Redirect to the root URL '/'
       res.redirect('/');
     } else {
