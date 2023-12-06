@@ -76,7 +76,7 @@
           // Update the HTML with content manager details
           const cmDetailsDiv = document.getElementById('cmDetails');
           cmDetailsDiv.innerHTML = `
-        <img src="${cmDetails.dp}" class="avatar" alt="Avatar">
+        <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
         ${cmDetails.firstname} ${cmDetails.lastname}
       `;
         })
@@ -112,6 +112,7 @@
       fetch('/logout')
         .then(response => response.json())
         .then(data => {
+          console.log('Logout response:', data);
           if (data.success) {
             alert('Logout successful');
             // Reload the page after successful logout
