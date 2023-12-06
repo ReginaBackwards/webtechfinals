@@ -174,10 +174,16 @@ section{
 #btn:hover{
   background-color: #1111d8 ;
 }
-.avatar{
+.avatar-container {
+  float: right;
+  overflow: hidden;
   border-radius: 100%;
+  width: 10%;
   height: 10%;
-  width: auto;
-  background-color: white;
-  padding: 20px;
+}
+
+.avatar {
+  width: 70%;
+  height: 80%;
+  border-radius: 100%;
 }
