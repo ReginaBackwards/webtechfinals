@@ -345,7 +345,6 @@ app.post('/setSchedule', (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.json({ success: true });
-  res.redirect('/index.html');
 });
 
 
