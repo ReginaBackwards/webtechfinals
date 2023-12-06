@@ -9,13 +9,37 @@
 </head>
 
 <body>
-  <header>
-    <div class="logo"><img src="../../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
+  <header class="top-nav">
+    <div class="header-container">
+      <nav>
+        <div class="header-logo">   
+          <a href=".">
+            <img src="../../res/slu-logo.png" alt="slu-Logo">
+          </a>
+        </div>
+  
+        <ul>
+          <li><a href="cm-home.html">Home</a></li>
+          <li><button onclick="goToResources()" id="btn">Resources</button></li>
+          <li><a href="cm-logs.html">Logs</a></li>
+        </ul>
+  
+        <div class="header-profile">
+          <!-- <img src="pathofdadp" alt="user-dp"> -->
+          <div id="cmDetails" class="cmDets">
+            <!-- Content manager avatar and name will be displayed here -->
+          </div>
+          <div class="line"></div>
+          <div class="user-info">
+            <a href="">Username</a>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </nav>
+    </div>
   </header>
 
-  <div id="cmDetails">
-    <!-- Content manager avatar and name will be displayed here -->
-  </div>
+  
 
   <section>
     <h1>Home</h1>
@@ -31,6 +55,31 @@
           <td></td>
           <td></td>
         </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+
         <!-- Repeat rows as needed -->
 
       </table>
@@ -38,9 +87,9 @@
 
     <button id="addTableBtn" onclick="addTable()">Add Table (temporary button)</button>
     <!--Resources Redirect Button-->
-    <button onclick="goToResources()">Resources</button>
+   <!-- <button onclick="goToResources()">Resources</button> -->
     <!-- Logout button -->
-    <button id="logoutBtn" onclick="logout()">Logout</button>
+    
   </section>
 
   <script>

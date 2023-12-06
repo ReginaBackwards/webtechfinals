@@ -17,26 +17,98 @@
     margin: 0%;
     box-sizing: border-box;
 }
-header{
-    width: 100%;
-    height: 70px;
-    background-color: #000066;
-    color: white;
-    flex-direction: row;
-    display:flex;
-    align-items: center;
+.top-nav {
+  position: relative;
+  width: 100%;
+  background-color: #000066;
+  
 }
-.logo{
-    background-color: white;
-    border-radius: 1000px;
-    margin-left: 50px;
-    margin-right: 50px;
+
+.header-container {
+  max-width: 100%;
+  
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
-#sluLogo{
-    width: 45px;
-    height: auto;
-   
+
+.header-logo img {
+  height: 50px;
+  padding-top: 5px;
 }
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  flex-direction: row;
+  position: relative;
+}
+
+ul {
+  justify-content: center;
+  flex-direction: row;
+  display: flex;
+  
+}
+
+li {
+  text-align: left;
+  margin: 0 50px;
+  list-style-type: none;
+}
+
+li a {
+  text-decoration: none;
+  color: white;
+}
+
+.header-profile {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: 1%;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+}
+
+.header-profile img {
+  margin: 0px 5px 0px 5px
+  
+}
+
+.line {
+  border-left: 3px solid white;
+  height: 40px;
+  margin-top: 8px
+}
+
+.user-info {
+  margin-left: 10px;
+
+}
+
+.user-info a {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  text-decoration: none;
+  color: white;
+
+}
+
+.user-info a:last-child {
+  color: 8acaef;
+}
+
+li a:target {
+  background-color: aqua;
+}
+
 section{
     padding: 2%;
     margin-left: 5%;
@@ -65,7 +137,7 @@ section{
   th, td {
     border: 1px solid #000066;
     padding: 20px;
-    text-align: left;
+    text-align: center;
   }
 
   th {
@@ -88,6 +160,24 @@ section{
     color: #000066;
   }
 
-
-
-  
+#logoutBtn, #btn{
+  padding: 20px;
+  cursor: pointer;
+  background-color: #000066;
+  padding: 10px;
+  border: none;
+  color: white;
+}
+#logoutBtn:hover{
+  background-color: #1111d8;
+}
+#btn:hover{
+  background-color: #1111d8 ;
+}
+.cmDets{
+  border-radius: 100%;
+  height: 10%;
+  width: auto;
+  background-color: white;
+  padding: 20px;
+}
