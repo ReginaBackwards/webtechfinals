@@ -79,7 +79,6 @@ app.get('/getCmDetails', (req, res) => {
 
 // Endpoint for handling login requests
 app.post('/login', (req, res) => {
-  if (req.session.theuser) {
     const { username, password } = req.body;
     
     // Query the database to verify credentials
@@ -103,9 +102,6 @@ app.post('/login', (req, res) => {
         res.sendFile(path.join(__dirname, 'index.html'));
       }
     });
-  } else {
-    response.redirect('/')
-  }
 });
 
 // Entry point for the root URL '/'

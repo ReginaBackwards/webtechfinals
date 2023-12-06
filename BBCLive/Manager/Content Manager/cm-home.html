@@ -17,13 +17,13 @@
             <img src="../../res/slu-logo.png" alt="slu-Logo">
           </a>
         </div>
-  
+        
         <ul>
           <li><a href="cm-home.html">Home</a></li>
           <li><button onclick="goToResources()" id="btn">Resources</button></li>
           <li><a href="cm-logs.html">Logs</a></li>
         </ul>
-  
+        
         <div class="header-profile">
           <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
@@ -38,9 +38,9 @@
       </nav>
     </div>
   </header>
-
   
-
+  
+  
   <section>
     <h1>Home</h1>
     <div class="container" id="tablesContainer">
@@ -79,32 +79,32 @@
           <td></td>
           <td></td>
         </tr>
-
+        
         <!-- Repeat rows as needed -->
-
+        
       </table>
     </div>
-
+    
     <button id="addTableBtn" onclick="addTable()">Add Table (temporary button)</button>
     <!--Resources Redirect Button-->
-   <!-- <button onclick="goToResources()">Resources</button> -->
+    <!-- <button onclick="goToResources()">Resources</button> -->
     <!-- Logout button -->
     
   </section>
-
+  
   <script>
     function addTable() {
       var newTable = document.createElement("table");
       var headerRow = newTable.insertRow(0);
-
+      
       var headerCell1 = document.createElement("th");
       headerCell1.innerHTML = "Time";
       headerRow.appendChild(headerCell1);
-
+      
       var headerCell2 = document.createElement("th");
       headerCell2.innerHTML = "Title";
       headerRow.appendChild(headerCell2);
-
+      
       for (var i = 0; i < 7; i++) {
         var dataRow = newTable.insertRow(i + 1);
         var dataCell1 = dataRow.insertCell(0);
@@ -112,69 +112,69 @@
         dataCell1.innerHTML = "";
         dataCell2.innerHTML = "";
       }
-
+      
       document.getElementById("tablesContainer").appendChild(newTable);
     }
-
+    
     // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
-        .then(response => response.json())
-        .then(cmDetails => {
-          // Update the HTML with content manager details
-          const cmDetailsDiv = document.getElementById('cmDetails');
-          cmDetailsDiv.innerHTML = `
+      .then(response => response.json())
+      .then(cmDetails => {
+        // Update the HTML with content manager details
+        const cmDetailsDiv = document.getElementById('cmDetails');
+        cmDetailsDiv.innerHTML = `
         <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
         ${cmDetails.firstname} ${cmDetails.lastname}
-      `;
-        })
-        .catch(error => {
-          console.error('Error fetching content manager details:', error);
-        });
+        `;
+      })
+      .catch(error => {
+        console.error('Error fetching content manager details:', error);
+      });
     }
-
+    
     // Call the function to display content manager details on page load
     displayCmDetails();
-
+    
     // Function to handle redirect to resources.html
     function goToResources() {
-        // Make an AJAX request to the server to handle the redirection
-        fetch('/gotoresources')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to resources.html after successful request
-                    window.location.href = '/Manager/Content%20Manager/resources.html';
-                } else {
-                    alert('Failed to go to Resources');
-                }
-            })
-            .catch(error => {
-                console.error('Error during request to go to Resources:', error);
-            });
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Redirect to resources.html after successful request
+          window.location.href = '/Manager/Content%20Manager/resources.html';
+        } else {
+          alert('Failed to go to Resources');
+        }
+      })
+      .catch(error => {
+        console.error('Error during request to go to Resources:', error);
+      });
     }
-
+    
     // Function to handle logout
     function logout() {
       // Make an AJAX request to the logout endpoint
       fetch('/logout')
-        .then(response => response.json())
-        .then(data => {
-          console.log('Logout response:', data);
-          if (data.success) {
-            alert('Logout successful');
-            // Reload the page after successful logout
-            window.location.reload();
-          } else {
-            alert('Logout failed');
-          }
-        })
-        .catch(error => {
-          console.error('Error during logout:', error);
-        });
+      .then(response => response.json())
+      .then(data => {
+        console.log('Logout response:', data);
+        if (data.success) {
+          alert('Logout successful');
+          // Redirect to the login page after successful logout
+          window.location.href = '/';
+        } else {
+          alert('Logout failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error during logout:', error);
+      });
     }
-
+    
   </script>
 </body>
 
