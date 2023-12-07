@@ -32,7 +32,7 @@ db.connect((err) => {
   console.log('Connected to the database');
 });
 
-app.listen(port, 'localhost', () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
@@ -670,3 +670,11 @@ const fetchVideoForCurrentTime = () => {
     );
   });
 };
+
+app.get('/getDate', (req, res) => {
+  const currentDate = new Date();
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const formattedDate = currentDate.toLocaleDateString('en-US', options);
+
+  res.json({ date: formattedDate });
+});

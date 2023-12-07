@@ -48,7 +48,7 @@
     </div>
     <div class="container" id="webcamContainer" >
     </div>
-    <button onclick="toggleMedia()">Go Live</button>
+    <button onclick="toggleMedia()">Toggle Live</button>
 
   </section>
   <script>
@@ -153,6 +153,7 @@
 
     // Add this function to your frontend script
     function checkForVideo() {
+      const path = "";
       fetch('/fetchVideo') 
         .then((response) => response.json())
         .then((data) => {
@@ -164,16 +165,16 @@
             console.log(video);
 
             // Check if the video is not already playing
-            if (player.paused()) {
+            if (!path === `./../..${video.filepath}`) {
               // Change the source and play the video
-              const path = `./../..${video.filepath}`
+              path = `./../..${video.filepath}`;
               console.log(path)
               player.src({ src: path, type: 'video/mp4' });
               player.load();
               player.play();
             }
             else{
-              console.log("bobo andito")
+              console.log("Nagfail yung if.")
             }
           }
         })
