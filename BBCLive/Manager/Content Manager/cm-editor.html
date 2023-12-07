@@ -132,8 +132,7 @@ async function toggleMedia(btnID) {
         }
     } else {
       const webcamPlayer = videojs('webcamVid');
-      // toggleBtn.textContent = 'End Live';
-        const webcamStream = webcamPlayer.srcObject;
+        const webcamStream = webcamVideo.srcObject;
         if (webcamStream) {
             const tracks = webcamStream.getTracks();
             tracks.forEach(track => track.stop());
@@ -150,19 +149,6 @@ async function toggleMedia(btnID) {
 
     isPlaying = !isPlaying;
 }
-
-
-      function fetchVideo() {
-        fetch('/editorFetch')
-          .then(response => response.json())
-          .then(data => {
-            const filepath = data.filepath;
-            const player = videojs('my-video');
-            player.src({ src: filepath, type: 'video/mp4' });
-            // Automatically play the video
-            player.play();
-          });
-      }
 
       function dragStart(event) {
         event.dataTransfer.setData("text/plain", event.target.textContent);
