@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-home.css">
+  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+  <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
   <title>HOME</title>
 </head>
 
@@ -13,9 +15,7 @@
     <div class="header-container">
       <nav>
         <div class="header-logo">
-          <a href=".">
-            <img src="../../res/slu-logo.png" alt="slu-Logo">
-          </a>
+          <img src="../../res/slu-logo.png" alt="slu-Logo">
         </div>
 
         <ul>
@@ -40,82 +40,14 @@
     </div>
   </header>
 
-
-
   <section>
     <h1>Home</h1>
-    <div class="container" id="tablesContainer">
-      <table>
-        <!-- Table headers -->
-        <tr>
-          <th>Time</th>
-          <th>Title</th>
-        </tr>
-        <!-- Table rows -->
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-        </tr>
-
-        <!-- Repeat rows as needed -->
-
-      </table>
+    <div class="container" id="dashboard">
+      <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
+      </video>
     </div>
-
-    <button id="addTableBtn" onclick="addTable()">Add Table (temporary button)</button>
-    <!--Resources Redirect Button-->
-    <!-- <button onclick="goToResources()">Resources</button> -->
-    <!-- Logout button -->
-
   </section>
-
   <script>
-    function addTable() {
-      var newTable = document.createElement("table");
-      var headerRow = newTable.insertRow(0);
-
-      var headerCell1 = document.createElement("th");
-      headerCell1.innerHTML = "Time";
-      headerRow.appendChild(headerCell1);
-
-      var headerCell2 = document.createElement("th");
-      headerCell2.innerHTML = "Title";
-      headerRow.appendChild(headerCell2);
-
-      for (var i = 0; i < 7; i++) {
-        var dataRow = newTable.insertRow(i + 1);
-        var dataCell1 = dataRow.insertCell(0);
-        var dataCell2 = dataRow.insertCell(1);
-        dataCell1.innerHTML = "";
-        dataCell2.innerHTML = "";
-      }
-
-      document.getElementById("tablesContainer").appendChild(newTable);
-    }
 
     // Function to fetch and display content manager details
     function displayCmDetails() {
@@ -214,6 +146,32 @@
           console.error('Error during logout:', error);
         });
     }
+
+    // Add this function to your frontend script
+    function checkForVideo() {
+      fetch('/fetchVideo') 
+        .then((response) => response.json())
+        .then((data) => {
+          const videos = data.videos;
+
+          if (videos && videos.length > 0) {
+            const video = videos[0];
+            const player = videojs('my-video');
+            console.log(video);
+
+            // Check if the video is not already playing
+            if (!player.paused()) {
+              // Change the source and play the video
+              player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
+              player.play();
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching video:', error);
+        });
+    }
+    setInterval(checkForVideo, 10000); 
 
   </script>
 </body>

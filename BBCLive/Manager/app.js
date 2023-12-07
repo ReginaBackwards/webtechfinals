@@ -637,6 +637,36 @@ app.get('/getDateTime', (req, res) => {
   res.json({ dayOfWeek, date, time });
 });
 
+app.get('/fetchVideo', async (req, res) => {
+  const videoData = await fetchVideoForCurrentTime();
+  res.json({ videos: videoData });
+});
 
+const fetchVideoForCurrentTime = () => {
+  return new Promise((resolve, reject) => {
+    // Get the current time
+    const now = new Date();
+    const currentTime = now.toTimeString().split(' ')[0];
+    
+    // Log the SQL query and the parameter value
+    const queryString = 'SELECT filepath, starttime FROM scenes WHERE starttime LIKE ?';
+    const queryParam = `${currentTime}%`;
+    console.log('SQL Query:', queryString);
+    console.log('Parameter Value:', queryParam);
 
-
+    // Execute a query to get the video with a start time that matches the hour and minute of the current time
+    db.query(
+      queryString,
+      [queryParam],
+      (error, results) => {
+        if (error) {
+          console.error('Error querying the database:', error);
+          reject(error);
+        } else {
+          console.log('Results from the query:', results);
+          resolve(results);
+        }
+      }
+    );
+  });
+};
