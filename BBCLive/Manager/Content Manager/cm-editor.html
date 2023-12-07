@@ -40,12 +40,25 @@
   </header>
 
   <body>
+    <div id="videoContainer">
     <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
 
       <p>
         <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
       </p>
     </video>
+  </div>
+
+  <div id="webcamContainer" style="display: none;">
+    <video id='webcamVid' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+
+      <p>
+        <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+      </p>
+    </video>
+  </div>
+
+  <button onclick="toggleMedia()">TOGGLE</button>
 
     <div class="container" id="tablesContainer">
       <table>
@@ -88,6 +101,57 @@
     </div>
 
     <script>
+
+let isPlaying = true;
+let mediaRecord;
+
+async function toggleMedia(btnID) {
+    const videoContainer = document.getElementById('videoContainer');
+    const webcamContainer = document.getElementById('webcamContainer');
+    const toggleBtn = document.getElementById(btnID);
+    const webcamVideo = document.getElementById('webcamVid');
+    if (isPlaying) {
+
+      // toggleBtn.textContent = 'start webcam';
+        const player = videojs('my-video')
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+
+        try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true});
+        const webcamPlayer = videojs('webcamVid');
+        console.log(stream);
+          webcamVideo.srcObject = stream;
+          // mediaRecord = new MediaRecorder(stream);
+
+          webcamPlayer.play();
+            // console.log(stream);
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+    } else {
+      const webcamPlayer = videojs('webcamVid');
+      // toggleBtn.textContent = 'End Live';
+        const webcamStream = webcamPlayer.srcObject;
+        if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+            webcamPlayer.srcObject = null;
+        }
+
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        const player = videojs('my-video');
+        player.play();
+
+    }
+
+    isPlaying = !isPlaying;
+}
+
+
       function fetchVideo() {
         fetch('/editorFetch')
           .then(response => response.json())
@@ -259,6 +323,8 @@
         });
       });
 
+     
+
 
       // Call the function to display content manager details on page load
       displayCmDetails();
@@ -269,6 +335,8 @@
 
       // Fetch and update date and time every 1 minute (adjust as needed)
       setInterval(fetchDateTime, 60000);
+
+
     </script>
 
   </body>

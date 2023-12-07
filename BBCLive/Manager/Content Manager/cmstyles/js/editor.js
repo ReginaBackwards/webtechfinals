@@ -43,10 +43,11 @@ const { default: videojs } = require("video.js");
 
     let isPlaying = true;
 
-    function toggleMedia() {
+    function toggleMedia(btnID) {
         const videoContainer = document.getElementById('videoContainer');
         const webcamContainer = document.getElementById('webcamContainer');
-
+        const toggleBtn = document.getElementById(btnID);
+        
         if (isPlaying) {
             const player = videojs('my-video');
             player.pause();
@@ -89,7 +90,7 @@ const { default: videojs } = require("video.js");
             player.src({ src: filepath, type: 'video/mp4'});
         })
     }
-    
+
 
     function fetchResources() {
         const xhr = new XMLHttpRequest();
