@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-editor.css">
   <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+  <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
   <title>HOME</title>
 </head>
 
@@ -26,9 +27,7 @@
         </ul>
 
         <div class="header-profile">
-          <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
-            <!-- Content manager avatar and name will be displayed here -->
           </div>
           <div class="line"></div>
           <div class="user-info">
@@ -41,10 +40,8 @@
   </header>
 
   <body>
-    <video id='my-video' class='video-js' preload='auto' height='950' width='700' controls poster='../res/dog style.jpg'
-      data-setup='{}'>
-
-      <!-- <source src='' type ='video/mp4' /> -->
+    <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls
+      poster='./../../res/bbc-logo.png' data-setup='{}'>
 
       <p>
         <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
@@ -53,28 +50,36 @@
 
     <div class="container" id="tablesContainer">
       <table>
-        <tr>
-          <th>Resources</th>
-          <th></th>
-        </tr>
-        <tbody id="resourcesContainer" draggable="true">
-
+        <thead>
+          <tr>
+            <th>Resources</th>
+            <th>File Type</th>
+          </tr>
+        </thead>
+        <tbody id="resourcesContainer">
+          <tr draggable="true">
+            <td>Your Resource Data</td>
+            <td>Additional Data</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="container" id="sceneContainer" ondragover="dragOver(event)" , ondrop="drop(event)">
+    <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
       <table>
-        <tr>
-          <th>Scenes</th>
-        </tr>
-        <tr>
-          <td></td>
-        </tr>
+        <thead>
+          <tr>
+            <th>Scenes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Your Scene Data</td>
+          </tr>
+        </tbody>
       </table>
-
     </div>
-    <script src="./../../Manager/Content Manager/cmstyles/js/editor.js"></script>
+
     <script>
       function fetchVideo() {
         fetch('/editorFetch')
@@ -83,19 +88,87 @@
             const filepath = data.filepath;
             const player = videojs('my-video');
             player.src({ src: filepath, type: 'video/mp4' });
-          })
+            // Automatically play the video
+            player.play();
+          });
       }
-
+  
+      function dragStart(event) {
+        event.dataTransfer.setData("text/plain", event.target.textContent);
+      }
+  
+      function dragOver(event) {
+        event.preventDefault();
+      }
+  
+      function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text/plain");
+  
+        const newCell = document.createElement("td");
+        const newRow = document.createElement("tr");
+        newCell.textContent = data;
+        newRow.appendChild(newCell);
+  
+        const sceneContainer = document.getElementById("sceneContainer").getElementsByTagName("table")[0];
+        sceneContainer.appendChild(newRow);
+      }
+  
+      function fetchResources() {
+        fetch('/editor')
+          .then(response => response.json())
+          .then(data => {
+            updateResourceTable(data);
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+          });
+      }
+  
+      function updateResourceTable(data) {
+        const resourceTableBody = document.getElementById('resourcesContainer');
+        resourceTableBody.innerHTML = '';
+  
+        data.forEach(resource => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td class="video-row" draggable="true">${resource.filename}</td><td draggable="false">${resource.type}</td>`;
+          row.draggable = true;
+          row.addEventListener('dragstart', dragStart);
+  
+          // Add click event listener to each row
+          row.addEventListener('click', () => playVideo(resource.filepath, row));
+  
+          resourceTableBody.appendChild(row);
+        });
+      }
+  
+      function playVideo(filepath, clickedRow) {
+        const player = videojs('my-video');
+        console.log(filepath);
+        player.src({ src: filepath, type: 'video/mp4' });
+        // Automatically play the video
+        player.play();
+  
+        // Remove the 'selected-row' class from all rows
+        const rows = document.querySelectorAll('.video-row');
+        rows.forEach(row => row.classList.remove('selected-row'));
+  
+        // Add the 'selected-row' class to the clicked row
+        clickedRow.classList.add('selected-row');
+      }
+  
+      // Initial fetch of resources when the page loads
+      fetchResources();
+  
       // Function to handle logout
       function logout() {
-        // Make an AJAX request to the logout endpoint
         fetch('/logout')
           .then(response => response.json())
           .then(data => {
             console.log('Logout response:', data);
             if (data.success) {
               alert('Logout successful');
-              window.location.href = '/'
+              window.location.href = '/';
             } else {
               alert('Logout failed');
             }
@@ -104,6 +177,31 @@
             console.error('Error during logout:', error);
           });
       }
-
+  
+      // Function to fetch and display content manager details
+      function displayCmDetails() {
+        // Make an AJAX request to the endpoint that provides content manager details
+        fetch('/getCmDetails')
+          .then(response => response.json())
+          .then(cmDetails => {
+            // Update the HTML with content manager details
+            const cmDetailsDiv = document.getElementById('cmDetails');
+            cmDetailsDiv.innerHTML = `
+                  <div class="avatar-container">
+                      <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
+                  </div>
+              
+              `;
+            const usernameLink = document.querySelector('.user-info a');
+            usernameLink.textContent = cmDetails.username;
+          })
+          .catch(error => {
+            console.error('Error fetching content manager details:', error);
+          });
+      }
+  
+      // Call the function to display content manager details on page load
+      displayCmDetails();
     </script>
+
   </body>
