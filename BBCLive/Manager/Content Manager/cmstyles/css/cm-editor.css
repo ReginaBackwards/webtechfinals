@@ -114,13 +114,11 @@ section {
 }
 
 .container {
-  margin-top: 70px;
   background-color: white;
   border: 2px solid #000066;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
 }
 
 .editor-container {
@@ -203,9 +201,18 @@ h1 {
   float: right;
   width: 30%;
   height: 387px;
-  overflow: hidden;
+  overflow: scroll;
+  margin-top: 70px;
+}
+
+#dateTimeContainer{
+  text-align: center;
 }
 
 #my-video {
   width: 66%;
+}
+
+#dateFromServer, #timeFromServer {
+  font-weight: bold;
 }
