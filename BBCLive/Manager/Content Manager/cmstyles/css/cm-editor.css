@@ -121,8 +121,6 @@ section {
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  justify-content: space-around;
-  align-items: center;
 }
 
 .editor-container {
@@ -201,11 +199,13 @@ h1 {
 }
 
 #tablesContainer {
+  justify-items: center;
   float: right;
   width: 30%;
-  margin-right: 20px;
+  height: 387px;
+  overflow: hidden;
 }
 
 #my-video {
-  width: 65%;
+  width: 66%;
 }
