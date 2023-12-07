@@ -160,10 +160,16 @@
             console.log(video);
 
             // Check if the video is not already playing
-            if (!player.paused()) {
+            if (player.paused()) {
               // Change the source and play the video
-              player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
+              const path = `./../..${video.filepath}`
+              console.log(path)
+              player.src({ src: path, type: 'video/mp4' });
+              player.load();
               player.play();
+            }
+            else{
+              console.log("bobo andito")
             }
           }
         })
@@ -171,7 +177,7 @@
           console.error('Error fetching video:', error);
         });
     }
-    setInterval(checkForVideo, 10000); 
+    setInterval(checkForVideo, 1000); 
 
   </script>
 </body>
