@@ -66,7 +66,8 @@
     </div>
 
     <div id="dateTimeContainer">
-      <p>Today is: <span id="dateFromServer"></span>. It's currently <span id="timeFromServer"></span> </p>
+      <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
+          id="timeFromServer"></span> </p>
     </div>
 
     <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
@@ -161,6 +162,7 @@
         clickedRow.classList.add('selected-row');
       }
 
+
       // Initial fetch of resources when the page loads
       fetchResources();
 
@@ -208,9 +210,12 @@
         fetch('/getDateTime')
           .then(response => response.json())
           .then(data => {
+            console.log('Received data:', data); // Log the received data to the console
+            const dayOfWeekElement = document.getElementById('dayOfWeek');
             const dateElement = document.getElementById('dateFromServer');
             const timeElement = document.getElementById('timeFromServer');
 
+            dayOfWeekElement.textContent = data.dayOfWeek;
             dateElement.textContent = data.date;
             timeElement.textContent = data.time;
           })
@@ -218,6 +223,21 @@
             console.error('Error fetching date and time:', error);
           });
       }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Attach click event listeners to all video rows
+        const videoRows = document.querySelectorAll('.video-row');
+        videoRows.forEach(row => {
+          row.addEventListener('click', function () {
+            // Get the filepath from the clicked row
+            const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+
+            // Call the playVideo function with the filepath and the clicked row
+            playVideo(filepath, row);
+          });
+        });
+      });
+
 
       // Call the function to display content manager details on page load
       displayCmDetails();
