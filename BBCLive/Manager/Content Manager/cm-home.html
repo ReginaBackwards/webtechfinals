@@ -12,18 +12,19 @@
   <header class="top-nav">
     <div class="header-container">
       <nav>
-        <div class="header-logo">   
+        <div class="header-logo">
           <a href=".">
             <img src="../../res/slu-logo.png" alt="slu-Logo">
           </a>
         </div>
-  
+
         <ul>
           <li><a href="cm-home.html">Home</a></li>
           <li><button onclick="goToResources()" id="btn">Resources</button></li>
           <li><a href="cm-logs.html">Logs</a></li>
+          <li><button onclick="goToEditor()">Editor</button></li>
         </ul>
-  
+
         <div class="header-profile">
           <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
@@ -39,7 +40,7 @@
     </div>
   </header>
 
-  
+
 
   <section>
     <h1>Home</h1>
@@ -87,9 +88,9 @@
 
     <button id="addTableBtn" onclick="addTable()">Add Table (temporary button)</button>
     <!--Resources Redirect Button-->
-   <!-- <button onclick="goToResources()">Resources</button> -->
+    <!-- <button onclick="goToResources()">Resources</button> -->
     <!-- Logout button -->
-    
+
   </section>
 
   <script>
@@ -118,25 +119,25 @@
 
     // Function to fetch and display content manager details
     function displayCmDetails() {
-    // Make an AJAX request to the endpoint that provides content manager details
-    fetch('/getCmDetails')
+      // Make an AJAX request to the endpoint that provides content manager details
+      fetch('/getCmDetails')
         .then(response => response.json())
         .then(cmDetails => {
-            // Update the HTML with content manager details
-            const cmDetailsDiv = document.getElementById('cmDetails');
-            cmDetailsDiv.innerHTML = `
+          // Update the HTML with content manager details
+          const cmDetailsDiv = document.getElementById('cmDetails');
+          cmDetailsDiv.innerHTML = `
                 <div class="avatar-container">
                     <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
                 </div>
             
             `;
-            const usernameLink = document.querySelector('.user-info a');
-            usernameLink.textContent = cmDetails.username;
+          const usernameLink = document.querySelector('.user-info a');
+          usernameLink.textContent = cmDetails.username;
         })
         .catch(error => {
-            console.error('Error fetching content manager details:', error);
+          console.error('Error fetching content manager details:', error);
         });
-}
+    }
 
 
     // Call the function to display content manager details on page load
@@ -144,54 +145,54 @@
 
     // Function to handle redirect to resources.html
     function goToResources() {
-        // Make an AJAX request to the server to handle the redirection
-        fetch('/gotoresources')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to resources.html after successful request
-                    window.location.href = '/Manager/Content%20Manager/resources.html';
-                } else {
-                    alert('Failed to go to Resources');
-                }
-            })
-            .catch(error => {
-                console.error('Error during request to go to Resources:', error);
-            });
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
     }
 
     function goToResources() {
-        // Make an AJAX request to the server to handle the redirection
-        fetch('/gotoresources')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to resources.html after successful request
-                    window.location.href = '/Manager/Content%20Manager/resources.html';
-                } else {
-                    alert('Failed to go to Resources');
-                }
-            })
-            .catch(error => {
-                console.error('Error during request to go to Resources:', error);
-            });
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
     }
 
     function goToEditor() {
-        // Make an AJAX request to the server to handle the redirection
-        fetch('/gotoeditor')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect to resources.html after successful request
-                    window.location.href = '/Manager/Content%20Manager/cm-editor.html';
-                } else {
-                    alert('Failed to go to Resources');
-                }
-            })
-            .catch(error => {
-                console.error('Error during request to go to Resources:', error);
-            });
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoeditor')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-editor.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
     }
 
 
@@ -204,8 +205,7 @@
           console.log('Logout response:', data);
           if (data.success) {
             alert('Logout successful');
-            // Reload the page after successful logout
-            window.location.reload();
+            window.location.href = '/'
           } else {
             alert('Logout failed');
           }

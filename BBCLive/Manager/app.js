@@ -632,6 +632,15 @@ app.get('/fetchFromRes', (req, res) => {
   })
 })
 
+app.get('/getDateTime', (req, res) => {
+  const now = new Date();
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayOfWeek = daysOfWeek[now.getDay()];
+  const date = now.toLocaleDateString();
+  const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  res.json({ dayOfWeek, date, time });
+});
 
 
 
