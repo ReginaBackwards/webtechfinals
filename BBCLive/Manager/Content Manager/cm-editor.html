@@ -13,18 +13,18 @@
   <header class="top-nav">
     <div class="header-container">
       <nav>
-        <div class="header-logo">   
+        <div class="header-logo">
           <a href=".">
             <img src="../../res/slu-logo.png" alt="slu-Logo">
           </a>
         </div>
-  
+
         <ul>
           <li><a href="cm-home.html">Home</a></li>
           <li><button onclick="goToResources()" id="btn">Resources</button></li>
           <li><a href="cm-logs.html">Logs</a></li>
         </ul>
-  
+
         <div class="header-profile">
           <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
@@ -41,57 +41,69 @@
   </header>
 
   <body>
-    <video
-        id='my-video'
-        class='video-js'
-        preload='auto'
-        height='950'
-        width='700'
-        controls
-        poster='../res/dog style.jpg'
-        data-setup='{}'
-        >
+    <video id='my-video' class='video-js' preload='auto' height='950' width='700' controls poster='../res/dog style.jpg'
+      data-setup='{}'>
 
-        <!-- <source src='' type ='video/mp4' /> -->
+      <!-- <source src='' type ='video/mp4' /> -->
 
-        <p>
-            <a href = 'https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
-        </p>
-        </video>
+      <p>
+        <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+      </p>
+    </video>
 
-        <div class="container" id="tablesContainer">
-            <table>
-                <tr>
-                    <th>Resources</th>
-                    <th></th>
-                </tr>
-                <tbody id="resourcesContainer" draggable="true">
-        
-                </tbody>
-            </table>
-        </div>
+    <div class="container" id="tablesContainer">
+      <table>
+        <tr>
+          <th>Resources</th>
+          <th></th>
+        </tr>
+        <tbody id="resourcesContainer" draggable="true">
 
-        <div class="container" id="sceneContainer" ondragover="dragOver(event)", ondrop="drop(event)">
-            <table>
-                <tr>
-                    <th>Scenes</th>
-                </tr>
-                <tr>
-                    <td></td>
-                </tr>
-            </table>
+        </tbody>
+      </table>
+    </div>
 
-        </div>
-        <script src="./../../Manager/Content Manager/cmstyles/js/editor.js"></script>
-        <script>
-            function fetchVideo() {
-                fetch('/editorFetch') 
-                .then(response => response.json())
-                .then(data =>{
-                    const filepath = data.filepath;
-                    const player = videojs('my-video');
-                    player.src({ src: filepath, type: 'video/mp4'});
-                })
+    <div class="container" id="sceneContainer" ondragover="dragOver(event)" , ondrop="drop(event)">
+      <table>
+        <tr>
+          <th>Scenes</th>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+      </table>
+
+    </div>
+    <script src="./../../Manager/Content Manager/cmstyles/js/editor.js"></script>
+    <script>
+      function fetchVideo() {
+        fetch('/editorFetch')
+          .then(response => response.json())
+          .then(data => {
+            const filepath = data.filepath;
+            const player = videojs('my-video');
+            player.src({ src: filepath, type: 'video/mp4' });
+          })
+      }
+
+      // Function to handle logout
+      function logout() {
+        // Make an AJAX request to the logout endpoint
+        fetch('/logout')
+          .then(response => response.json())
+          .then(data => {
+            console.log('Logout response:', data);
+            if (data.success) {
+              alert('Logout successful');
+              window.location.href = '/'
+            } else {
+              alert('Logout failed');
             }
-        </script>
+          })
+          .catch(error => {
+            console.error('Error during logout:', error);
+          });
+      }
+
+    </script>
   </body>
