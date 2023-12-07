@@ -65,10 +65,23 @@
                     <th>Resources</th>
                     <th></th>
                 </tr>
-                <tbody id="tablesContainer1">
+                <tbody id="resourcesContainer" draggable="true">
         
                 </tbody>
-            </table>        
+            </table>
+        </div>
+
+        <div class="container" id="sceneContainer" ondragover="dragOver(event)", ondrop="drop(event)">
+            <table>
+                <tr>
+                    <th>Scenes</th>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+
+        </div>
         <script src="./../../Manager/Content Manager/cmstyles/js/editor.js"></script>
         <script>
             function fetchVideo() {

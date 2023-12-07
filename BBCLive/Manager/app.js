@@ -573,6 +573,7 @@ app.get('/settings', (req, res) => {
   });
 });
 
+//BOLS
 app.get('/editor', (req, res) => {
   if (req.session.theuser) {
     const acceptHeader = req.headers.accept || '';
