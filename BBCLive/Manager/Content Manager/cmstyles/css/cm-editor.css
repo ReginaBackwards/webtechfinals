@@ -213,7 +213,7 @@ h1 {
   width: 66%;
 }
 
-#dateFromServer, #timeFromServer {
+#dateFromServer, #timeFromServer, #dayOfWeek{
   font-weight: bold;
 }
 

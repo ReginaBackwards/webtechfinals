@@ -57,16 +57,17 @@
           </tr>
         </thead>
         <tbody id="resourcesContainer">
-          <tr draggable="true">
-            <td>Your Resource Data</td>
-            <td>Additional Data</td>
+          <tr draggable="true" class="video-row">
+            <td >Looks like you dont have any content yet!</td>
+            <td>file type</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div id="dateTimeContainer">
-      <p>Today is: <span id="dateFromServer"></span>. It's currently <span id="timeFromServer"></span> </p>
+      <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
+          id="timeFromServer"></span> </p>
     </div>
 
     <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
@@ -167,19 +168,22 @@
       }
 
       function playVideo(filepath, clickedRow) {
-        const player = videojs('my-video');
-        console.log(filepath);
-        player.src({ src: filepath, type: 'video/mp4' });
-        // Automatically play the video
-        player.play();
+  const player = videojs('my-video');
+  console.log(filepath);
+  player.src({ src: filepath, type: 'video/mp4' });
+  // Automatically play the video
+  player.play();
 
-        // Remove the 'selected-row' class from all rows
-        const rows = document.querySelectorAll('.video-row');
-        rows.forEach(row => row.classList.remove('selected-row'));
+  // Remove the 'selected-row' class from the previously highlighted row
+  const previouslySelectedRow = document.querySelector('.video-row.selected-row');
+  if (previouslySelectedRow) {
+    previouslySelectedRow.classList.remove('selected-row');
+  }
 
-        // Add the 'selected-row' class to the clicked row
-        clickedRow.classList.add('selected-row');
-      }
+  // Add the 'selected-row' class to the clicked row
+  clickedRow.classList.add('selected-row');
+}
+
 
       // Initial fetch of resources when the page loads
       fetchResources();
@@ -228,9 +232,12 @@
         fetch('/getDateTime')
           .then(response => response.json())
           .then(data => {
+            console.log('Received data:', data); // Log the received data to the console
+            const dayOfWeekElement = document.getElementById('dayOfWeek');
             const dateElement = document.getElementById('dateFromServer');
             const timeElement = document.getElementById('timeFromServer');
 
+            dayOfWeekElement.textContent = data.dayOfWeek;
             dateElement.textContent = data.date;
             timeElement.textContent = data.time;
           })
@@ -238,6 +245,21 @@
             console.error('Error fetching date and time:', error);
           });
       }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Attach click event listeners to all video rows in the resource table
+        const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
+        videoRows.forEach(row => {
+          row.addEventListener('click', function () {
+            // Get the filepath from the clicked row
+            const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+
+            // Call the playVideo function with the filepath and the clicked row
+            playVideo(filepath, row);
+          });
+        });
+      });
+
 
       // Call the function to display content manager details on page load
       displayCmDetails();
