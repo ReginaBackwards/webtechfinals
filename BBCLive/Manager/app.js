@@ -95,7 +95,10 @@ app.post('/login', (req, res) => {
       if (results.length > 0) {
         const user = results[0];
         req.session.theuser = user;
-        
+
+        if (user.banstatus === 1) {
+          return res.status(403).json({ success: false, error: 'User is banned' });
+      }
         // Redirect to the root URL '/'
         // res.redirect('/');
         res.json({success:true, redirectURL: '/'})

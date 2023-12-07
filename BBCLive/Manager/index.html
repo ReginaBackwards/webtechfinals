@@ -2,29 +2,29 @@
 <html lang="en">
 
 <head>
-
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    
     <title>Tubero Login</title>
-
+    
     <!-- Custom styles for this template-->
     <link href="/Manager/Admin/adminstyles/css/admin-style.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+    
 </head>
 
 <body>
-
+    
     <div class="container">
         <!-- Outer Row -->
         <div class="row justify-content-center">
-
+            
             <div class="col-xl-10 col-lg-12 col-md-9">
-
+                
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
@@ -38,65 +38,67 @@
                                     <form class="user">
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
-                                                id="exampleInputUsername" aria-describedby="usernameHelp"
-                                                placeholder="Username" name="username">
+                                            id="exampleInputUsername" aria-describedby="usernameHelp"
+                                            placeholder="Username" name="username">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password" name="password">
+                                            id="exampleInputPassword" placeholder="Password" name="password">
                                         </div>
                                         <button type="submit" id="loginButton"
-                                            class="btn btn-primary btn-user btn-block">
-                                            Login
-                                        </button>
-                                    </form>
-
-                                </div>
+                                        class="btn btn-primary btn-user btn-block">
+                                        Login
+                                    </button>
+                                </form>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
+            
         </div>
-
+        
     </div>
-    <script>
-        $(document).ready(function () {
-            $('#loginButton').click(function (event) {
-                // Prevent the default form submission
-                event.preventDefault();
     
-                // Get the values of username and password
-                var username = $('#exampleInputUsername').val();
-                var password = $('#exampleInputPassword').val();
-    
-                // Make the AJAX request
-                $.ajax({
-                    method: 'POST',
-                    url: '/login',
-                    data: { username, password },
-                    success: function (response) {
-                        if (response.success) {
-                            console.log("PUMASOK")
-                            alert('Login successful');
-                            // Redirect to the appropriate page if needed
-                            window.location.href = response.redirectURL;
-                        } else {
-                            console.log(response.error)
-                            // Display an alert for invalid credentials
-                            alert('Invalid credentials');
-                        }
-                    },
-                    error: function (error) {
-                        console.error('Error logging in:', error);
+</div>
+<script>
+    $(document).ready(function () {
+        $('#loginButton').click(function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            
+            // Get the values of username and password
+            var username = $('#exampleInputUsername').val();
+            var password = $('#exampleInputPassword').val();
+            
+            // Make the AJAX request
+            $.ajax({
+                method: 'POST',
+                url: '/login',
+                data: { username, password },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("PUMASOK")
+                        alert('Login successful');
+                        // Redirect to the appropriate page if needed
+                        window.location.href = response.redirectURL;
+                    } else {
+                        console.log(response.error)
+                        // Display an alert for invalid credentials or banned user
+                        alert(response.error || 'Invalid credentials');
                     }
-                });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error logging in:', error);
+                    // Display an alert for other errors
+                    alert('Error logging in: ' + error);
+                }
             });
         });
-    </script>
-    
+    });
+</script>
+
 </body>
 
 </html>
