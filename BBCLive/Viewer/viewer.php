@@ -18,14 +18,15 @@
             <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
             </video>
             <div class="title-below-video" id="livestream-title">
-                <p>Livestream for <span id="livestream-date"></span></p>
+            <?php include 'fetchDate.php'; ?>
+            <p>Livestream for <?php echo $livestreamDate; ?></p>
             </div>
         </div>
 
         <script>
             function updateVideoPlayer() {
                 // Fetch video information from Node.js server
-                fetch('localhost:3000/fetchVideoInfo')
+                fetch('http://localhost:3000/fetchVideoInfo')
                     .then(response => response.json())
                     .then(data => {
                         const videoInfo = data.videoInfo;
@@ -34,8 +35,6 @@
                         const player = videojs('my-video');
                         player.src({ src: `./../..${videoInfo.filepath}`, type: 'video/mp4' });
 
-                        // Update livestream date
-                        document.getElementById('livestream-date').textContent = videoInfo.date;
                     })
                     .catch(error => {
                         console.error('Error fetching video information:', error);

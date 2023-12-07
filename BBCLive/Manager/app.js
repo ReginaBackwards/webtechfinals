@@ -6,6 +6,7 @@ const mysql = require('mysql');
 const multer = require('multer');
 const fs = require('fs');
 const sharp = require('sharp');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
@@ -15,6 +16,7 @@ app.use(express.static(path.join(__dirname, './../../BBCLive')))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'sessionKey', resave: true, saveUninitialized: true }));
+app.use(cors());
 
 // Connect to the database
 const db = mysql.createConnection({
@@ -697,14 +699,12 @@ const fetchVideoInfo = async () => {
       console.log('Parameter Value:', queryParam);
 
       // Execute a query to get the video with a start time that matches the hour and minute of the current time
-      const [results] = await pool.query(queryString, [queryParam]);
+      const [results] = await db.query(queryString, [queryParam]);
 
       if (results.length > 0) {
           const video = results[0];
           return {
               filepath: video.filepath,
-              date: formatDate(now), // Implement formatDate to format the date as needed
-              // Add other properties as needed
           };
       } else {
           // No video found, return default or handle as needed
