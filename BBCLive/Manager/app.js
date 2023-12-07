@@ -405,13 +405,20 @@ app.post('/upload', upload.array('file'), async (req, res) => {
           fs.mkdirSync(userUploadDir, { recursive: true });
         }
 
-        let filename;
+        let filename = path.join(userUploadDir, file.originalname);
+
+        // Check for duplicate filenames
+        let counter = 1;
+        while (fs.existsSync(filename)) {
+          const fileNameWithoutExt = path.parse(file.originalname).name;
+          const newFileName = `${fileNameWithoutExt} (${counter})${fileExtension}`;
+          filename = path.join(userUploadDir, newFileName);
+          counter++;
+        }
 
         if (fileType === 'images') {
-          filename = path.join(userUploadDir, file.originalname);
           await sharp(file.buffer).toFile(filename);
         } else {
-          filename = path.join(userUploadDir, file.originalname);
           fs.writeFileSync(filename, file.buffer);
         }
 
@@ -420,7 +427,7 @@ app.post('/upload', upload.array('file'), async (req, res) => {
 
         const insertQuery =
           'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
-        const values = [file.originalname, '/Content Hosting/' +relativePath, username, adjustedFileType];
+        const values = [path.basename(filename), '/Content Hosting/' +relativePath, username, adjustedFileType];
 
         db.query(insertQuery, values, (err, result) => {
           if (err) {
