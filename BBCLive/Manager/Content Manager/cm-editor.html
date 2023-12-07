@@ -41,6 +41,7 @@
   </header>
 
   <body>
+    <div class="container1" id="videoContainer">
     <video
         id='my-video'
         class='video-js'
@@ -58,6 +59,27 @@
             <a href = 'https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
         </p>
         </video>
+      </div>
+
+      <div class="container1" id="webcamContainer" style="display: none;">
+        <video
+            id='my-video'
+            class='video-js'
+            preload='auto'
+            height='950'
+            width='700'
+            controls
+            poster='../res/dog style.jpg'
+            data-setup='{}'
+            >
+    
+            <!-- <source src='' type ='video/mp4' /> -->
+    
+            <p>
+                <a href = 'https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+            </p>
+            </video>
+          </div>
 
         <div class="container" id="tablesContainer">
             <table>
@@ -70,6 +92,8 @@
                 </tbody>
             </table>
         </div>
+
+        <button id="toggleMediaBtn">Onlive</button>
 
         <div class="container" id="sceneContainer" ondragover="dragOver(event)", ondrop="drop(event)">
             <table>
