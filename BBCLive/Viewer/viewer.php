@@ -26,23 +26,33 @@
         <script>
             function updateVideoPlayer() {
                 // Fetch video information from Node.js server
-                fetch('http://localhost:3000/fetchVideoInfo')
+                fetch('http://localhost:3000/fetchVideo')
                     .then(response => response.json())
                     .then(data => {
-                        const videoInfo = data.videoInfo;
+                        const videoInfo = data.videos;
 
-                        // Update video player
-                        const player = videojs('my-video');
-                        player.src({ src: `./../..${videoInfo.filepath}`, type: 'video/mp4' });
+                        if (videos && videos.length > 0) {
+            const video = videos[0];
+            const player = videojs('my-video');
+            console.log(video);
 
-                    })
-                    .catch(error => {
-                        console.error('Error fetching video information:', error);
-                    });
+            // Check if the video is not already playing
+            if (player.paused()) {
+              // Change the source and play the video
+              player.src({ src: `./..${video.filepath}`, type: 'video/mp4' });
+              player.load();
+              player.play();
             }
+        
+        }
+        })
+        .catch((error) => {
+          console.error('Error fetching video:', error);
+        });
+    }
 
             // Periodically update the video player
-            setInterval(updateVideoPlayer, 1000); 
+            setInterval(updateVideoPlayer, 15000); 
         </script>
 
     </section>

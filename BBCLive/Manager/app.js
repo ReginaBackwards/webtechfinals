@@ -688,41 +688,61 @@ app.get('/getDate', (req, res) => {
   res.json({ date: formattedDate });
 });
 
-// to mirror the livestream to the viewer module
-app.get('/fetchVideoInfo', async (req, res) => {
-  const videoInfo = await fetchVideoInfo(); 
-  res.json({ videoInfo });
-});
+// // to mirror the livestream to the viewer module
+// app.get('/fetchVideoInfo', async (req, res) => {
+//   try {
+//     const videoInfo = await fetchVideoInfo();
+//     res.json({ videoInfo });
+//   } catch (error) {
+//     console.error('Error fetching video information:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
-const fetchVideoInfo = async () => {
-  try {
-      // Implement logic to fetch video information from your database or wherever it's stored
-      const now = new Date();
-      const currentTime = now.toTimeString().split(' ')[0];
-      
-      // Log the SQL query and the parameter value
-      const queryString = 'SELECT filepath, starttime FROM scenes WHERE starttime <= ? LIMIT 1';
-      const queryParam = `${currentTime}%`;
-      console.log('Parameter Value:', queryParam);
+// const fetchVideoInfo = async () => {
+//   try {
+//     // Implement logic to fetch video information from your database or wherever it's stored
+//     const now = new Date();
+//     const currentTime = now.toTimeString().split(' ')[0];
 
-      // Execute a query to get the video with a start time that matches the hour and minute of the current time
-      const [results] = await db.query(queryString, [queryParam]);
+//     // Log the SQL query and the parameter value
+//     const queryString = 'SELECT filepath, starttime FROM scenes WHERE starttime <= ? LIMIT 1';
+//     const queryParam = `${currentTime}%`;
+//     console.log('Parameter Value:', queryParam);
 
-      if (results.length > 0) {
-          const video = results[0];
-          return {
-              filepath: video.filepath,
-          };
-      } else {
-          // No video found, return default or handle as needed
-          return {
-              filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
-              date: 'Unknown Date',
-              // Add other properties as needed
-          };
-      }
-  } catch (error) {
-      console.error('Error fetching video information:', error);
-      throw error;
-  }
-};
+//     // Execute a query to get the video with a start time that matches the hour and minute of the current time
+//     try {
+//       const [results] = await db.query(queryString, [queryParam]);
+//       console.log('Results:', results);
+
+//       if (results && Array.isArray(results) && results.length > 0) {
+//         const video = results[0];
+//         return {
+//           filepath: video.filepath,
+//           date: 'Unknown Date', // Add other properties as needed
+//         };
+//       } else {
+//         // No video found, return default or handle as needed
+//         return {
+//           filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
+//           date: 'Unknown Date',
+//           // Add other properties as needed
+//         };
+//       }
+//     } catch (error) {
+//       console.error('Error executing database query:', error);
+//       return {
+//         filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
+//         date: 'Unknown Date',
+//         // Add other properties as needed
+//       };
+//     }
+//   } catch (error) {
+//     console.error('Error fetching video information:', error);
+//     return {
+//       filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
+//       date: 'Unknown Date',
+//       // Add other properties as needed
+//     };
+//   }
+// };
