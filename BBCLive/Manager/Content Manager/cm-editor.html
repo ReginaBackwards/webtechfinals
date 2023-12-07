@@ -73,12 +73,15 @@
       <table>
         <thead>
           <tr>
-            <th>Scenes</th>
+            <th colspan="3">Scenes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Your Scene Data</td>
+            <td contenteditable="false" class="non-editable">Time</td>
+          </tr>
+          <tr>
+            <td contenteditable="false" class="non-editable">Media</td>
           </tr>
         </tbody>
       </table>
@@ -107,16 +110,33 @@
 
       function drop(event) {
         event.preventDefault();
-        const data = event.dataTransfer.getData("text/plain");
+    const data = event.dataTransfer.getData("text/plain");
 
-        const newCell = document.createElement("td");
-        const newRow = document.createElement("tr");
-        newCell.textContent = data;
-        newRow.appendChild(newCell);
+    // Find the existing table and the third row
+    const sceneContainer = document.getElementById("sceneContainer").getElementsByTagName("table")[0];
+    const thirdRow = sceneContainer.getElementsByTagName("tr")[2];
 
-        const sceneContainer = document.getElementById("sceneContainer").getElementsByTagName("table")[0];
-        sceneContainer.appendChild(newRow);
-      }
+    // If this is the first drop, create a new cell in row 2 with the number "1"
+    if (thirdRow.children.length === 0) {
+      const newRow2Cell = document.createElement("td");
+      newRow2Cell.textContent = "1";
+
+      const secondRow = sceneContainer.getElementsByTagName("tr")[1];
+      secondRow.appendChild(newRow2Cell);
+    }
+
+    // Create a new cell for the video content
+    const newCell = document.createElement("td");
+    newCell.textContent = data;
+
+    // Add the new cell to the third row
+    thirdRow.appendChild(newCell);
+
+    // Update the colspan in the table header
+    const colspanValue = thirdRow.children.length;
+    sceneContainer.getElementsByTagName("th")[0].colSpan = colspanValue;
+  }
+
 
       function fetchResources() {
         fetch('/editor')

@@ -216,3 +216,9 @@ h1 {
 #dateFromServer, #timeFromServer, #dayOfWeek{
   font-weight: bold;
 }
+
+.container td[contenteditable="false"] {
+  background-color:  #25257c; /* Non-editable cell background color */
+  color: #fff;
+  font-weight: bold;
+}
