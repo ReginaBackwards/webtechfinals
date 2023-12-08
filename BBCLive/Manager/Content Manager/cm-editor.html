@@ -10,7 +10,6 @@
   <title>HOME</title>
 </head>
 
-<body>
   <header class="top-nav">
     <div class="header-container">
       <nav>
@@ -49,13 +48,15 @@
     </video>
   </div>
 
-  <div id="webcamContainer" style="display: none;">
-    <video id='webcamVid' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+  <div id="webcamContainer" >
+    <!-- <video id='webcamVid' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+
+      <source src="" type="video/mp4">
 
       <p>
         <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
       </p>
-    </video>
+    </video> -->
   </div>
 
   <button onclick="toggleMedia()">TOGGLE</button>
@@ -105,46 +106,57 @@
 let isPlaying = true;
 let mediaRecord;
 
-async function toggleMedia(btnID) {
+async function toggleMedia() {
     const videoContainer = document.getElementById('videoContainer');
     const webcamContainer = document.getElementById('webcamContainer');
-    const toggleBtn = document.getElementById(btnID);
     const webcamVideo = document.getElementById('webcamVid');
+    // const webcamPlayer = videojs('webcamVid');
+    const player = videojs('my-video')
+
     if (isPlaying) {
 
       // toggleBtn.textContent = 'start webcam';
-        const player = videojs('my-video')
         player.pause();
         videoContainer.style.display = 'none';
         webcamContainer.style.display = 'block';
 
         try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true});
-        const webcamPlayer = videojs('webcamVid');
+
+        const webcamVideo = document.createElement('video');
+        webcamVideo.id = 'webcamVid';
+        webcamVideo.className = 'video-js';
+        webcamVideo.preload = 'auto';
+        webcamVideo.height = '500';
+        webcamVideo.width = '900';
+        webcamVideo.controls = true;
+        webcamVideo.srcObject = stream;
+
+        webcamContainer.innerHTML = '';
+        webcamContainer.appendChild(webcamVideo);
         console.log(stream);
-          webcamVideo.srcObject = stream;
           // mediaRecord = new MediaRecorder(stream);
 
-          webcamPlayer.play();
-            // console.log(stream);
+          webcamVideo.play();
+            console.log(stream);
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
     } else {
-      const webcamPlayer = videojs('webcamVid');
-        const webcamStream = webcamVideo.srcObject;
-        if (webcamStream) {
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
             const tracks = webcamStream.getTracks();
             tracks.forEach(track => track.stop());
-            webcamPlayer.srcObject = null;
-        }
-
+          };
+            webcamVideo2.srcObject = null;
+          }
         videoContainer.style.display = 'block';
         webcamContainer.style.display = 'none';
 
         const player = videojs('my-video');
         player.play();
-
     }
 
     isPlaying = !isPlaying;
