@@ -1,3 +1,6 @@
+const { response } = require("express");
+const { default: videojs } = require("video.js");
+
     function dragStart(event) {
         event.dataTransfer.setData("text/plain", event.target.textContent);
     }
@@ -37,6 +40,58 @@
     // })
     
     // Fetch resources from the server and update the table
+
+    let isPlaying = true;
+
+    function toggleMedia(btnID) {
+        const videoContainer = document.getElementById('videoContainer');
+        const webcamContainer = document.getElementById('webcamContainer');
+        const toggleBtn = document.getElementById(btnID);
+        
+        if (isPlaying) {
+            const player = videojs('my-video');
+            player.pause();
+            videoContainer.style.display = 'none';
+            webcamContainer.style.display = 'block';
+
+            navigator.mediaDevices.getUserMedia({ video: true})
+            .then ((stream) => {
+                const webcamVid = document.getElementById('webcamVid');
+                webcamVid.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error in accessing webcam:' + error);
+            });
+        } else {
+            const webcamVid = document.getElementById('webcamVid');
+            const webcamStream = webcamVid.srcObject;
+            if (webcamStream) {
+                const tracks = webcamStream.getTracks();
+                tracks.forEach(track => track.stop());
+                webcamVid.srcObject = null;
+            }
+
+            videoContainer.style.display = 'block';
+            webcamContainer.style.display = 'none';
+
+            const player = videojs('my-video');
+            player.play();
+        }
+
+        isPlaying = !isPlaying;
+    }
+
+    function fetchVideo() {
+        fetch('/fetchFromRes')
+        .then(response => response.json())
+        .then(data => {
+            const filepath = data.filepath;
+            const player = videojs('my-video');
+            player.src({ src: filepath, type: 'video/mp4'});
+        })
+    }
+
+
     function fetchResources() {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', '/editor', true);

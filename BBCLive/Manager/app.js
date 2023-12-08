@@ -358,12 +358,6 @@ app.get('/logout', (req, res) => {
 
 // ALWIN MALWIN
 
-// const uploadDir = path.join('uploads');
-
-// if (!fs.existsSync(uploadDir)) {
-//   fs.mkdirSync(uploadDir);
-// }
-
 const contentHostingDir = path.join(__dirname ,'./../../BBCLive/Content Hosting/');
 
 if (!fs.existsSync(contentHostingDir)) {
@@ -373,37 +367,44 @@ if (!fs.existsSync(contentHostingDir)) {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+const fileTypeMapping = {
+  '.mp3': 'audio',
+  '.mp4': 'videos/clips',
+  '.jpg': 'images',
+  '.jpeg': 'images',
+  '.png': 'images',
+};
+
 app.use(express.json());
+
 
 app.post('/upload', upload.array('file'), async (req, res) => {
   if (req.session.theuser) {
     try {
       const files = req.files;
-      // const username = 'alwin'; // This for testing only
       const username = req.session.theuser.username;
-      
+
       if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
       }
-      
+
       for (const file of files) {
         const fileExtension = path.extname(file.originalname).toLowerCase();
-        const allowedTypes = ['.mp3', '.mp4', '.jpg', '.jpeg', '.png'];
-        
-        if (!allowedTypes.includes(fileExtension)) {
+
+        if (!fileTypeMapping[fileExtension]) {
           console.log('Unsupported file type:', fileExtension);
           return res.status(400).json({ error: 'Unsupported file type' });
         }
-        
-        const fileType = getFileType(fileExtension);
+
+        const fileType = fileTypeMapping[fileExtension];
         const userUploadDir = path.join(contentHostingDir, fileType);
-        
+
         if (!fs.existsSync(userUploadDir)) {
           fs.mkdirSync(userUploadDir, { recursive: true });
         }
-        
+
         let filename;
-        
+
         if (fileType === 'images') {
           filename = path.join(userUploadDir, file.originalname);
           await sharp(file.buffer).toFile(filename);
@@ -411,29 +412,33 @@ app.post('/upload', upload.array('file'), async (req, res) => {
           filename = path.join(userUploadDir, file.originalname);
           fs.writeFileSync(filename, file.buffer);
         }
-        
-        const relativePath = path.relative(contentHostingDir, filename);
-        
-        const insertQuery = 'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
-        const values = [file.originalname, relativePath, username, fileType];
-        
+
+        const relativePath = path.relative(contentHostingDir, filename).replace(/\\/g, '/');;
+        const adjustedFileType = fileType === 'videos/clips' ? 'videos' : fileType;
+
+        const insertQuery =
+          'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
+        const values = [file.originalname, '/Content Hosting/' +relativePath, username, adjustedFileType];
+
         db.query(insertQuery, values, (err, result) => {
           if (err) {
             console.error('MySQL insert error:', err);
-            return res.status(500).json({ error: 'Error inserting into database', details: err });
+            return res
+              .status(500)
+              .json({ error: 'Error inserting into the database', details: err });
           } else {
-            console.log('File inserted into database:', result);
+            console.log('File inserted into the database:', result);
           }
         });
       }
-      
+
       res.status(200).json({ message: 'Files uploaded successfully' });
     } catch (error) {
       console.error('Error handling file upload:', error);
       res.status(500).json({ error: 'Internal server error', details: error });
     }
   } else {
-    response.redirect('/');
+    res.redirect('/');
   }
 });
 
@@ -461,16 +466,6 @@ app.get('/resources', (req, res) => {
     response.redirect('/')
   }
 });
-
-function getFileType(fileExtension) {
-  if (fileExtension === '.mp3') {
-    return 'audio';
-  } else if (fileExtension === '.mp4') {
-    return 'videos/clips';
-  } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
-    return 'images';
-  }
-}
 
 // Endpoint to handle the redirect to resources.html
 app.get('/gotoresources', (req, res) => {
@@ -595,7 +590,7 @@ app.get('/editor', (req, res) => {
       });
     }
   } else {
-    response.redirect('/')
+    res.redirect('/')
   }
 });
 
@@ -641,4 +636,7 @@ app.get('/getDateTime', (req, res) => {
 
   res.json({ dayOfWeek, date, time });
 });
+
+
+
 
