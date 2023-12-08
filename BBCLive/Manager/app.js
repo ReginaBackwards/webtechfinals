@@ -485,6 +485,12 @@ app.get('/gotoresources', (req, res) => {
   res.json({ success: true });
 });
 
+// Endpoint to handle the redirect to settings.html
+app.get('/gotoeditprofile', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
 // Endpoint to handle the redirect to cm-home.html
 app.get('/cm-home', (req, res) => {
   //if checks for user session existence
@@ -497,88 +503,125 @@ app.get('/gotoeditor', (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/settings', (req, res) => {
-  const { username, currentPassword, newPassword, confirmPassword, newProfilePicture } = req.body;
-  
-  // Query the database to get the current user's information
-  const query = 'SELECT * FROM users WHERE username = ?';
-  
-  db.query(query, [username], (err, results) => {
+// Endpoint to check if the current password input matches the password in the database
+app.post('/checkCurrentPasswordMatch/:currentPassword', (req, res) => {
+  const username = req.session.theuser.username;
+  const currentPassword = req.params.currentPassword;
+
+  const checkQuery = 'SELECT password FROM users WHERE username = ?';
+
+  db.query(checkQuery, [username], (err, results) => {
     if (err) {
-      console.error('Error executing database query:', err);
-      return res.status(500).json({ message: 'Server Error' });
+      console.error('Error checking passwords match', err);
+      return res.status(500).json({ exists: false });
     }
-    
+
     if (results.length > 0) {
-      const user = results[0];
-      
-      // Check if the db password matches the current
-      if (currentPassword == password) {
-        if (newPassword == confirmPassword) {
-          // Update the password in the database
-          const updatePasswordQuery = 'UPDATE users SET password = ? WHERE username = ?';
-          
-          db.query(updatePasswordQuery, [newPassword, username], (updateErr) => {
-            if (updateErr) {
-              console.error('Error updating password:', updateErr);
-              return res.status(500).json({ message: 'Error updating password' });
-            }
-          });
-        } else {
-          
-          alert("Password does not match!");
-        }
-      } else { 
-        alert("Wrong password!");
+      const password = results[0].password;
+      if (currentPassword === password) {
+        res.json({ exists: true });
       }
-      
-      if (newProfilePicture) {
-        const uploadProfileDir = path.join(__dirname, './../res/avatars');
-        
-        const profile = req.files;
-        
-        if (!profile || profile.length === 0) {
-          return res.status(400).json({ error: 'No picture uploaded' });
-        }
-        
-        const fileExtension = path.extname(profile[0].originalname).toLowerCase();
-        const allowedTypes = ['.jpg', '.jpeg', '.png'];
-        
-        if (!allowedTypes.includes(fileExtension)) {
-          console.log('Unsupported file type:', fileExtension);
-          return res.status(400).json({ error: 'Unsupported file type' });
-        }
-        
-        const filePath = path.join(uploadProfileDir, username);
-        
-        // Check if the file with the same name already exists
-        if (fs.existsSync(filePath)) {
-          // Delete the existing file
-          fs.unlinkSync(filePath);
-        }
-        
-        fs.writeFileSync(filePath, profile[0].buffer);
-        
-        const updateProfilePictureQuery = 'UPDATE users SET dp = ? WHERE username = ?';
-        
-        db.query(updateProfilePictureQuery, [filePath, username], (updateErr) => {
-          if (updateErr) {
-            console.error('Error updating profile picture:', updateErr);
-            return res.status(500).json({ message: 'Error updating profile picture' });
-          }
-          
-          res.status(200).json({ message: 'Profile picture updated successfully' });
-        });
-      }
-      
-      // Redirect to the root URL '/'
-      res.redirect('/');
-    } else {
-      // User not found, redirect to login page
-      res.sendFile(path.join(__dirname, 'index.html'));
     }
   });
 });
+
+// Endpoint to update the password
+app.post('/updatePassword/:newPassword', (req, res) => {
+  const username = req.session.theuser.username;
+  const newPassword = req.params.newPassword;
+  
+  // Update the password in the database
+  const updatePasswordQuery = 'UPDATE users SET password = ? WHERE username = ?';
+
+  db.query(updatePasswordQuery, [newPassword, username], (updateErr) => {
+    if (updateErr) {
+      console.error('Error updating password:', updateErr);
+      return res.status(500).json({ message: 'Error updating password' });
+    } 
+    
+    res.json({ message: 'Password updated successfully' });
+  });
+});
+
+// Endpoint to get the profile picture
+app.post('/getProfilePicturePath', (req, res) => {
+  const username = req.session.theuser.username;
+
+  const checkQuery = 'SELECT dp FROM users WHERE username = ?';
+
+  db.query(checkQuery, [username], (err, results) => {
+    if (err) {
+      console.error('Error getting profile picture path', err);
+      return res.status(500).json({ exists: false });
+    }
+
+    if (results.length > 0) {
+      const dp = results[0].dp;  
+      res.json(dp);
+    }
+  });
+});
+
+const profileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+     cb(null, '../res/avatars/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname);
+ }
+ });
+
+ const uploadProfile = multer({ storage: profileStorage });
+
+app.post('/updateProfilePicture', uploadProfile.single('profilePicture'), (req, res) => {
+  const username = req.session.theuser.username;
+  const newProfilePicture = req.file;
+
+  // Ensure a file was uploaded
+  if (!newProfilePicture) {
+    return res.status(400).json({ error: 'No picture uploaded' });
+  }
+
+  const allowedTypes = ['.jpg', '.jpeg', '.png'];
+  const fileExtension = path.extname(newProfilePicture.originalname).toLowerCase();
+
+  // Check if the uploaded file is of an allowed type
+  if (!allowedTypes.includes(fileExtension)) {
+    return res.status(400).json({ error: 'Unsupported file type' });
+  }
+
+  const existingProfilePicturePath = path.join(`res/avatars/${username}${fileExtension}`)
+
+  // Check if the file exists before renaming
+  if (fs.existsSync(existingProfilePicturePath)) {
+    fs.unlinkSync(existingProfilePicturePath);
+  }
+
+  // Rename the uploaded file
+  fs.renameSync(newProfilePicture.path, `../${existingProfilePicturePath}`);
+  
+  // Update the password in the database
+  const updateProfileQuery = 'UPDATE users SET dp = ? WHERE username = ?';
+
+  // Replace backslashes with forward slashes in the file path
+  const sanitizedProfilePath = existingProfilePicturePath.replace(/\\/g, '/');
+
+  db.query(updateProfileQuery, [sanitizedProfilePath, username], (updateErr) => {
+    if (updateErr) {
+      console.error('Error updating profile picture:', updateErr);
+      return res.status(500).json({ message: 'Error updating profile picture' });
+    } 
+  });
+
+  try {
+    // Respond with the path of the updated profile picture
+    res.json(sanitizedProfilePath);
+  } catch (error) {
+    console.error('Update profile picture error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 //BOLS
 app.get('/editor', (req, res) => {
