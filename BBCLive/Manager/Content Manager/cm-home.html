@@ -151,9 +151,7 @@
         });
     }
 
-    // Add this function to your frontend script
     function checkForVideo() {
-      const path = "";
       fetch('/fetchVideo') 
         .then((response) => response.json())
         .then((data) => {
@@ -165,16 +163,11 @@
             console.log(video);
 
             // Check if the video is not already playing
-            if (!path === `./../..${video.filepath}`) {
+            if (player.paused()) {
               // Change the source and play the video
-              path = `./../..${video.filepath}`;
-              console.log(path)
-              player.src({ src: path, type: 'video/mp4' });
+              player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
               player.load();
               player.play();
-            }
-            else{
-              console.log("Nagfail yung if.")
             }
           }
         })
@@ -182,7 +175,7 @@
           console.error('Error fetching video:', error);
         });
     }
-    setInterval(checkForVideo, 1000);
+    setInterval(checkForVideo, 1000); 
     
     let isPlaying = true;
     let mediaRecord;
