@@ -698,6 +698,7 @@ app.get('/inserToScene', (req, res) => {
       }
     });
   });
+})
 
 
 app.get('/fetchFromRes', (req, res) => {
@@ -825,6 +826,32 @@ const fetchVideoForCurrentTime = () => {
         }
         
         res.json(results);
+      });
+    });
+    
+    app.post('/saveScene', (req, res) => {
+      const resources = req.body.resources;
+    
+      // Insert scene information into the MySQL database
+      const query = 'INSERT INTO scenes (scenename, filepath, date, starttime, endtime) VALUES ?';
+    
+      const values = resources.map(resource => [
+        resource.title,
+        // Convert the full URL to a relative path
+        path.relative('http://localhost:3000', resource.videoSrc),
+        new Date().toISOString().split('T')[0], // Current date
+        resource.startTime,
+        resource.endTime,
+      ]);
+    
+      db.query(query, [values], (err, results) => {
+        if (err) {
+          console.error('Error saving scene to MySQL:', err);
+          res.json({ success: false, error: err.message });
+        } else {
+          console.log('Scene saved to MySQL');
+          res.json({ success: true });
+        }
       });
     });
     
