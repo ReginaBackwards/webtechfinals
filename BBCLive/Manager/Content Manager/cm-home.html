@@ -73,16 +73,9 @@
       console.log('WebSocket connection opened');
     };
 
-//   socket.onclose = (event) => {
-//     console.error(`WebSocket closed: ${event.reason}`);
-//   };
-
-//   setInterval(() => {
-//   const videoUrl = getCurrentVideoUrl;
-//   console.log('Sending video URL:', videoUrl);  // Debugging message
-//   socket.send(videoUrl);
-// }, 10000);
-
+  socket.onclose = (event) => {
+    console.error(`WebSocket closed: ${event.reason}`);
+  };
 
     fetch('/getUserSchedules')
       .then(response => response.json())
@@ -273,10 +266,7 @@
           player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
           player.play();
         }
-      } else if (!player.paused()) {
-        // No videos available, and the player is currently playing, pause it
-        player.pause();
-      }
+      } 
     })
     .catch((error) => {
       console.error('Error fetching video:', error);
