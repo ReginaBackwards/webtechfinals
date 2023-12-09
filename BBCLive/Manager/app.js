@@ -78,35 +78,47 @@ app.get('/getCmDetails', (req, res) => {
   }
 });
 
+const activeSessions = {};
 
 // Endpoint for handling login requests
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    
-    // Query the database to verify credentials
-    const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    
-    db.query(query, [username, password], (err, results) => {
-      if (err) {
-        console.error('Error executing database query:', err);
-        return res.status(500).json({ message: 'Server Error' });
-      }
-      
-      if (results.length > 0) {
-        const user = results[0];
-        req.session.theuser = user;
+  const { username, password } = req.body;
 
-        if (user.banstatus === 1) {
-          return res.status(403).json({ success: false, error: 'User is banned' });
-      }
-        // Redirect to the root URL '/'
-        // res.redirect('/');
-        res.json({success:true, redirectURL: '/'})
-      } else {
-        // Invalid credentials, redirect to login page
-        res.sendFile(path.join(__dirname, 'index.html'));
-      }
+  // Check if the user already has an active session
+  if (activeSessions[username]) {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ success: false, error: 'Server Error' });
+        }
+        return res.status(400).json({ success: false, error: 'User is already logged in' });
     });
+    return;
+}
+
+  // Query the database to verify credentials
+  const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
+
+  db.query(query, [username, password], (err, results) => {
+
+      if (results.length > 0) {
+          const user = results[0];
+
+          // Check if the user is banned
+          if (user.banstatus === 1) {
+              return res.status(403).json({ success: false, error: 'User is banned' });
+          }
+
+          req.session.theuser = user;
+
+          // Store the active session in the global variable
+          activeSessions[username] = req.sessionID;
+
+          res.json({ success: true, redirectURL: '/' });
+      } else {
+          res.status(401).json({ success: false, error: 'Invalid credentials' });
+      }
+  });
 });
 
 // Entry point for the root URL '/'
@@ -356,6 +368,14 @@ app.post('/setSchedule', (req, res) => {
 
 // Log out endpoint
 app.get('/logout', (req, res) => {
+  const user = req.session.theuser;
+
+  // Check if the user has an active session
+  if (user) {
+      const username = user.username;
+      delete activeSessions[username];
+  }
+
   req.session.destroy();
   res.json({ success: true });
 });
