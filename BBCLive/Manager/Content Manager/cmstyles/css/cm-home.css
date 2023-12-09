@@ -156,9 +156,19 @@ section{
   #addTableBtn:hover {
     background-color: #1111d8;
   }
+
+  #live-btn {
+    background-color: red;
+    color: white;
+    height: 40px;
+    width: 130px;
+    border-radius: 15%;
+    font-weight: bold;
+    font-size: larger;
+  }
   
   h1{
-    margin-top: 20px;
+    padding-top: 30px;
     color: #000066;
   }
 
