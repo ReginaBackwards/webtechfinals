@@ -21,7 +21,7 @@
         <ul>
           <li><a href="cm-home.html">Home</a></li>
           <li><button onclick="goToResources()" id="btn">Resources</button></li>
-          <li><a href="cm-logs.html">Logs</a></li>
+          <li><button onclick="goToLogs()" id ="btn">Logs</button></li>
         </ul>
 
         <div class="header-profile">
@@ -136,20 +136,20 @@
         });
     }
 
-    function goToResources() {
+    function goToLogs() {
       // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoresources')
+      fetch('/gotoLogs')
         .then(response => response.json())
         .then(data => {
           if (data.success) {
             // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/resources.html';
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
           } else {
-            alert('Failed to go to Resources');
+            alert('Failed to go to Logs');
           }
         })
         .catch(error => {
-          console.error('Error during request to go to Resources:', error);
+          console.error('Error during request to go to Logs:', error);
         });
     }
 
