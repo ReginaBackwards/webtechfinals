@@ -20,7 +20,7 @@
 
         <ul>
           <li><a href="cm-home.html">Home</a></li>
-          <li><button onclick="goToResources()" id="btn">Resources</button></li>
+          <li><a href="#" onclick="goToResources();">Resources</a></li>
           <li><a href="cm-logs.html">Logs</a></li>
         </ul>
 
@@ -87,7 +87,8 @@
         }
       })
       .catch(error => console.error('Error fetching schedules:', error));
-    // Function to fetch and display content manager details
+   
+      // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
