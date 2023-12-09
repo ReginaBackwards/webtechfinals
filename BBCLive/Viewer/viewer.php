@@ -11,17 +11,17 @@
 <body>
     <header>
         <div class="logo"><img src="../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
+        <h1>Welcome to BBC Live!</h1>
     </header>
 
     <section>
-    <h1>Welcome to BBC Live!</h1>
-        <div class="container">
     
-            <iframe src="http://localhost:3000/Manager/Content%20Manager/cm-home.html#my-video" title="description" style=" width:100%; height:100%; margin-top:-100px; "></iframe>
-                
+        <div class="container">
+            <iframe src="http://localhost:3000/Manager/Content%20Manager/cm-home.html#my-video" scrolling="no" frameborder="0" 
+            height="650px" width="100%" style="position:absolute; clip:rect(69px,1400px,800px,80px); margin-top: -20px;"></iframe>
             <div class="title-below-video" id="livestream-title">
             <?php include 'fetchDate.php'; ?>
-            <p>Livestream for <?php echo $livestreamDate; ?></p>
+            <p style="margin-left: 105px;" >Livestream for <?php echo $livestreamDate; ?></p>
             </div>
         </div>
      <!-- <script>
