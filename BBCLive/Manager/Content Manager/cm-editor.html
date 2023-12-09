@@ -21,8 +21,11 @@
 
       <ul>
         <li><a href="cm-home.html">Home</a></li>
-        <li><button onclick="goToResources()" id="btn">Resources</button></li>
+        <li><a href="#" onclick="goToResources();">Resources</a></li>
+        <!-- <li><button onclick="goToResources()" id="btn">Resources</button></li> -->
         <li><a href="cm-logs.html">Logs</a></li>
+        <li><a href="#" onclick="goToEditor();">Resources</a></li>
+        <!-- <li><button onclick="goToEditor()">Editor</button></li> -->
       </ul>
 
       <div class="header-profile">
@@ -39,6 +42,7 @@
 </header>
 
 <body>
+  <div class="topContainer">
   <div id="videoContainer">
     <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
 
@@ -64,6 +68,8 @@
       </tbody>
     </table>
   </div>
+
+</div>
 
   <div id="dateTimeContainer">
     <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
