@@ -60,22 +60,18 @@
 
   <script>
 
-// const socket = new WebSocket('ws://localhost:5000');
+    const socket = new WebSocket('ws://localhost:5000');
+    const videoElement = videojs('my-video');
 
-// function getCurrentVideoUrl() {
-//   const player = videojs('my-video');
+    function getCurrentVideoData() {
+      const videoUrl = videoElement.src().substring(3);
+      const currentTime = videoElement.currentTime();
+      return { videoUrl, currentTime };
+    }
 
-//   if (!player.paused()) {
-//     return player.src();
-//   } else {
-//     return "./../../Content Hosting/videos/commercials/streamStartingSoon.mp4";
-//   }
-// }
-
-
-//   socket.onopen = () => {
-//     console.log('WebSocket connection opened');
-//   };
+    socket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
 
 //   socket.onclose = (event) => {
 //     console.error(`WebSocket closed: ${event.reason}`);
@@ -259,7 +255,8 @@
         });
     }
     function checkForVideo() {
-  const player = videojs('my-video');
+
+      const player = videojs('my-video'); 
 
   fetch('/fetchVideo')
     .then((response) => response.json())
@@ -286,7 +283,41 @@
     });
 }
 
-setInterval(checkForVideo, 1000);
+    function setVideoInfo() {
+      const player = videojs('my-video'); 
+      const currentSrc = player.src();
+      const currentTimeStamp = player.currentTime();
+
+      // Prepare the data to be sent to the server
+      const videoInfo = {
+        src: currentSrc,
+        currentTime: currentTimeStamp,
+      };
+
+      // Fetch options
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(videoInfo),
+      };
+
+      // Fetch function to send data to the server
+      fetch('/setVideoInfo', options)
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response from the server if needed
+          console.log(data);
+        })
+        .catch(error => {
+          // Handle errors during the fetch request
+          console.error('Error during fetch:', error);
+        });
+    }
+
+    setInterval(setVideoInfo, 1000);
+    setInterval(checkForVideo, 1000);
 
     let isPlaying = true;
     let mediaRecord;

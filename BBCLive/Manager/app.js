@@ -863,4 +863,19 @@ const fetchVideoForCurrentTime = () => {
         }
       });
     });
+
+    let currentSrc = "";
+    let currentTimeStamp ="";
+
+    app.post('/setVideoInfo', (req, res) => {
+      const { src, currentTime } = req.body;
+      // Update global variables
+      currentSrc = src.substring(3);
+      currentTimeStamp = currentTime;
+      res.json({ success: true });
+    });
     
+    app.get('/getVideoInfo', (req, res) => {
+      // Retrieve global variables
+      res.json({ currentSrc, currentTimeStamp });
+    });
