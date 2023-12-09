@@ -7,7 +7,7 @@
         ROSANTO, Marvin
         SLAY, America Eloise
  -->
- 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,55 +53,52 @@
 
   <div class="topContainer">
     <div id="videoContainer">
-      <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+      <video id='my-video' class='video-js' preload='auto' height='500' width='500' controls data-setup='{}'>
 
         <p>
           <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
         </p>
       </video>
     </div>
-
-    <div class="container" id="tablesContainer">
-      <table>
-        <thead>
-          <tr>
-            <th>Resources</th>
-            <th>File Type</th>
-          </tr>
-        </thead>
-        <tbody id="resourcesContainer">
-          <tr draggable="true" class="video-row">
-            <td>Looks like you dont have any content yet!</td>
-            <td>file type</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-  <div id="dateTimeContainer">
-    <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
+      
+    <!-- New heading and save button -->
+    <div class="sceneHeader">
+      <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
         id="timeFromServer"></span> </p>
-  </div>
-
-  <!-- New heading and save button -->
-  <div class="sceneHeader">
-    <h2>Scene Editor</h2>
-    <p>Setting Scenes For: <span id="chosenDate"></span></p>
-    <button onclick="saveScene()" id="saveButton">Save</button>
-    <button onclick="deleteScene()" id="saveButton">Clear</button>
-  </div>
-  <div id="chosenDateContainer">
-    <p>Setting Scenes For: <span id="chosenDate"></span></p>
+      <h2>Scene Editor</h2>
+      <p>Setting Scenes For: <span id="chosenDate"></span></p>
+      <div class="btnContainer">
+      <button onclick="saveScene()" id="saveButton">Save</button>
+      <button onclick="deleteScene()" id="clearButton">Clear</button>
+    </div>
+    </div>
   </div>
 
   <!-- Replace the existing div with the new structure -->
+  <div class="editor">
   <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
     <div id="sceneContent" class="scene-content">
       <!-- Content will be dynamically added here -->
     </div>
   </div>
+
+  <div class="container" id="tablesContainer">
+    <table>
+      <thead>
+        <tr>
+          <th>Resources</th>
+          <th>File Type</th>
+        </tr>
+      </thead>
+      <tbody id="resourcesContainer">
+        <tr draggable="true" class="video-row">
+          <td>Looks like you dont have any content yet!</td>
+          <td>file type</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
   <script>
     function goToProfile() {
