@@ -677,16 +677,9 @@ app.get('/editor', (req, res) => {
 });
 
 app.get('/inserToScene', (req, res) => {
-  const fetchVidQuery = 'SELECT filepath FROM resources';
-
-  db.query(fetchVidQuery, (err, results) => {
-    if(err) {
-      console.error("video unavailable");
-      return
-    }
-    const insertQuery = 'INSERT INTO filepath(scenes) VALUES ?';
+    const insertQuery = 'INSERT INTO filepath VALUES ?';
   
-    const videoV = results.map((row) => [row.filePath]);
+    const videoV = res.map((row) => [row.filePath]);
   
     db.query(insertQuery, [videoV], (err, results) => {
       if (err) {
@@ -694,7 +687,7 @@ app.get('/inserToScene', (req, res) => {
       }
     });
   });
-});
+
 
 app.get('/fetchFromRes', (req, res) => {
   const fetchQuery = 'SELECT filepath, filename, type FROM resources';
