@@ -231,3 +231,9 @@ section{
     overflow:auto;
     text-align: center;
 }
+
+
+.video-js{
+  height: 650px;
+  width: 100%;
+}
