@@ -76,6 +76,10 @@
         id="timeFromServer"></span> </p>
   </div>
 
+  <!-- New heading and save button -->
+  <h2>Scene Editor</h2>
+  <button onclick="saveScene()" id="saveButton">Save</button>
+
   <!-- Replace the existing div with the new structure -->
   <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
     <div id="sceneContent" class="scene-content">
@@ -185,16 +189,19 @@
       });
     });
 
-    function createDraggableDiv(content, videoSrc, title) {
-      const draggableDiv = document.createElement("div");
-      draggableDiv.className = "scene-cell";
-      draggableDiv.draggable = false;
+function createDraggableDiv(content, title) {
+  const draggableDiv = document.createElement("div");
+  draggableDiv.className = "scene-cell";
+  draggableDiv.draggable = false;
 
-      // Create a unique video element for each scene
-      const videoElement = document.createElement("video");
-      videoElement.src = videoSrc;
-      videoElement.controls = true;
-      draggableDiv.appendChild(videoElement);
+  // Create a unique video element for each scene
+  const videoElement = document.createElement("video");
+  videoElement.controls = true;
+  
+  // Set the source for the video element
+  videoElement.src = getResourceFilePath(content);
+  
+  draggableDiv.appendChild(videoElement);
 
       // Create a title element and append it to the draggable div
       const titleElement = document.createElement("div");
@@ -213,9 +220,21 @@
       return draggableDiv;
     }
 
-    function drop(event) {
-      event.preventDefault();
-      const data = event.dataTransfer.getData("text/plain");
+async function getResourceFilePath(content) {
+  try {
+    const response = await fetch('/getResourceFilePath?content=' + encodeURIComponent(content));
+
+    const filePath = await response.json();
+    return filePath;
+  } catch (error) {
+    console.error('Error fetching file path of resource:', error);
+    throw error; // Rethrow the error or handle it accordingly
+  }
+}
+
+function drop(event) {
+  event.preventDefault();
+  const data = event.dataTransfer.getData("text/plain");
 
       // Find the existing div
       const sceneContent = document.getElementById("sceneContent");
@@ -225,9 +244,10 @@
         (child) => child.textContent === data
       );
 
-      if (!existingResource) {
-        // Create a new draggable div for the video content
-        const newDiv = createDraggableDiv(data, data.filepath, data);
+  if (!existingResource) {
+    // Create a new draggable div for the video content
+    const newDiv = createDraggableDiv(data, data);
+    console.log(`Data: ${data}`);
 
         // Find the div where the item is being dropped onto
         const dropTarget = event.target.closest(".scene-cell");
@@ -377,6 +397,20 @@
         });
       });
     });
+
+    function saveScene() {
+      // Get the list of resources in the scene editor
+      const sceneContent = document.getElementById("sceneContent");
+      const resources = Array.from(sceneContent.children).map((child) => {
+        return {
+          title: child.querySelector("div").textContent,
+          videoSrc: child.querySelector("video").src
+        };
+      });
+
+      // Print the list of resources in the console
+      console.log("Scene Resources:", resources);
+    }
 
     // Call the function to display content manager details on page load
     displayCmDetails();

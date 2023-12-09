@@ -734,61 +734,30 @@ app.get('/getDate', (req, res) => {
   res.json({ date: formattedDate });
 });
 
-// // to mirror the livestream to the viewer module
-// app.get('/fetchVideoInfo', async (req, res) => {
-//   try {
-//     const videoInfo = await fetchVideoInfo();
-//     res.json({ videoInfo });
-//   } catch (error) {
-//     console.error('Error fetching video information:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+app.get('/getResourceFilePath', (req, res) => {
+  try {
+    const content = req.query.content;
 
-// const fetchVideoInfo = async () => {
-//   try {
-//     // Implement logic to fetch video information from your database or wherever it's stored
-//     const now = new Date();
-//     const currentTime = now.toTimeString().split(' ')[0];
-
-//     // Log the SQL query and the parameter value
-//     const queryString = 'SELECT filepath, starttime FROM scenes WHERE starttime <= ? LIMIT 1';
-//     const queryParam = `${currentTime}%`;
-//     console.log('Parameter Value:', queryParam);
-
-//     // Execute a query to get the video with a start time that matches the hour and minute of the current time
-//     try {
-//       const [results] = await db.query(queryString, [queryParam]);
-//       console.log('Results:', results);
-
-//       if (results && Array.isArray(results) && results.length > 0) {
-//         const video = results[0];
-//         return {
-//           filepath: video.filepath,
-//           date: 'Unknown Date', // Add other properties as needed
-//         };
-//       } else {
-//         // No video found, return default or handle as needed
-//         return {
-//           filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
-//           date: 'Unknown Date',
-//           // Add other properties as needed
-//         };
-//       }
-//     } catch (error) {
-//       console.error('Error executing database query:', error);
-//       return {
-//         filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
-//         date: 'Unknown Date',
-//         // Add other properties as needed
-//       };
-//     }
-//   } catch (error) {
-//     console.error('Error fetching video information:', error);
-//     return {
-//       filepath: './../Content Hosting/videos/scenes/SLUHymn.mp4',
-//       date: 'Unknown Date',
-//       // Add other properties as needed
-//     };
-//   }
-// };
+    // Execute a query to get the file path based on the content
+    db.query(
+      'SELECT filePath FROM resources WHERE filename = ?',
+      [content],
+      (error, results) => {
+        if (error) {
+          console.error('Error querying the database:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+          if (results.length > 0) {
+            const filePath = results[0].filePath;
+            res.json({ filePath });
+          } else {
+            res.status(404).json({ error: 'File path not found for the given content' });
+          }
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error handling request:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
