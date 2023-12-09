@@ -466,18 +466,43 @@
     });
 
     function saveScene() {
-      // Get the list of resources in the scene editor
-      const sceneContent = document.getElementById("sceneContent");
-      const resources = Array.from(sceneContent.children).map((child) => {
-        return {
-          title: child.querySelector("div").textContent,
-          videoSrc: child.querySelector("video").src
-        };
-      });
+  // Get the list of resources in the scene editor
+  const sceneContent = document.getElementById("sceneContent");
+  const resources = Array.from(sceneContent.children).map((child) => {
+    const title = child.querySelector(".titleContent").textContent;
+    const videoSrc = child.querySelector("video").src;
+    const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
+    const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
 
-      // Print the list of resources in the console
-      console.log("Scene Resources:", resources);
-    }
+    return {
+      title,
+      videoSrc,
+      startTime,
+      endTime,
+    };
+  });
+
+  // Make an AJAX request to save the scene to the database
+  fetch('/saveScene', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ resources }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Scene saved successfully');
+      } else {
+        alert('Failed to save scene');
+      }
+    })
+    .catch(error => {
+      console.error('Error saving scene:', error);
+      alert('Failed to save scene');
+    });
+}
 
     function deleteScene() {
       // Get the list of resources in the scene editor
