@@ -372,13 +372,13 @@ if (!fs.existsSync(contentHostingDir)) {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const fileTypeMapping = {
-  '.mp3': 'audio',
-  '.mp4': 'videos/clips',
-  '.jpg': 'images',
-  '.jpeg': 'images',
-  '.png': 'images',
-};
+// const fileTypeMapping = {
+//   '.mp3': 'audio',
+//   '.mp4': `videos/clips/${username}`,
+//   '.jpg': 'images',
+//   '.jpeg': 'images',
+//   '.png': 'images',
+// };
 
 app.use(express.json());
 
@@ -388,6 +388,14 @@ app.post('/upload', upload.array('file'), async (req, res) => {
     try {
       const files = req.files;
       const username = req.session.theuser.username;
+
+      const fileTypeMapping = {
+  '.mp3': 'audio',
+  '.mp4': `videos/clips/${username}`,
+  '.jpg': 'images',
+  '.jpeg': 'images',
+  '.png': 'images',
+};
 
       if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
@@ -426,7 +434,7 @@ app.post('/upload', upload.array('file'), async (req, res) => {
         }
 
         const relativePath = path.relative(contentHostingDir, filename).replace(/\\/g, '/');;
-        const adjustedFileType = fileType === 'videos/clips' ? 'videos' : fileType;
+        const adjustedFileType = fileType === `videos/clips/${username}` ? 'videos' : fileType;
 
         const insertQuery =
           'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
