@@ -43,33 +43,33 @@
 
 <body>
   <div class="topContainer">
-  <div id="videoContainer">
-    <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+    <div id="videoContainer">
+      <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
 
-      <p>
-        <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
-      </p>
-    </video>
+        <p>
+          <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
+        </p>
+      </video>
+    </div>
+
+    <div class="container" id="tablesContainer">
+      <table>
+        <thead>
+          <tr>
+            <th>Resources</th>
+            <th>File Type</th>
+          </tr>
+        </thead>
+        <tbody id="resourcesContainer">
+          <tr draggable="true" class="video-row">
+            <td>Looks like you dont have any content yet!</td>
+            <td>file type</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
-
-  <div class="container" id="tablesContainer">
-    <table>
-      <thead>
-        <tr>
-          <th>Resources</th>
-          <th>File Type</th>
-        </tr>
-      </thead>
-      <tbody id="resourcesContainer">
-        <tr draggable="true" class="video-row">
-          <td>Looks like you dont have any content yet!</td>
-          <td>file type</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
 
   <div id="dateTimeContainer">
     <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
@@ -82,105 +82,176 @@
       <!-- Content will be dynamically added here -->
     </div>
   </div>
-  
+
 
   <script>
+    // Function to handle redirect to resources.html
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+    function goToEditor() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoeditor')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-editor.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+
+    // Function to handle logout
+    function logout() {
+      // Make an AJAX request to the logout endpoint
+      fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logout response:', data);
+          if (data.success) {
+            alert('Logout successful');
+            window.location.href = '/'
+          } else {
+            alert('Logout failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
     function dragStart(event) {
       event.dataTransfer.setData("text/plain", event.target.textContent);
     }
 
     function dragOver(event) {
       event.preventDefault();
-   }
-   document.addEventListener('DOMContentLoaded', function () {
-  const sceneContent = document.getElementById("sceneContent");
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      const sceneContent = document.getElementById("sceneContent");
 
-  // Attach drop event listener to the scene container
-  sceneContent.addEventListener('drop', drop);
+      // Attach drop event listener to the scene container
+      sceneContent.addEventListener('drop', drop);
 
-  // Attach drag over event listener to the scene container
-  sceneContent.addEventListener('dragover', dragOver);
+      // Attach drag over event listener to the scene container
+      sceneContent.addEventListener('dragover', dragOver);
 
-  // Attach click event listeners to all video rows in the resource table
-  const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
-  videoRows.forEach(row => {
-    row.addEventListener('click', function () {
-      // Get the filepath from the clicked row
-      const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+      // Attach click event listeners to all video rows in the resource table
+      const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
+      videoRows.forEach(row => {
+        row.addEventListener('click', function () {
+          // Get the filepath from the clicked row
+          const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
 
-      // Call the playVideo function with the filepath and the clicked row
-      playVideo(filepath, row);
+          // Call the playVideo function with the filepath and the clicked row
+          playVideo(filepath, row);
+        });
+      });
     });
-  });
-});
 
-function createDraggableDiv(content, videoSrc, title) {
-  const draggableDiv = document.createElement("div");
-  draggableDiv.className = "scene-cell";
-  draggableDiv.draggable = false;
+    function createDraggableDiv(content, videoSrc, title) {
+      const draggableDiv = document.createElement("div");
+      draggableDiv.className = "scene-cell";
+      draggableDiv.draggable = false;
 
-  // Create a unique video element for each scene
-  const videoElement = document.createElement("video");
-  videoElement.src = videoSrc;
-  videoElement.controls = true;
-  draggableDiv.appendChild(videoElement);
+      // Create a unique video element for each scene
+      const videoElement = document.createElement("video");
+      videoElement.src = videoSrc;
+      videoElement.controls = true;
+      draggableDiv.appendChild(videoElement);
 
-  // Create a title element and append it to the draggable div
-  const titleElement = document.createElement("div");
-  titleElement.textContent = title;
-  draggableDiv.appendChild(titleElement);
+      // Create a title element and append it to the draggable div
+      const titleElement = document.createElement("div");
+      titleElement.textContent = title;
+      draggableDiv.appendChild(titleElement);
 
-  // Create a delete button
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete";
-  deleteButton.addEventListener("click", function () {
-    // Remove the draggableDiv when the delete button is clicked
-    draggableDiv.remove();
-  });
-  draggableDiv.appendChild(deleteButton);
+      // Create a delete button
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", function () {
+        // Remove the draggableDiv when the delete button is clicked
+        draggableDiv.remove();
+      });
+      draggableDiv.appendChild(deleteButton);
 
-  return draggableDiv;
-}
-
-function drop(event) {
-  event.preventDefault();
-  const data = event.dataTransfer.getData("text/plain");
-
-  // Find the existing div
-  const sceneContent = document.getElementById("sceneContent");
-
-  // Check if the resource already exists in the sceneContent
-  const existingResource = Array.from(sceneContent.children).find(
-    (child) => child.textContent === data
-  );
-
-  if (!existingResource) {
-    // Create a new draggable div for the video content
-    const newDiv = createDraggableDiv(data, data.filepath, data);
-
-    // Find the div where the item is being dropped onto
-    const dropTarget = event.target.closest(".scene-cell");
-
-    // If there is a drop target, insert the new div before or after it
-    if (dropTarget) {
-      const rect = dropTarget.getBoundingClientRect();
-      const midX = rect.left + rect.width / 2;
-
-      // Insert before or after based on the mouse position
-      if (event.clientX < midX) {
-        sceneContent.insertBefore(newDiv, dropTarget);
-      } else {
-        sceneContent.insertBefore(newDiv, dropTarget.nextSibling);
-      }
-    } else {
-      // If there is no drop target, simply append the new div
-      sceneContent.appendChild(newDiv);
+      return draggableDiv;
     }
 
-    // Stop the propagation of the drop event to prevent unwanted behavior
-    event.stopPropagation();
-  }
-}
+    function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text/plain");
+
+      // Find the existing div
+      const sceneContent = document.getElementById("sceneContent");
+
+      // Check if the resource already exists in the sceneContent
+      const existingResource = Array.from(sceneContent.children).find(
+        (child) => child.textContent === data
+      );
+
+      if (!existingResource) {
+        // Create a new draggable div for the video content
+        const newDiv = createDraggableDiv(data, data.filepath, data);
+
+        // Find the div where the item is being dropped onto
+        const dropTarget = event.target.closest(".scene-cell");
+
+        // If there is a drop target, insert the new div before or after it
+        if (dropTarget) {
+          const rect = dropTarget.getBoundingClientRect();
+          const midX = rect.left + rect.width / 2;
+
+          // Insert before or after based on the mouse position
+          if (event.clientX < midX) {
+            sceneContent.insertBefore(newDiv, dropTarget);
+          } else {
+            sceneContent.insertBefore(newDiv, dropTarget.nextSibling);
+          }
+        } else {
+          // If there is no drop target, simply append the new div
+          sceneContent.appendChild(newDiv);
+        }
+
+        // Stop the propagation of the drop event to prevent unwanted behavior
+        event.stopPropagation();
+      }
+    }
 
     function fetchResources() {
       fetch('/editor')
@@ -194,42 +265,42 @@ function drop(event) {
     }
 
     function updateResourceTable(data) {
-  const resourceTableBody = document.getElementById('resourcesContainer');
-  resourceTableBody.innerHTML = '';
+      const resourceTableBody = document.getElementById('resourcesContainer');
+      resourceTableBody.innerHTML = '';
 
-  data.forEach(resource => {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td class="video-row" draggable="true" data-filepath="${resource.filepath}">${resource.filename}</td><td draggable="false">${resource.type}</td>`;
-    row.draggable = true;
-    row.addEventListener('dragstart', dragStart);
+      data.forEach(resource => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td class="video-row" draggable="true" data-filepath="${resource.filepath}">${resource.filename}</td><td draggable="false">${resource.type}</td>`;
+        row.draggable = true;
+        row.addEventListener('dragstart', dragStart);
 
-    // Add click event listener to each row
-    row.addEventListener('click', () => playVideo(resource.filepath, row));
+        // Add click event listener to each row
+        row.addEventListener('click', () => playVideo(resource.filepath, row));
 
-    resourceTableBody.appendChild(row);
-  });
-}
+        resourceTableBody.appendChild(row);
+      });
+    }
 
     function playVideo(filepath, clickedRow) {
-  const player = videojs('my-video');
-  player.src({ src: filepath, type: 'video/mp4' });
+      const player = videojs('my-video');
+      player.src({ src: filepath, type: 'video/mp4' });
 
-  // Set the video source for the currently selected row in the scenes container
-  const videoElement = clickedRow.querySelector('video');
-  videoElement.src = filepath;
+      // Set the video source for the currently selected row in the scenes container
+      const videoElement = clickedRow.querySelector('video');
+      videoElement.src = filepath;
 
-  // Automatically play the video
-  player.play();
+      // Automatically play the video
+      player.play();
 
-  // Remove the 'selected-row' class from the previously highlighted row
-  const previouslySelectedRow = document.querySelector('.video-row.selected-row');
-  if (previouslySelectedRow) {
-    previouslySelectedRow.classList.remove('selected-row');
-  }
+      // Remove the 'selected-row' class from the previously highlighted row
+      const previouslySelectedRow = document.querySelector('.video-row.selected-row');
+      if (previouslySelectedRow) {
+        previouslySelectedRow.classList.remove('selected-row');
+      }
 
-  // Add the 'selected-row' class to the clicked row
-  clickedRow.classList.add('selected-row');
-}
+      // Add the 'selected-row' class to the clicked row
+      clickedRow.classList.add('selected-row');
+    }
 
 
     // Initial fetch of resources when the page loads
