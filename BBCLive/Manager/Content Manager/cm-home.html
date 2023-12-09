@@ -59,33 +59,32 @@
   
   <script>
 
-const socket = new WebSocket('ws://localhost:5000');
+// const socket = new WebSocket('ws://localhost:5000');
 
-  // Assuming you have a function to get the current video URL
-  function getCurrentVideoUrl() {
-    const videoPlayer = document.getElementById('my-video');
+// function getCurrentVideoUrl() {
+//   const player = videojs('my-video');
 
-    if(video.src === "./../../Content Hosting/videos/commercials/streamStartingSoon.mp4"){
-      return videoPlayer.src;
-    }else{
-      return `./../..${videoPlayer.src}`;
-    }
-      
-  }
+//   if (!player.paused()) {
+//     return player.src();
+//   } else {
+//     return "./../../Content Hosting/videos/commercials/streamStartingSoon.mp4";
+//   }
+// }
 
-  socket.onopen = () => {
-    console.log('WebSocket connection opened');
-  };
 
-  socket.onclose = (event) => {
-    console.error(`WebSocket closed: ${event.reason}`);
-  };
+//   socket.onopen = () => {
+//     console.log('WebSocket connection opened');
+//   };
 
-  setInterval(() => {
-  const videoUrl = getCurrentVideoUrl;
-  console.log('Sending video URL:', videoUrl);  // Debugging message
-  socket.send(videoUrl);
-}, 10000);
+//   socket.onclose = (event) => {
+//     console.error(`WebSocket closed: ${event.reason}`);
+//   };
+
+//   setInterval(() => {
+//   const videoUrl = getCurrentVideoUrl;
+//   console.log('Sending video URL:', videoUrl);  // Debugging message
+//   socket.send(videoUrl);
+// }, 10000);
 
 
     fetch('/getUserSchedules')
@@ -220,20 +219,21 @@ const socket = new WebSocket('ws://localhost:5000');
         });
     }
     function checkForVideo() {
+  const player = videojs('my-video');
+
   fetch('/fetchVideo')
     .then((response) => response.json())
     .then((data) => {
       const videos = data.videos;
-      const player = videojs('my-video');
 
       if (videos && videos.length > 0) {
-        const video = videos[0];
+        const newVideo = videos[0];
+        const currentSrc = player.currentSrc();
 
-        // Check if the video is not already playing
-        if (player.paused()) {
-          // Change the source and play the video
-          player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
-          player.load();
+        // Check if the new video is different from the currently playing video
+        if (newVideo.filepath !== currentSrc || player.paused()) {
+          // Directly set the source and play the video
+          player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
           player.play();
         }
       } else if (!player.paused()) {
@@ -246,7 +246,7 @@ const socket = new WebSocket('ws://localhost:5000');
     });
 }
 
-    setInterval(checkForVideo, 1000);
+setInterval(checkForVideo, 1000);
 
     let isPlaying = true;
     let mediaRecord;

@@ -827,4 +827,4 @@ const fetchVideoForCurrentTime = () => {
         res.json(results);
       });
     });
-    
+  });
