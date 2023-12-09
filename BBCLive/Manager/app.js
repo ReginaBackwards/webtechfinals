@@ -769,3 +769,22 @@ app.get('/getResourceFilePath', (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.get('/getUserSchedules', (req, res) => {
+  if (req.session.theuser) {
+    const username = req.session.theuser.username;
+    const query = 'SELECT day, username FROM schedules WHERE username = ?;';
+    
+    db.query(query, [username], (error, results) => {
+      if (error) {
+        console.error('Error fetching schedules:', error);
+        res.status(500).send('Server Error');
+      } else {
+        const schedules = results.map(result => ({ day: result.day, username: result.username }));
+        res.json(schedules);
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+});
