@@ -736,21 +736,18 @@ const fetchVideoForCurrentTime = () => {
     const currentTime = now.toTimeString().split(' ')[0];
     
     // Log the SQL query and the parameter value
-    const queryString = 'SELECT filepath, starttime FROM scenes WHERE starttime LIKE ?';
+    const queryString = 'SELECT filepath, starttime FROM scenes WHERE date=? AND starttime LIKE ?';
     const queryParam = `${currentTime}%`;
-    console.log('SQL Query:', queryString);
-    console.log('Parameter Value:', queryParam);
-    
+    console.log(queryParam)
     // Execute a query to get the video with a start time that matches the hour and minute of the current time
     db.query(
       queryString,
-      [queryParam],
+      [getCurrentDate(), queryParam],
       (error, results) => {
         if (error) {
           console.error('Error querying the database:', error);
           reject(error);
         } else {
-          console.log('Results from the query:', results);
           resolve(results);
         }
       }
@@ -765,6 +762,18 @@ const fetchVideoForCurrentTime = () => {
     
     res.json({ date: formattedDate });
   });
+
+  function getCurrentDate() {
+    const now = new Date();
+    
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    
+    const formattedDate = `${year}-${month}-${day}`;
+    
+    return formattedDate;
+  }
   
   app.get('/getResourceFilePath', (req, res) => {
     try {
