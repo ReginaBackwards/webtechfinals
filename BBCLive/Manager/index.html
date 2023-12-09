@@ -63,40 +63,52 @@
     
 </div>
 <script>
-    $(document).ready(function () {
-        $('#loginButton').click(function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
-            
-            // Get the values of username and password
-            var username = $('#exampleInputUsername').val();
-            var password = $('#exampleInputPassword').val();
-            
-            // Make the AJAX request
-            $.ajax({
-                method: 'POST',
-                url: '/login',
-                data: { username, password },
-                success: function (response) {
-                    if (response.success) {
-                        console.log("PUMASOK")
-                        alert('Login successful');
-                        // Redirect to the appropriate page if needed
-                        window.location.href = response.redirectURL;
+$(document).ready(function () {
+    $('#loginButton').click(function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Get the values of username and password
+        var username = $('#exampleInputUsername').val();
+        var password = $('#exampleInputPassword').val();
+
+        // Make the AJAX request
+        $.ajax({
+            method: 'POST',
+            url: '/login',
+            data: { username, password },
+            success: function (response) {
+                if (response.success) {
+                    console.log("PUMASOK")
+                    alert('Login successful');
+                    // Redirect to the appropriate page if needed
+                    window.location.href = response.redirectURL;
+                } else {
+                    console.log(response.error)
+                    // Display an alert for specific scenarios
+                    if (response.error === 'User is already logged in') {
+                        alert('User is already logged in');
+                    } else if (response.error === 'User is banned') {
+                        alert('User is banned');
                     } else {
-                        console.log(response.error)
-                        // Display an alert for invalid credentials or banned user
-                        alert(response.error || 'Invalid credentials');
+                        alert('Invalid credentials');
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error logging in:', error);
-                    // Display an alert for other errors
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error logging in:', error);
+                // Display an alert for other errors
+                if (xhr.status === 400) {
+                    alert('User is already logged in');
+                } else {
                     alert('Error logging in: ' + error);
                 }
-            });
+            }
         });
     });
+});
+
+
 </script>
 
 </body>

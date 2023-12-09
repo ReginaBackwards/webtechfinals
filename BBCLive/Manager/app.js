@@ -777,7 +777,7 @@ app.get('/getResourceFilePath', (req, res) => {
         } else {
           if (results.length > 0) {
             const filePath = results[0].filePath;
-            res.json({ filePath });
+            res.json(filePath); // Return only the file path
           } else {
             res.status(404).json({ error: 'File path not found for the given content' });
           }

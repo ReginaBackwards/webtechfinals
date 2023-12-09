@@ -191,42 +191,50 @@
       });
     });
 
-function createDraggableDiv(content, title) {
+    function createDraggableDiv(content, title) {
   const draggableDiv = document.createElement("div");
   draggableDiv.className = "scene-cell";
   draggableDiv.draggable = false;
 
+  // Create a title element and append it to the draggable div
+  const titleElement = document.createElement("div");
+  titleElement.textContent = title;
+  draggableDiv.appendChild(titleElement);
+
+  // Create a delete button
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", function () {
+    // Remove the draggableDiv when the delete button is clicked
+    draggableDiv.remove();
+  });
+  draggableDiv.appendChild(deleteButton);
+
   // Create a unique video element for each scene
   const videoElement = document.createElement("video");
   videoElement.controls = true;
-  
-  // Set the source for the video element
-  videoElement.src = getResourceFilePath(content);
-  
+
+  // Fetch the file path and set the source for the video element
+  getResourceFilePath(content)
+    .then(filePath => {
+      videoElement.src = filePath;
+    })
+    .catch(error => {
+      console.error('Error fetching file path of resource:', error);
+    });
+
   draggableDiv.appendChild(videoElement);
 
-      // Create a title element and append it to the draggable div
-      const titleElement = document.createElement("div");
-      titleElement.textContent = title;
-      draggableDiv.appendChild(titleElement);
+  return draggableDiv;
+}
 
-      // Create a delete button
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "Delete";
-      deleteButton.addEventListener("click", function () {
-        // Remove the draggableDiv when the delete button is clicked
-        draggableDiv.remove();
-      });
-      draggableDiv.appendChild(deleteButton);
-
-      return draggableDiv;
-    }
 
 async function getResourceFilePath(content) {
   try {
     console.log(`PINAPASANG FILE NAME: ${content}`)
     const response = await fetch(`/getResourceFilePath?content=${encodeURIComponent(content)}`);
     const filePath = await response.json();
+    console.log(filePath);
     return filePath;
   } catch (error) {
     console.error('Error fetching file path of resource:', error);
