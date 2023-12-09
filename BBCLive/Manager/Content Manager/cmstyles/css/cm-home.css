@@ -211,7 +211,12 @@ section{
 .sched:hover {
   background-color: #1111d8;
 }
-#scheduleButtons{
- 
-  margin-left: 20%;
+.scheduleContainer{
+    margin-top: 20px;
+    background-color: white;
+    border: 2px solid blue;
+    padding: 20px;
+    border-radius: 20px;
+    overflow:auto;
+    text-align: center;
 }
