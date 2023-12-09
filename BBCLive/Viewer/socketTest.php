@@ -24,28 +24,74 @@
 const socket = new WebSocket('ws://localhost:5000');
 const videoElement = document.getElementById('my-video');
 
+let currentVideoUrl = null; // Track the current video URL
+
+// Function to fetch video information
+function fetchVideoInfo() {
+  fetch('http://localhost:3000/getVideoInfo')  // Replace with the actual endpoint to fetch video info
+    .then((response) => response.json())
+    .then((data) => {
+      const videoUrl = data.currentSrc;
+      const currentTime = (data.currentTimeStamp + 1.05);
+
+      console.log('Fetched video info:', { videoUrl, currentTime });
+
+      // Check if the video URL is the same
+      if (videoUrl === currentVideoUrl) {
+        // Set only the current time
+        videoElement.currentTime = currentTime;
+      } else {
+        // Set both the video URL and current time
+        videoElement.src = videoUrl;
+        videoElement.currentTime = currentTime;
+        currentVideoUrl = videoUrl; // Update the current video URL
+      }
+
+      // Send the video info to the server through WebSocket
+      socket.send(JSON.stringify({ videoUrl, currentTime }));
+    })
+    .catch((error) => {
+      console.error('Error fetching video info:', error);
+    });
+}
+
+// Add a click event listener to the play button
+videoElement.addEventListener('play', () => {
+  console.log('Play button clicked');
+  fetchVideoInfo();
+});
+
+// WebSocket event handlers
 socket.onmessage = (event) => {
-    console.log('Received raw data:', event.data);  // Log raw data
   const data = JSON.parse(event.data);
   const videoUrl = data.videoUrl;
   const currentTime = data.currentTime;
-  
+
   console.log('Received video data:', { videoUrl, currentTime });  // Debugging message
   
-  // Set video URL and current time
-  videoElement.src = videoUrl;
-  videoElement.currentTime = currentTime;
+  // Check if the video URL is the same
+  if (videoUrl === currentVideoUrl) {
+    // Set only the current time
+    videoElement.currentTime = currentTime;
+  } else {
+    // Set both the video URL and current time
+    videoElement.src = videoUrl;
+    videoElement.currentTime = currentTime;
+    currentVideoUrl = videoUrl; // Update the current video URL
+  }
 };
 
 socket.onopen = () => {
   console.log('WebSocket connection opened');
+  fetchVideoInfo(); // Fetch initial video info when WebSocket connection is opened
 };
 
 socket.onclose = (event) => {
   console.error(`WebSocket closed: ${event.reason}`);
 };
 
-// Disable controls and enable autoplay
-videoElement.controls = false;
-videoElement.autoplay = true;
+// Enable controls for the video
+videoElement.controls = true;
+
+
 </script>

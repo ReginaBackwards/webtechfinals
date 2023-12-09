@@ -73,9 +73,6 @@
 
     socket.onopen = () => {
       console.log('WebSocket connection opened');
-
-      // When the WebSocket connection is opened, send the initial video information
-      sendInitialVideoData();
     };
 
     socket.onclose = (event) => {
@@ -227,7 +224,8 @@
         });
     }
     function checkForVideo() {
-      const player = videojs('my-video');
+
+      const player = videojs('my-video'); 
 
       fetch('/fetchVideo')
         .then((response) => response.json())
@@ -252,6 +250,40 @@
         });
     }
 
+    function setVideoInfo() {
+      const player = videojs('my-video'); 
+      const currentSrc = player.src();
+      const currentTimeStamp = player.currentTime();
+
+      // Prepare the data to be sent to the server
+      const videoInfo = {
+        src: currentSrc,
+        currentTime: currentTimeStamp,
+      };
+
+      // Fetch options
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(videoInfo),
+      };
+
+      // Fetch function to send data to the server
+      fetch('/setVideoInfo', options)
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response from the server if needed
+          console.log(data);
+        })
+        .catch(error => {
+          // Handle errors during the fetch request
+          console.error('Error during fetch:', error);
+        });
+    }
+
+    setInterval(setVideoInfo, 1000);
     setInterval(checkForVideo, 1000);
 
     let isPlaying = true;
