@@ -7,7 +7,7 @@
         ROSANTO, Marvin
         SLAY, America Eloise
  -->
- 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,9 +84,9 @@
       console.log('WebSocket connection opened');
     };
 
-  socket.onclose = (event) => {
-    console.error(`WebSocket closed: ${event.reason}`);
-  };
+    socket.onclose = (event) => {
+      console.error(`WebSocket closed: ${event.reason}`);
+    };
 
     fetch('/getUserSchedules')
       .then(response => response.json())
@@ -271,18 +271,18 @@
             const newVideo = videos[0];
             const currentSrc = player.currentSrc();
 
-        // Check if the new video is different from the currently playing video
-        if (newVideo.filepath !== currentSrc || player.paused()) {
-          // Directly set the source and play the video
-          player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
-          player.play();
-        }
-      } 
-    })
-    .catch((error) => {
-      console.error('Error fetching video:', error);
-    });
-}
+            // Check if the new video is different from the currently playing video
+            if (newVideo.filepath !== currentSrc || player.paused()) {
+              // Directly set the source and play the video
+              player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
+              player.play();
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching video:', error);
+        });
+    }
 
     function setVideoInfo() {
       const player = videojs('my-video');
