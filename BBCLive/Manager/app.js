@@ -793,13 +793,14 @@ app.get('/getUserSchedules', (req, res) => {
   if (req.session.theuser) {
     const username = req.session.theuser.username;
     const query = 'SELECT day, username FROM schedules WHERE username = ?;';
-    
     db.query(query, [username], (error, results) => {
       if (error) {
         console.error('Error fetching schedules:', error);
         res.status(500).send('Server Error');
       } else {
         const schedules = results.map(result => ({ day: result.day, username: result.username }));
+        console.log(username)
+        console.log(schedules)
         res.json(schedules);
       }
     });
