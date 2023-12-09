@@ -189,3 +189,12 @@ section{
   height: 80%;
   border-radius: 100%;
 }
+
+#my-video {
+  height: 650px;
+  width: 100%;
+}
+
+#webcamContainer {
+ display: none;
+}

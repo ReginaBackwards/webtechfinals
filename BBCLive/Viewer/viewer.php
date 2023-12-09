@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="viewerstyles/css/viewer-style.css">
     <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
     <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <title>Viewer</title>
 </head>
 <body>
@@ -15,15 +16,29 @@
     <section>
     <h1>Welcome to BBC Live!</h1>
         <div class="container">
-            <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
-            </video>
+    
+            <iframe src="http://localhost:3000/Manager/Content%20Manager/cm-home.html#my-video" title="description" style=" width:100%; height:100%; margin-top:-100px; "></iframe>
+                
             <div class="title-below-video" id="livestream-title">
             <?php include 'fetchDate.php'; ?>
             <p>Livestream for <?php echo $livestreamDate; ?></p>
             </div>
         </div>
+     <!-- <script>
+        $(document).ready(function () {
+            // Use jQuery load function to load only the section with ID 'my-video'
+            $('#iframe').load('http://localhost:3000/Manager/Content%20Manager/cm-home.html #my-video');
+        });
+    </script> -->
+        <!-- <script>
+            var iframe = document.getElementById('mirror');
+            var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            var iframe = document.getElementById('my-video');
+            var videoSource = iframe.getAttribute('src');
 
-        <script>
+            </script> -->
+
+        <!-- <script>
             function updateVideoPlayer() {
                 // Fetch video information from Node.js server
                 fetch('http://localhost:3000/fetchVideo')
@@ -53,7 +68,7 @@
 
             // Periodically update the video player
             setInterval(updateVideoPlayer, 15000); 
-        </script>
+        </script> -->
 
     </section>
 </body>

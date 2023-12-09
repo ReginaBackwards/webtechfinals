@@ -20,11 +20,9 @@
 
         <ul>
           <li><a href="cm-home.html">Home</a></li>
-          <li><a href="#" onclick="goToResources();">Resources</a></li>
-          <!-- <li><button onclick="goToResources()" id="btn">Resources</button></li> -->
+          <li><button onclick="goToResources()" id="btn">Resources</button></li>
           <li><a href="cm-logs.html">Logs</a></li>
-          <li><a href="#" onclick="goToEditor();">Editor</a></li>
-          <!-- <li><button onclick="goToEditor()">Editor</button></li> -->
+          <li><button onclick="goToEditor()">Editor</button></li>
         </ul>
 
         <div class="header-profile">
@@ -202,9 +200,8 @@ async function toggleMedia() {
         const webcamVideo = document.createElement('video');
         webcamVideo.id = 'webcamVid';
         webcamVideo.className = 'video-js';
-        webcamVideo.preload = 'auto';
-        webcamVideo.height = '500';
-        webcamVideo.width = '900';
+        webcamVideo.height = '500px';
+        webcamVideo.width = '900px';
         webcamVideo.controls = true;
         webcamVideo.srcObject = stream;
 
