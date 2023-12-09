@@ -523,7 +523,6 @@ app.get('/gotoeditprofile', (req, res) => {
 app.get('/cm-home', (req, res) => {
   //if checks for user session existence
   res.json({success:true, redirectURL: '/'})
-  // res.json({ success: true });
 });
 
 app.get('/gotoeditor', (req, res) => {

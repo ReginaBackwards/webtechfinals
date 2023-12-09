@@ -22,7 +22,6 @@
           <li><a href="cm-home.html">Home</a></li>
           <li><button onclick="goToResources()" id="btn">Resources</button></li>
           <li><a href="cm-logs.html">Logs</a></li>
-          <li><button onclick="goToEditor()">Editor</button></li>
         </ul>
 
         <div class="header-profile">
@@ -45,41 +44,49 @@
     <div class="container" id="dashboard">
       <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
       </video>
-      
+
     </div>
-    <div class="container" id="webcamContainer" >
+    <div class="container" id="webcamContainer">
     </div>
     <button onclick="toggleMedia()">Toggle Live</button>
 
     <div class="scheduleContainer">
       <h1>Schedules</h1>
       <div id="scheduleButtons">
-        
+
       </div>
     </div>
   </section>
   <script>
- fetch('/getUserSchedules')
-    .then(response => response.json())
-    .then(schedules => {
-      // Create buttons for each schedule
-      const scheduleButtonsContainer = document.getElementById('scheduleButtons');
+    fetch('/getUserSchedules')
+      .then(response => response.json())
+      .then(schedules => {
+        const currentDate = new Date(); // Get the current date
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-      schedules.forEach(schedule => {
-        const button = document.createElement('button');
-        button.textContent = `${schedule.day}`;
-        button.setAttribute('class', 'sched'); // Set the class attribute for the button
-        button.addEventListener('click', () => {
-          // Add your logic here for what happens when a button is clicked
-          
-          goToEditor();
-          console.log(`Button clicked for ${schedule.day}`);
-        });
+        // Get the current day index (0 for Sunday, 1 for Monday, etc.)
+        const currentDayIndex = currentDate.getDay();
 
-        scheduleButtonsContainer.appendChild(button);
-      });
-    })
-    .catch(error => console.error('Error fetching schedules:', error));
+        // Generate buttons for the next 7 days
+        const scheduleButtonsContainer = document.getElementById('scheduleButtons');
+        for (let i = 0; i < 7; i++) {
+          const nextDate = new Date(currentDate);
+          nextDate.setDate(currentDate.getDate() + (i - currentDayIndex + 7) % 7); // Calculate the next date
+
+          const button = document.createElement('button');
+          button.textContent = `${daysOfWeek[nextDate.getDay()]} - ${nextDate.toDateString()}`;
+          button.setAttribute('class', 'sched'); // Set the class attribute for the button
+          button.addEventListener('click', () => {
+            // Add your logic here for what happens when a button is clicked
+            const chosenDate = `${daysOfWeek[nextDate.getDay()]} - ${nextDate.toDateString()}`;
+            goToEditor(chosenDate);
+            console.log(`Button clicked for ${chosenDate}`);
+          });
+
+          scheduleButtonsContainer.appendChild(button);
+        }
+      })
+      .catch(error => console.error('Error fetching schedules:', error));
     // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
@@ -101,7 +108,6 @@
           console.error('Error fetching content manager details:', error);
         });
     }
-
 
     // Call the function to display content manager details on page load
     displayCmDetails();
@@ -141,22 +147,23 @@
         });
     }
 
-    function goToEditor() {
+    function goToEditor(chosenDate) {
       // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoeditor')
+      fetch(`/gotoeditor`)
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/cm-editor.html';
+            // Redirect to cm-editor.html after a successful request
+            window.location.href = `/Manager/Content%20Manager/cm-editor.html?chosenDate=${encodeURIComponent(chosenDate)}`;
           } else {
-            alert('Failed to go to Resources');
+            alert('Failed to go to Editor');
           }
         })
         .catch(error => {
-          console.error('Error during request to go to Resources:', error);
+          console.error('Error during request to go to Editor:', error);
         });
     }
+
 
 
     // Function to handle logout
@@ -179,7 +186,7 @@
     }
 
     function checkForVideo() {
-      fetch('/fetchVideo') 
+      fetch('/fetchVideo')
         .then((response) => response.json())
         .then((data) => {
           const videos = data.videos;
@@ -202,47 +209,47 @@
           console.error('Error fetching video:', error);
         });
     }
-    setInterval(checkForVideo, 1000); 
-    
+    setInterval(checkForVideo, 1000);
+
     let isPlaying = true;
     let mediaRecord;
 
-async function toggleMedia() {
-    const videoContainer = document.getElementById('dashboard');
-    const webcamContainer = document.getElementById('webcamContainer');
-    const webcamVideo = document.getElementById('webcamVid');
-    // const webcamPlayer = videojs('webcamVid');
-    const player = videojs('my-video')
+    async function toggleMedia() {
+      const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const webcamVideo = document.getElementById('webcamVid');
+      // const webcamPlayer = videojs('webcamVid');
+      const player = videojs('my-video')
 
-    if (isPlaying) {
+      if (isPlaying) {
 
-      // toggleBtn.textContent = 'start webcam';
+        // toggleBtn.textContent = 'start webcam';
         player.pause();
         videoContainer.style.display = 'none';
         webcamContainer.style.display = 'block';
 
         try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true});
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-        const webcamVideo = document.createElement('video');
-        webcamVideo.id = 'webcamVid';
-        webcamVideo.className = 'video-js';
-        webcamVideo.height = '500px';
-        webcamVideo.width = '900px';
-        webcamVideo.controls = true;
-        webcamVideo.srcObject = stream;
+          const webcamVideo = document.createElement('video');
+          webcamVideo.id = 'webcamVid';
+          webcamVideo.className = 'video-js';
+          webcamVideo.height = '500px';
+          webcamVideo.width = '900px';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
 
-        webcamContainer.innerHTML = '';
-        webcamContainer.appendChild(webcamVideo);
-        console.log(stream);
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
           // mediaRecord = new MediaRecorder(stream);
 
           webcamVideo.play();
-            console.log(stream);
+          console.log(stream);
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
-    } else {
+      } else {
         const webcamVideo2 = document.getElementById('webcamVid');
         if (webcamVideo2) {
           const webcamStream = webcamVideo2.srcObject;
@@ -250,17 +257,17 @@ async function toggleMedia() {
             const tracks = webcamStream.getTracks();
             tracks.forEach(track => track.stop());
           };
-            webcamVideo2.srcObject = null;
-          }
+          webcamVideo2.srcObject = null;
+        }
         videoContainer.style.display = 'block';
         webcamContainer.style.display = 'none';
 
         const player = videojs('my-video');
         player.play();
-    }
+      }
 
-    isPlaying = !isPlaying;
-}
+      isPlaying = !isPlaying;
+    }
 
   </script>
 </body>
