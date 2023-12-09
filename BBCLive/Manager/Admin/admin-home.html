@@ -172,6 +172,8 @@
             </div>
         </div>
 
+        <footer><div id="footer"></div></footer>
+
 
         <!-- Bootstrap core JavaScript-->
         <script src="Manager/Admin/adminstyles/bootstrap/vendor/jquery/jquery.min.js"></script>
@@ -232,6 +234,12 @@
                 // Function to filter table rows based on search input
                 $('#userSearch').on('input', function () {
                 });
+
+                fetch('/res/footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer').innerHTML = data;
+        });
 
                 // Function to reset user password and ban status via AJAX
                 function resetUser(username) {
