@@ -236,6 +236,23 @@ h1 {
   cursor: move;
 }
 
+.titleContent {
+  display: flex;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.del-btn {
+  margin-left: 30px;
+  background-color: red;
+  color: white;
+}
+
+video {
+  height: 200px;
+  width: 400px;
+}
+
 .topContainer {
   padding: 20px;
   display: flex;

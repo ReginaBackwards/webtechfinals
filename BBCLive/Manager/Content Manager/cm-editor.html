@@ -198,21 +198,23 @@
 
       // Create a title element and append it to the draggable div
       const titleElement = document.createElement("div");
+      titleElement.className = "titleContent"
       titleElement.textContent = title;
       draggableDiv.appendChild(titleElement);
 
+      // Create a unique video element for each scene
+      const videoElement = document.createElement("video");
+      videoElement.controls = true;
+
       // Create a delete button
       const deleteButton = document.createElement("button");
+      deleteButton.className = "del-btn"
       deleteButton.textContent = "Delete";
       deleteButton.addEventListener("click", function () {
         // Remove the draggableDiv when the delete button is clicked
         draggableDiv.remove();
       });
-      draggableDiv.appendChild(deleteButton);
-
-      // Create a unique video element for each scene
-      const videoElement = document.createElement("video");
-      videoElement.controls = true;
+     titleElement.appendChild(deleteButton);
 
       // Fetch the file path and set the source for the video element
       getResourceFilePath(content)
