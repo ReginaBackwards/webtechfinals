@@ -21,9 +21,9 @@
             </div>
       
             <ul>
-              <li><a href="cm-home.html">Home</a></li>
-              <li><a href="#" onclick="goToResources();">Resources</a></li>
-              <li><a href="cm-logs.html">Logs</a></li>
+              <li><a href="#" onclick="goToHome()">Home</a></li>
+              <li><a href="#" onclick="goToResources()">Resources</a></li>
+              <li><a href="#" onclick="goToLogs()">Logs</a></li>
             </ul>
       
             <div class="header-profile">
@@ -31,7 +31,7 @@
               </div>
               <div class="line"></div>
               <div class="user-info">
-                <a href="">Username</a>
+                <a href="#" onclick="goToProfile()">Username</a>
                 <button id="logoutBtn" onclick="logout()">Logout</button>
               </div>
             </div>
@@ -100,24 +100,58 @@
 
     <script>
 
-// Function to handle redirect to resources.html
-    function goToResources() {
+function goToHome() {
       // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoresources')
+      fetch('/gotoLogs')
         .then(response => response.json())
         .then(data => {
           if (data.success) {
             // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/resources.html';
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
           } else {
-            alert('Failed to go to Resources');
+            alert('Failed to go to Logs');
           }
         })
         .catch(error => {
-          console.error('Error during request to go to Resources:', error);
+          console.error('Error during request to go to Logs:', error);
         });
     }
 
+    function goToLogs() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToProfile() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/settings.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+// Function to handle redirect to resources.html
     function goToResources() {
       // Make an AJAX request to the server to handle the redirection
       fetch('/gotoresources')
