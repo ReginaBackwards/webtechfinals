@@ -73,7 +73,15 @@
           
     </section>
 
-
+<footer><div id="footer"></div></footer>
 
 </body>
+
+<script>
+  fetch('/res/footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer').innerHTML = data;
+        });
+</script>
 </html>

@@ -62,53 +62,62 @@
     </div>
     
 </div>
+
+<footer><div id="footer" style="position: relative;"></div></footer>
+
 <script>
-$(document).ready(function () {
-    $('#loginButton').click(function (event) {
-        // Prevent the default form submission
-        event.preventDefault();
+    $(document).ready(function () {
+        fetch('/res/footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer').innerHTML = data;
+        });
 
-        // Get the values of username and password
-        var username = $('#exampleInputUsername').val();
-        var password = $('#exampleInputPassword').val();
-
-        // Make the AJAX request
-        $.ajax({
-            method: 'POST',
-            url: '/login',
-            data: { username, password },
-            success: function (response) {
-                if (response.success) {
-                    console.log("PUMASOK")
-                    alert('Login successful');
-                    // Redirect to the appropriate page if needed
-                    window.location.href = response.redirectURL;
-                } else {
-                    console.log(response.error)
-                    // Display an alert for specific scenarios
-                    if (response.error === 'User is already logged in') {
-                        alert('User is already logged in');
-                    } else if (response.error === 'User is banned') {
-                        alert('User is banned');
+        $('#loginButton').click(function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            
+            // Get the values of username and password
+            var username = $('#exampleInputUsername').val();
+            var password = $('#exampleInputPassword').val();
+            
+            // Make the AJAX request
+            $.ajax({
+                method: 'POST',
+                url: '/login',
+                data: { username, password },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("PUMASOK")
+                        alert('Login successful');
+                        // Redirect to the appropriate page if needed
+                        window.location.href = response.redirectURL;
                     } else {
-                        alert('Invalid credentials');
+                        console.log(response.error)
+                        // Display an alert for specific scenarios
+                        if (response.error === 'User is already logged in') {
+                            alert('User is already logged in');
+                        } else if (response.error === 'User is banned') {
+                            alert('User is banned');
+                        } else {
+                            alert('Invalid credentials');
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error logging in:', error);
+                    // Display an alert for other errors
+                    if (xhr.status === 400) {
+                        alert('User is already logged in');
+                    } else {
+                        alert('Error logging in: ' + error);
                     }
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error('Error logging in:', error);
-                // Display an alert for other errors
-                if (xhr.status === 400) {
-                    alert('User is already logged in');
-                } else {
-                    alert('Error logging in: ' + error);
-                }
-            }
+            });
         });
     });
-});
-
-
+    
+    
 </script>
 
 </body>
