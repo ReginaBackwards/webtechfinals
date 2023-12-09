@@ -31,19 +31,14 @@
 
     <!-- Page Wrapper -->
     <div id="wrapper">
-
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
             <!-- Main Content -->
             <div id="content">
-
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -127,23 +122,11 @@
 
                 </div>
                 <!-- End of Main Content -->
-
-                <!-- Footer -->
-                <!-- <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2020</span>
-                        </div>
-                    </div>
-                </footer> -->
                 <?php
                     include('./../../../BBCLive/res/footer.html')
                 ?>
-                <!-- End of Footer -->
-
             </div>
             <!-- End of Content Wrapper -->
-
         </div>
         <!-- End of Page Wrapper -->
 
@@ -172,8 +155,9 @@
             </div>
         </div>
 
-        <footer><div id="footer"></div></footer>
-
+        <footer>
+            <div id="footer"></div>
+        </footer>
 
         <!-- Bootstrap core JavaScript-->
         <script src="Manager/Admin/adminstyles/bootstrap/vendor/jquery/jquery.min.js"></script>
@@ -200,7 +184,7 @@
                 // Make an AJAX request to get the admin details from the server
                 $.ajax({
                     method: 'GET',
-                    url: '/getAdminDetails', // You may need to adjust the URL
+                    url: '/getAdminDetails',
                     success: function (admin) {
                         // Update the admin's image and name on the page
                         $('#adminImage').attr('src', admin.dp);
@@ -236,10 +220,10 @@
                 });
 
                 fetch('/res/footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('footer').innerHTML = data;
-        });
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('footer').innerHTML = data;
+                    });
 
                 // Function to reset user password and ban status via AJAX
                 function resetUser(username) {
@@ -253,7 +237,7 @@
 
                             const userRow = $(`#userListBody tr:contains('${username}')`);
 
-                            // Update the username in the table (assuming the username is in the 3rd column)
+                            // Update the username in the table
                             userRow.find('td:nth-child(3)').text(username);
 
                             // Reset ban status in the table
@@ -269,7 +253,6 @@
                         }
                     });
                 }
-
 
                 // Function to handle delete user confirmation
                 $('#userListBody').on('click', '.delete', function () {
@@ -399,71 +382,70 @@
                     location.reload();
                 });
 
+                // Handle form submission
+                $('#addUserForm').submit(function (event) {
+                    event.preventDefault();
 
-// Handle form submission
-$('#addUserForm').submit(function (event) {
-    event.preventDefault();
+                    // Get the input values
+                    const firstNameInput = document.getElementById('firstName');
+                    const lastNameInput = document.getElementById('lastName');
+                    const userNameInput = document.getElementById('userName');
 
-    // Get the input values
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
-    const userNameInput = document.getElementById('userName');
+                    // Trim leading and trailing spaces from input values
+                    const firstName = firstNameInput.value.trim();
+                    const lastName = lastNameInput.value.trim();
+                    const userName = userNameInput.value.trim();
 
-    // Trim leading and trailing spaces from input values
-    const firstName = firstNameInput.value.trim();
-    const lastName = lastNameInput.value.trim();
-    const userName = userNameInput.value.trim();
-
-    if (userName.length < 3 || userName.length > 20) {
-        alert('Username must be between 3 and 20 characters.');
-    } else {
-        if (firstName.length < 1 || firstName.length > 50) {
-            alert('First Name must be between 1 and 50 characters.');
-        } else {
-            if (lastName.length < 1 || lastName.length > 50) {
-                alert('Last Name must be between 1 and 50 characters.');
-            } else {
-                // Check username availability before submitting the form
-                $.ajax({
-                    method: 'GET',
-                    url: `/checkUsernameExists/${userName}`, // Fixed variable name here
-                    success: function (response) {
-                        if (response.exists) {
-                            alert('Username is already taken. Please choose a different username.');
+                    if (userName.length < 3 || userName.length > 20) {
+                        alert('Username must be between 3 and 20 characters.');
+                    } else {
+                        if (firstName.length < 1 || firstName.length > 50) {
+                            alert('First Name must be between 1 and 50 characters.');
                         } else {
-                            // Collect form data
-                            const formData = {
-                                firstName: $('#firstName').val(),
-                                lastName: $('#lastName').val(),
-                                userName: userName, // Fixed variable name here
-                            };
+                            if (lastName.length < 1 || lastName.length > 50) {
+                                alert('Last Name must be between 1 and 50 characters.');
+                            } else {
+                                // Check username availability before submitting the form
+                                $.ajax({
+                                    method: 'GET',
+                                    url: `/checkUsernameExists/${userName}`,
+                                    success: function (response) {
+                                        if (response.exists) {
+                                            alert('Username is already taken. Please choose a different username.');
+                                        } else {
+                                            // Collect form data
+                                            const formData = {
+                                                firstName: $('#firstName').val(),
+                                                lastName: $('#lastName').val(),
+                                                userName: userName,
+                                            };
 
-                            // Make an AJAX request to add the new user
-                            $.ajax({
-                                method: 'POST',
-                                url: `/addUser`,
-                                data: formData,
-                                success: function (response) {
-                                    alert(`User ${formData.userName} added successfully`);
-                                    $('#firstName').val('');
-                                    $('#lastName').val('');
-                                    $('#userName').val('');
-                                },
-                                error: function (error) {
-                                    alert('Failed to add user. Please try again.');
-                                }
-                            });
+                                            // Make an AJAX request to add the new user
+                                            $.ajax({
+                                                method: 'POST',
+                                                url: `/addUser`,
+                                                data: formData,
+                                                success: function (response) {
+                                                    alert(`User ${formData.userName} added successfully`);
+                                                    $('#firstName').val('');
+                                                    $('#lastName').val('');
+                                                    $('#userName').val('');
+                                                },
+                                                error: function (error) {
+                                                    alert('Failed to add user. Please try again.');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    error: function (error) {
+                                        console.error('Error checking username:', error);
+                                        alert('Failed to check username. Please try again.');
+                                    }
+                                });
+                            }
                         }
-                    },
-                    error: function (error) {
-                        console.error('Error checking username:', error);
-                        alert('Failed to check username. Please try again.');
                     }
                 });
-            }
-        }
-    }
-});
 
             });
 
@@ -485,7 +467,6 @@ $('#addUserForm').submit(function (event) {
                             method: 'GET',
                             url: '/getSchedules',
                             success: function (schedules) {
-
 
                                 // Days of the week
                                 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -583,19 +564,18 @@ $('#addUserForm').submit(function (event) {
                 }
             }
 
-                $('#logoutButton').click(function () {
-                    console.log("THIS PRINTS")
-                    $.ajax({
-                        method: 'GET',
-                        url: '/logout',
-                        success: function () {
-                            window.location.href = '/'
-                        },
-                        error: function (error) {
-                            console.error('Error logging out:', error);
-                        }
-                    });
+            $('#logoutButton').click(function () {
+                $.ajax({
+                    method: 'GET',
+                    url: '/logout',
+                    success: function () {
+                        window.location.href = '/'
+                    },
+                    error: function (error) {
+                        console.error('Error logging out:', error);
+                    }
                 });
+            });
         </script>
 
         <!-- Reset User Confirmation Modal -->
@@ -726,4 +706,5 @@ $('#addUserForm').submit(function (event) {
             });
         </script>
 </body>
+
 </html>
