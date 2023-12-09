@@ -323,59 +323,42 @@
     let mediaRecord;
 
     async function toggleMedia() {
-      const videoContainer = document.getElementById('dashboard');
-      const webcamContainer = document.getElementById('webcamContainer');
-      const webcamVideo = document.getElementById('webcamVid');
-      // const webcamPlayer = videojs('webcamVid');
-      const player = videojs('my-video')
+  const videoContainer = document.getElementById('dashboard');
+  const webcamContainer = document.getElementById('webcamContainer');
+  const player = videojs('my-video');
 
-      if (isPlaying) {
+  if (isPlaying) {
+    player.pause();
+    videoContainer.style.display = 'none';
+    webcamContainer.style.display = 'block';
 
-        // toggleBtn.textContent = 'start webcam';
-        player.pause();
-        videoContainer.style.display = 'none';
-        webcamContainer.style.display = 'block';
+    try {
+      webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-          const webcamVideo = document.createElement('video');
-          webcamVideo.id = 'webcamVid';
-          webcamVideo.className = 'video-js';
-          webcamVideo.height = '500px';
-          webcamVideo.width = '900px';
-          webcamVideo.controls = true;
-          webcamVideo.srcObject = stream;
-
-          webcamContainer.innerHTML = '';
-          webcamContainer.appendChild(webcamVideo);
-          console.log(stream);
-          // mediaRecord = new MediaRecorder(stream);
-
-          webcamVideo.play();
-          console.log(stream);
-        } catch (error) {
-          console.error('Error accessing webcam', error);
-        }
-      } else {
-        const webcamVideo2 = document.getElementById('webcamVid');
-        if (webcamVideo2) {
-          const webcamStream = webcamVideo2.srcObject;
-          if (webcamStream) {
-            const tracks = webcamStream.getTracks();
-            tracks.forEach(track => track.stop());
-          };
-          webcamVideo2.srcObject = null;
-        }
-        videoContainer.style.display = 'block';
-        webcamContainer.style.display = 'none';
-
-        const player = videojs('my-video');
-        player.play();
-      }
-
-      isPlaying = !isPlaying;
+      player.src({ src: URL.createObjectURL(webcamStream), type: 'video/webm' });
+      player.load();
+      player.play();
+    } catch (error) {
+      console.error('Error accessing webcam', error);
     }
+  } else {
+    if (webcamStream) {
+      const tracks = webcamStream.getTracks();
+      tracks.forEach(track => track.stop());
+      webcamStream = null;
+    }
+
+    videoContainer.style.display = 'block';
+    webcamContainer.style.display = 'none';
+
+    // Replace the video source with an empty string to stop the webcam stream
+    player.src('');
+    player.load();
+    player.play();
+  }
+
+  isPlaying = !isPlaying;
+}
 
   </script>
 </body>

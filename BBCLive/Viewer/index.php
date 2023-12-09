@@ -21,14 +21,14 @@
 </section>
 </body>
 <script>
-const socket = new WebSocket('ws://localhost:5000');
+const socket = new WebSocket('ws://192.168.2.103:5000');
 const videoElement = document.getElementById('my-video');
 
 let currentVideoUrl = null; // Track the current video URL
 
 // Function to fetch video information
 function fetchVideoInfo() {
-  fetch('http://localhost:3000/getVideoInfo')  // Replace with the actual endpoint to fetch video info
+  fetch('http://192.168.2.103:3000/getVideoInfo')  // Replace with the actual endpoint to fetch video info
     .then((response) => response.json())
     .then((data) => {
       const videoUrl = data.currentSrc;
