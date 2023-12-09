@@ -42,22 +42,51 @@
   <section>
     <h1>Home</h1>
     <div class="container" id="dashboard">
-      <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
+      <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
       </video>
-
     </div>
     <div class="container" id="webcamContainer">
     </div>
     <button onclick="toggleMedia()">Toggle Live</button>
-
+  
     <div class="scheduleContainer">
       <h1>Schedules</h1>
       <div id="scheduleButtons">
-
       </div>
     </div>
   </section>
+  
   <script>
+
+const socket = new WebSocket('ws://localhost:5000');
+
+  // Assuming you have a function to get the current video URL
+  function getCurrentVideoUrl() {
+    const videoPlayer = document.getElementById('my-video');
+
+    if(video.src === "./../../Content Hosting/videos/commercials/streamStartingSoon.mp4"){
+      return videoPlayer.src;
+    }else{
+      return `./../..${videoPlayer.src}`;
+    }
+      
+  }
+
+  socket.onopen = () => {
+    console.log('WebSocket connection opened');
+  };
+
+  socket.onclose = (event) => {
+    console.error(`WebSocket closed: ${event.reason}`);
+  };
+
+  setInterval(() => {
+  const videoUrl = getCurrentVideoUrl;
+  console.log('Sending video URL:', videoUrl);  // Debugging message
+  socket.send(videoUrl);
+}, 10000);
+
+
     fetch('/getUserSchedules')
       .then(response => response.json())
       .then(schedules => {
@@ -189,31 +218,33 @@
           console.error('Error during logout:', error);
         });
     }
-
     function checkForVideo() {
-      fetch('/fetchVideo')
-        .then((response) => response.json())
-        .then((data) => {
-          const videos = data.videos;
+  fetch('/fetchVideo')
+    .then((response) => response.json())
+    .then((data) => {
+      const videos = data.videos;
+      const player = videojs('my-video');
 
-          if (videos && videos.length > 0) {
-            const video = videos[0];
-            const player = videojs('my-video');
-            console.log(video);
+      if (videos && videos.length > 0) {
+        const video = videos[0];
 
-            // Check if the video is not already playing
-            if (player.paused()) {
-              // Change the source and play the video
-              player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
-              player.load();
-              player.play();
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching video:', error);
-        });
-    }
+        // Check if the video is not already playing
+        if (player.paused()) {
+          // Change the source and play the video
+          player.src({ src: `./../..${video.filepath}`, type: 'video/mp4' });
+          player.load();
+          player.play();
+        }
+      } else if (!player.paused()) {
+        // No videos available, and the player is currently playing, pause it
+        player.pause();
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching video:', error);
+    });
+}
+
     setInterval(checkForVideo, 1000);
 
     let isPlaying = true;
