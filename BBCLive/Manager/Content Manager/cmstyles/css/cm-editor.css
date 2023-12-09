@@ -227,3 +227,11 @@ h1 {
   color: #fff;
   font-weight: bold;
 }
+
+/* Add these styles to your existing CSS or create a new section for it */
+.scene-cell {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  cursor: move;
+}
