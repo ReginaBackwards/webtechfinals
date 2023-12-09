@@ -326,41 +326,60 @@
     async function toggleMedia() {
       const videoContainer = document.getElementById('dashboard');
       const webcamContainer = document.getElementById('webcamContainer');
-      const player = videojs('my-video');
+      const webcamVideo = document.getElementById('webcamVid');
+      // const webcamPlayer = videojs('webcamVid');
+      const player = videojs('my-video')
 
       if (isPlaying) {
+
+        // toggleBtn.textContent = 'start webcam';
         player.pause();
         videoContainer.style.display = 'none';
         webcamContainer.style.display = 'block';
 
         try {
-          webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-          player.src({ src: URL.createObjectURL(webcamStream), type: 'video/webm' });
-          player.load();
-          player.play();
+          const webcamVideo = document.createElement('video');
+          webcamVideo.id = 'webcamVid';
+          webcamVideo.className = 'video-js';
+          webcamVideo.height = '500px';
+          webcamVideo.width = '900px';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
+
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
+          // mediaRecord = new MediaRecorder(stream);
+
+          webcamVideo.play();
+          console.log(stream);
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
       } else {
-        if (webcamStream) {
-          const tracks = webcamStream.getTracks();
-          tracks.forEach(track => track.stop());
-          webcamStream = null;
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+          };
+          webcamVideo2.srcObject = null;
         }
-
         videoContainer.style.display = 'block';
         webcamContainer.style.display = 'none';
 
-        // Replace the video source with an empty string to stop the webcam stream
-        player.src('');
-        player.load();
+        const player = videojs('my-video');
         player.play();
+        player.src = stream
+        console.log(player.src)
+        setVideoInfo()
       }
 
       isPlaying = !isPlaying;
     }
-
   </script>
 </body>
 
