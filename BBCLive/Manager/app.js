@@ -375,14 +375,24 @@ app.post('/setSchedule', (req, res) => {
 // Log out endpoint
 app.get('/logout', (req, res) => {
   const user = req.session.theuser;
+  let username ="";
   
   // Check if the user has an active session
   if (user) {
-    const username = user.username;
+     username = user.username;
     delete activeSessions[username];
   }
-  
+  const query = `UPDATE users SET sessions = 0 WHERE username='${username.toString()}'`;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error('Error setting session status:', error);
+      res.status(500).send('Server Error');
+    } else {
+    }
+  });
   req.session.destroy();
+
   res.json({ success: true });
 });
 
