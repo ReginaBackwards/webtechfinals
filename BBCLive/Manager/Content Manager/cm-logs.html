@@ -11,9 +11,34 @@
 </head>
 
 <body>
-    <header>
-        <div class="logo"><img src="../../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
-    </header>
+    <header class="top-nav">
+        <div class="header-container">
+          <nav>
+            <div class="header-logo">
+              <a href=".">
+                <img src="../../res/slu-logo.png" alt="slu-Logo">
+              </a>
+            </div>
+      
+            <ul>
+              <li><a href="cm-home.html">Home</a></li>
+              <li><a href="#" onclick="goToResources();">Resources</a></li>
+              <li><a href="cm-logs.html">Logs</a></li>
+              <li><a href="#" onclick="goToEditor();">Editor</a></li>
+            </ul>
+      
+            <div class="header-profile">
+              <div id="cmDetails" class="cmDets">
+              </div>
+              <div class="line"></div>
+              <div class="user-info">
+                <a href="">Username</a>
+                <button id="logoutBtn" onclick="logout()">Logout</button>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
 
     <section>
         <h1>Logs</h1>
@@ -75,6 +100,86 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+
+// Function to handle redirect to resources.html
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+     // Function to handle logout
+     function logout() {
+      // Make an AJAX request to the logout endpoint
+      fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logout response:', data);
+          if (data.success) {
+            alert('Logout successful');
+            window.location.href = '/'
+          } else {
+            alert('Logout failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
+
+     // Function to fetch and display content manager details
+     function displayCmDetails() {
+      // Make an AJAX request to the endpoint that provides content manager details
+      fetch('/getCmDetails')
+        .then(response => response.json())
+        .then(cmDetails => {
+          // Update the HTML with content manager details
+          const cmDetailsDiv = document.getElementById('cmDetails');
+          cmDetailsDiv.innerHTML = `
+          <div class="avatar-container">
+            <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
+          </div>
+          
+          `;
+          const usernameLink = document.querySelector('.user-info a');
+          usernameLink.textContent = cmDetails.username;
+        })
+        .catch(error => {
+          console.error('Error fetching content manager details:', error);
+        });
+    }
+
+      // Call the function to display content manager details on page load
+      displayCmDetails();
+
         const scenesTable = document.getElementById('scenesTable');
         const searchInput = document.getElementById('Search');
         const sortModal = document.getElementById('sortModal');

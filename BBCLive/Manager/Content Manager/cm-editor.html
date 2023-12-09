@@ -23,7 +23,6 @@
         <li><a href="cm-home.html">Home</a></li>
         <li><a href="#" onclick="goToResources();">Resources</a></li>
         <li><a href="cm-logs.html">Logs</a></li>
-        <li><a href="#" onclick="goToEditor();">Editor</a></li>
       </ul>
 
       <div class="header-profile">
@@ -335,24 +334,6 @@
 
     // Initial fetch of resources when the page loads
     fetchResources();
-
-    // Function to handle logout
-    function logout() {
-      fetch('/logout')
-        .then(response => response.json())
-        .then(data => {
-          console.log('Logout response:', data);
-          if (data.success) {
-            alert('Logout successful');
-            window.location.href = '/';
-          } else {
-            alert('Logout failed');
-          }
-        })
-        .catch(error => {
-          console.error('Error during logout:', error);
-        });
-    }
 
     // Function to fetch and display content manager details
     function displayCmDetails() {
