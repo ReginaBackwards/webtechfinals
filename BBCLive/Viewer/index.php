@@ -17,7 +17,7 @@
 
     <section>
 
-<video id="my-video" width="640" height="360" controls autoplay></video>
+<video id="my-video" width="100%" height="92%" controls autoplay></video>
 </section>
 </body>
 <script>
