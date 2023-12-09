@@ -38,6 +38,12 @@ app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
+// Enable CORS (for development purposes, you might want to tighten this in a production environment)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
@@ -513,6 +519,12 @@ app.get('/gotoresources', (req, res) => {
   res.json({ success: true });
 });
 
+// Endpoint to handle the redirect to logs.html
+app.get('/gotologs', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
 // Endpoint to handle the redirect to settings.html
 app.get('/gotoeditprofile', (req, res) => {
   //if checks for user session existence
@@ -807,4 +819,19 @@ app.get('/getUserSchedules', (req, res) => {
   } else {
     res.redirect('/');
   }
+});
+
+// Endpoint to fetch scenes from the database
+app.get('/fetchScenes', (req, res) => {
+  const query = 'SELECT * FROM scenes'; // Assuming your table name is 'scenes'
+
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Error executing query:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+      }
+
+      res.json(results);
+  });
 });
