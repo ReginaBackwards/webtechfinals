@@ -10,36 +10,36 @@
   <title>HOME</title>
 </head>
 
-  <header class="top-nav">
-    <div class="header-container">
-      <nav>
-        <div class="header-logo">
-          <a href=".">
-            <img src="../../res/slu-logo.png" alt="slu-Logo">
-          </a>
+<header class="top-nav">
+  <div class="header-container">
+    <nav>
+      <div class="header-logo">
+        <a href=".">
+          <img src="../../res/slu-logo.png" alt="slu-Logo">
+        </a>
+      </div>
+
+      <ul>
+        <li><a href="cm-home.html">Home</a></li>
+        <li><button onclick="goToResources()" id="btn">Resources</button></li>
+        <li><a href="cm-logs.html">Logs</a></li>
+      </ul>
+
+      <div class="header-profile">
+        <div id="cmDetails" class="cmDets">
         </div>
-
-        <ul>
-          <li><a href="cm-home.html">Home</a></li>
-          <li><button onclick="goToResources()" id="btn">Resources</button></li>
-          <li><a href="cm-logs.html">Logs</a></li>
-        </ul>
-
-        <div class="header-profile">
-          <div id="cmDetails" class="cmDets">
-          </div>
-          <div class="line"></div>
-          <div class="user-info">
-            <a href="">Username</a>
-            <button id="logoutBtn" onclick="logout()">Logout</button>
-          </div>
+        <div class="line"></div>
+        <div class="user-info">
+          <a href="">Username</a>
+          <button id="logoutBtn" onclick="logout()">Logout</button>
         </div>
-      </nav>
-    </div>
-  </header>
+      </div>
+    </nav>
+  </div>
+</header>
 
-  <body>
-    <div id="videoContainer">
+<body>
+  <div id="videoContainer">
     <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
 
       <p>
@@ -48,124 +48,170 @@
     </video>
   </div>
 
-  <div id="webcamContainer" >
-
+  <div class="container" id="tablesContainer">
+    <table>
+      <thead>
+        <tr>
+          <th>Resources</th>
+          <th>File Type</th>
+        </tr>
+      </thead>
+      <tbody id="resourcesContainer">
+        <tr draggable="true" class="video-row">
+          <td>Looks like you dont have any content yet!</td>
+          <td>file type</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <button onclick="toggleMedia()">TOGGLE</button>
+  <div id="dateTimeContainer">
+    <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
+        id="timeFromServer"></span> </p>
+  </div>
 
-    <div class="container" id="tablesContainer">
-      <table>
-        <thead>
-          <tr>
-            <th>Resources</th>
-            <th>File Type</th>
-          </tr>
-        </thead>
-        <tbody id="resourcesContainer">
-          <tr draggable="true" class="video-row">
-            <td >Looks like you dont have any content yet!</td>
-            <td>file type</td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Replace the existing div with the new structure -->
+  <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
+    <div id="sceneContent" class="scene-content">
+      <!-- Content will be dynamically added here -->
     </div>
+  </div>
+  
 
-    <div id="dateTimeContainer">
-      <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
-          id="timeFromServer"></span> </p>
-    </div>
-
-    <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
-      <table>
-        <thead>
-          <tr>
-            <th colspan="3">Scenes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td contenteditable="false" class="non-editable">Time</td>
-          </tr>
-          <tr>
-            <td contenteditable="false" class="non-editable">Media</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <script>
-
-      function dragStart(event) {
-        event.dataTransfer.setData("text/plain", event.target.textContent);
-      }
-
-      function dragOver(event) {
-        event.preventDefault();
-      }
-
-      function drop(event) {
-        event.preventDefault();
-    const data = event.dataTransfer.getData("text/plain");
-
-    // Find the existing table and the third row
-    const sceneContainer = document.getElementById("sceneContainer").getElementsByTagName("table")[0];
-    const thirdRow = sceneContainer.getElementsByTagName("tr")[2];
-
-    // If this is the first drop, create a new cell in row 2 with the number "1"
-    if (thirdRow.children.length === 0) {
-      const newRow2Cell = document.createElement("td");
-      newRow2Cell.textContent = "1";
-
-      const secondRow = sceneContainer.getElementsByTagName("tr")[1];
-      secondRow.appendChild(newRow2Cell);
+  <script>
+    function dragStart(event) {
+      event.dataTransfer.setData("text/plain", event.target.textContent);
     }
 
-    // Create a new cell for the video content
-    const newCell = document.createElement("td");
-    newCell.textContent = data;
+    function dragOver(event) {
+      event.preventDefault();
+   }
+   document.addEventListener('DOMContentLoaded', function () {
+  const sceneContent = document.getElementById("sceneContent");
 
-    // Add the new cell to the third row
-    thirdRow.appendChild(newCell);
+  // Attach drop event listener to the scene container
+  sceneContent.addEventListener('drop', drop);
 
-    // Update the colspan in the table header
-    const colspanValue = thirdRow.children.length;
-    sceneContainer.getElementsByTagName("th")[0].colSpan = colspanValue;
+  // Attach drag over event listener to the scene container
+  sceneContent.addEventListener('dragover', dragOver);
+
+  // Attach click event listeners to all video rows in the resource table
+  const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
+  videoRows.forEach(row => {
+    row.addEventListener('click', function () {
+      // Get the filepath from the clicked row
+      const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+
+      // Call the playVideo function with the filepath and the clicked row
+      playVideo(filepath, row);
+    });
+  });
+});
+
+function createDraggableDiv(content, videoSrc, title) {
+  const draggableDiv = document.createElement("div");
+  draggableDiv.className = "scene-cell";
+  draggableDiv.draggable = false;
+
+  // Create a unique video element for each scene
+  const videoElement = document.createElement("video");
+  videoElement.src = videoSrc;
+  videoElement.controls = true;
+  draggableDiv.appendChild(videoElement);
+
+  // Create a title element and append it to the draggable div
+  const titleElement = document.createElement("div");
+  titleElement.textContent = title;
+  draggableDiv.appendChild(titleElement);
+
+  // Create a delete button
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", function () {
+    // Remove the draggableDiv when the delete button is clicked
+    draggableDiv.remove();
+  });
+  draggableDiv.appendChild(deleteButton);
+
+  return draggableDiv;
+}
+
+function drop(event) {
+  event.preventDefault();
+  const data = event.dataTransfer.getData("text/plain");
+
+  // Find the existing div
+  const sceneContent = document.getElementById("sceneContent");
+
+  // Check if the resource already exists in the sceneContent
+  const existingResource = Array.from(sceneContent.children).find(
+    (child) => child.textContent === data
+  );
+
+  if (!existingResource) {
+    // Create a new draggable div for the video content
+    const newDiv = createDraggableDiv(data, data.filepath, data);
+
+    // Find the div where the item is being dropped onto
+    const dropTarget = event.target.closest(".scene-cell");
+
+    // If there is a drop target, insert the new div before or after it
+    if (dropTarget) {
+      const rect = dropTarget.getBoundingClientRect();
+      const midX = rect.left + rect.width / 2;
+
+      // Insert before or after based on the mouse position
+      if (event.clientX < midX) {
+        sceneContent.insertBefore(newDiv, dropTarget);
+      } else {
+        sceneContent.insertBefore(newDiv, dropTarget.nextSibling);
+      }
+    } else {
+      // If there is no drop target, simply append the new div
+      sceneContent.appendChild(newDiv);
+    }
+
+    // Stop the propagation of the drop event to prevent unwanted behavior
+    event.stopPropagation();
   }
+}
 
-
-      function fetchResources() {
-        fetch('/editor')
-          .then(response => response.json())
-          .then(data => {
-            updateResourceTable(data);
-          })
-          .catch(error => {
-            console.error('Fetch error:', error);
-          });
-      }
-
-      function updateResourceTable(data) {
-        const resourceTableBody = document.getElementById('resourcesContainer');
-        resourceTableBody.innerHTML = '';
-
-        data.forEach(resource => {
-          const row = document.createElement('tr');
-          row.innerHTML = `<td class="video-row" draggable="true">${resource.filename}</td><td draggable="false">${resource.type}</td>`;
-          row.draggable = true;
-          row.addEventListener('dragstart', dragStart);
-
-          // Add click event listener to each row
-          row.addEventListener('click', () => playVideo(resource.filepath, row));
-
-          resourceTableBody.appendChild(row);
+    function fetchResources() {
+      fetch('/editor')
+        .then(response => response.json())
+        .then(data => {
+          updateResourceTable(data);
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
         });
-      }
+    }
 
-      function playVideo(filepath, clickedRow) {
+    function updateResourceTable(data) {
+  const resourceTableBody = document.getElementById('resourcesContainer');
+  resourceTableBody.innerHTML = '';
+
+  data.forEach(resource => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td class="video-row" draggable="true" data-filepath="${resource.filepath}">${resource.filename}</td><td draggable="false">${resource.type}</td>`;
+    row.draggable = true;
+    row.addEventListener('dragstart', dragStart);
+
+    // Add click event listener to each row
+    row.addEventListener('click', () => playVideo(resource.filepath, row));
+
+    resourceTableBody.appendChild(row);
+  });
+}
+
+    function playVideo(filepath, clickedRow) {
   const player = videojs('my-video');
-  console.log(filepath);
   player.src({ src: filepath, type: 'video/mp4' });
+
+  // Set the video source for the currently selected row in the scenes container
+  const videoElement = clickedRow.querySelector('video');
+  videoElement.src = filepath;
+
   // Automatically play the video
   player.play();
 
@@ -180,95 +226,90 @@
 }
 
 
-      // Initial fetch of resources when the page loads
-      fetchResources();
+    // Initial fetch of resources when the page loads
+    fetchResources();
 
-      // Function to handle logout
-      function logout() {
-        fetch('/logout')
-          .then(response => response.json())
-          .then(data => {
-            console.log('Logout response:', data);
-            if (data.success) {
-              alert('Logout successful');
-              window.location.href = '/';
-            } else {
-              alert('Logout failed');
-            }
-          })
-          .catch(error => {
-            console.error('Error during logout:', error);
-          });
-      }
+    // Function to handle logout
+    function logout() {
+      fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logout response:', data);
+          if (data.success) {
+            alert('Logout successful');
+            window.location.href = '/';
+          } else {
+            alert('Logout failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
 
-      // Function to fetch and display content manager details
-      function displayCmDetails() {
-        // Make an AJAX request to the endpoint that provides content manager details
-        fetch('/getCmDetails')
-          .then(response => response.json())
-          .then(cmDetails => {
-            // Update the HTML with content manager details
-            const cmDetailsDiv = document.getElementById('cmDetails');
-            cmDetailsDiv.innerHTML = `
+    // Function to fetch and display content manager details
+    function displayCmDetails() {
+      // Make an AJAX request to the endpoint that provides content manager details
+      fetch('/getCmDetails')
+        .then(response => response.json())
+        .then(cmDetails => {
+          // Update the HTML with content manager details
+          const cmDetailsDiv = document.getElementById('cmDetails');
+          cmDetailsDiv.innerHTML = `
                   <div class="avatar-container">
                       <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
                   </div>
               
               `;
-            const usernameLink = document.querySelector('.user-info a');
-            usernameLink.textContent = cmDetails.username;
-          })
-          .catch(error => {
-            console.error('Error fetching content manager details:', error);
-          });
-      }
+          const usernameLink = document.querySelector('.user-info a');
+          usernameLink.textContent = cmDetails.username;
+        })
+        .catch(error => {
+          console.error('Error fetching content manager details:', error);
+        });
+    }
 
-      function fetchDateTime() {
-        fetch('/getDateTime')
-          .then(response => response.json())
-          .then(data => {
-            console.log('Received data:', data); // Log the received data to the console
-            const dayOfWeekElement = document.getElementById('dayOfWeek');
-            const dateElement = document.getElementById('dateFromServer');
-            const timeElement = document.getElementById('timeFromServer');
+    function fetchDateTime() {
+      fetch('/getDateTime')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Received data:', data); // Log the received data to the console
+          const dayOfWeekElement = document.getElementById('dayOfWeek');
+          const dateElement = document.getElementById('dateFromServer');
+          const timeElement = document.getElementById('timeFromServer');
 
-            dayOfWeekElement.textContent = data.dayOfWeek;
-            dateElement.textContent = data.date;
-            timeElement.textContent = data.time;
-          })
-          .catch(error => {
-            console.error('Error fetching date and time:', error);
-          });
-      }
+          dayOfWeekElement.textContent = data.dayOfWeek;
+          dateElement.textContent = data.date;
+          timeElement.textContent = data.time;
+        })
+        .catch(error => {
+          console.error('Error fetching date and time:', error);
+        });
+    }
 
-      document.addEventListener('DOMContentLoaded', function () {
-        // Attach click event listeners to all video rows in the resource table
-        const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
-        videoRows.forEach(row => {
-          row.addEventListener('click', function () {
-            // Get the filepath from the clicked row
-            const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+    document.addEventListener('DOMContentLoaded', function () {
+      // Attach click event listeners to all video rows in the resource table
+      const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
+      videoRows.forEach(row => {
+        row.addEventListener('click', function () {
+          // Get the filepath from the clicked row
+          const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
 
-            // Call the playVideo function with the filepath and the clicked row
-            playVideo(filepath, row);
-          });
+          // Call the playVideo function with the filepath and the clicked row
+          playVideo(filepath, row);
         });
       });
+    });
 
-     
-
-
-      // Call the function to display content manager details on page load
-      displayCmDetails();
+    // Call the function to display content manager details on page load
+    displayCmDetails();
 
 
-      // Fetch and display date and time when the page loads
-      fetchDateTime();
+    // Fetch and display date and time when the page loads
+    fetchDateTime();
 
-      // Fetch and update date and time every 1 minute (adjust as needed)
-      setInterval(fetchDateTime, 60000);
+    // Fetch and update date and time every 1 minute (adjust as needed)
+    setInterval(fetchDateTime, 60000);
+  </script>
 
-
-    </script>
-
-  </body>
+</body>
