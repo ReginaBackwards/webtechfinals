@@ -79,6 +79,10 @@
     <h2>Scene Editor</h2>
     <p>Setting Scenes For: <span id="chosenDate"></span></p>
     <button onclick="saveScene()" id="saveButton">Save</button>
+    <button onclick="deleteScene()" id="saveButton">Clear</button>
+  </div>
+  <div id="chosenDateContainer">
+    <p>Setting Scenes For: <span id="chosenDate"></span></p>
   </div>
 
 
@@ -191,6 +195,8 @@
       });
     });
 
+    let startTime = getStartTime();
+
     function createDraggableDiv(content, title) {
       const draggableDiv = document.createElement("div");
       draggableDiv.className = "scene-cell";
@@ -206,29 +212,67 @@
       const videoElement = document.createElement("video");
       videoElement.controls = true;
 
-      // Create a delete button
-      const deleteButton = document.createElement("button");
-      deleteButton.className = "del-btn"
-      deleteButton.textContent = "Delete";
-      deleteButton.addEventListener("click", function () {
-        // Remove the draggableDiv when the delete button is clicked
-        draggableDiv.remove();
-      });
-     titleElement.appendChild(deleteButton);
-
       // Fetch the file path and set the source for the video element
       getResourceFilePath(content)
         .then(filePath => {
-          videoElement.src = filePath;
-        })
+
+        videoElement.src = filePath;
+
+        videoElement.onloadedmetadata = function() {
+          
+        const durationInSeconds = Math.floor(videoElement.duration);
+        const formattedDuration = formatDuration(durationInSeconds);
+        console.log("DURATION:", formattedDuration);
+
+        const startTimeDisplay = document.createElement("div");
+        startTimeDisplay.textContent = `Start Time: ${startTime}`;
+        draggableDiv.append(startTimeDisplay);
+        console.log(startTime);
+
+        const durationDisplayer = document.createElement("div");
+        durationDisplayer.textContent = `Duration: ${formattedDuration}`;
+        draggableDiv.append(durationDisplayer);
+
+        const durationParts = formattedDuration.split(":");
+        const durationInSecs = parseInt(durationParts[0]) * 3600 + parseInt(durationParts[1]) * 60 + parseInt(durationParts[2]);
+
+        const endTimeDisplay = document.createElement("div");
+        const endTime = getEndTime(startTime, durationInSecs);
+        endTimeDisplay.textContent = `End Time: ${endTime}`
+        draggableDiv.append(endTimeDisplay);
+        console.log(endTime);
+
+        startTime = endTime;
+      }
+      })
         .catch(error => {
           console.error('Error fetching file path of resource:', error);
         });
 
+
       draggableDiv.appendChild(videoElement);
+
+      
 
       return draggableDiv;
     }
+
+    function formatDuration(totalSecs) {
+    const hours = Math.floor(totalSecs / 3600);
+    const minutes = Math.floor((totalSecs % 3600) / 60);
+    const seconds = totalSecs % 60;
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  function subtractDuration(time, duration) {
+    const timeParts = time.split(":");
+    const timeInSeconds = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
+
+    const newTimeInSeconds = timeInSeconds - duration;
+
+    return formatDuration(newTimeInSeconds);
+  }
 
 
     async function getResourceFilePath(content) {
@@ -333,6 +377,29 @@
       clickedRow.classList.add('selected-row');
     }
 
+    function getStartTime() {
+      const startTime = new Date();
+      startTime.setHours(8,0,0,0);
+
+      const hours = startTime.getHours();
+      const minutes = startTime.getMinutes();
+      const seconds = startTime.getSeconds();
+
+      const formatTime = formatDuration(hours * 3600 + minutes * 60 + seconds);
+
+      return formatTime;
+    }
+
+    function getEndTime(time, vidDuration) {
+
+      const timeParts = time.split(":");
+      const startTimeInSecs = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
+      const endTimeInSecs = startTimeInSecs + vidDuration;
+      const endTime = formatDuration(endTimeInSecs);
+      return endTime;
+    }
+
+
 
     // Initial fetch of resources when the page loads
     fetchResources();
@@ -410,6 +477,13 @@
 
       // Print the list of resources in the console
       console.log("Scene Resources:", resources);
+    }
+
+    function deleteScene() {
+      // Get the list of resources in the scene editor
+      const sceneContent = document.getElementById("sceneContent");
+      sceneContent.innerHTML='';
+      startTime = getStartTime();
     }
 
     // Call the function to display content manager details on page load
