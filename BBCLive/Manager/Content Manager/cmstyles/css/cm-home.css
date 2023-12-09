@@ -198,3 +198,20 @@ section{
 #webcamContainer {
  display: none;
 }
+
+.sched {
+  padding:50px;
+  color: white;
+  background-color: #000066;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.sched:hover {
+  background-color: #1111d8;
+}
+#scheduleButtons{
+ 
+  margin-left: 20%;
+}
