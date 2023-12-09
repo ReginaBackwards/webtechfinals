@@ -203,6 +203,7 @@ section{
 #my-video {
   height: 650px;
   width: 100%;
+  pointer-events: none;
 }
 
 #webcamContainer {
