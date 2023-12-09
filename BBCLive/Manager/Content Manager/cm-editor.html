@@ -23,7 +23,6 @@
         <li><a href="cm-home.html">Home</a></li>
         <li><a href="#" onclick="goToResources();">Resources</a></li>
         <li><a href="cm-logs.html">Logs</a></li>
-        <li><a href="#" onclick="goToEditor();">Editor</a></li>
       </ul>
 
       <div class="header-profile">
@@ -78,6 +77,7 @@
   <!-- New heading and save button -->
   <div class="sceneHeader">
     <h2>Scene Editor</h2>
+    <p>Setting Scenes For: <span id="chosenDate"></span></p>
     <button onclick="saveScene()" id="saveButton">Save</button>
     <button onclick="deleteScene()" id="saveButton">Clear</button>
   </div>
@@ -204,6 +204,7 @@
 
       // Create a title element and append it to the draggable div
       const titleElement = document.createElement("div");
+      titleElement.className = "titleContent"
       titleElement.textContent = title;
       draggableDiv.appendChild(titleElement);
 
@@ -402,24 +403,6 @@
 
     // Initial fetch of resources when the page loads
     fetchResources();
-
-    // Function to handle logout
-    function logout() {
-      fetch('/logout')
-        .then(response => response.json())
-        .then(data => {
-          console.log('Logout response:', data);
-          if (data.success) {
-            alert('Logout successful');
-            window.location.href = '/';
-          } else {
-            alert('Logout failed');
-          }
-        })
-        .catch(error => {
-          console.error('Error during logout:', error);
-        });
-    }
 
     // Function to fetch and display content manager details
     function displayCmDetails() {

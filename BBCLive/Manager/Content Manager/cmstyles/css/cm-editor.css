@@ -236,23 +236,36 @@ h1 {
   cursor: move;
 }
 
+.titleContent {
+  display: flex;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.del-btn {
+  margin-left: 30px;
+  background-color: red;
+  color: white;
+}
+
+video {
+  height: 200px;
+  width: 400px;
+}
+
 .topContainer {
   padding: 20px;
   display: flex;
 }
 
-h2 {
- margin-right: 20px;
-}
-
 .sceneHeader {
   justify-content: center;
   display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #saveButton {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   padding: 6px 14px;
   border-radius: 6px;
@@ -261,6 +274,7 @@ h2 {
   background: #25257c;
   height: 30px;
   width: 80px;
+  margin-bottom: 20px;
 }
 
 #saveButton:hover {
@@ -273,4 +287,16 @@ h2 {
   border: none;
   color: #fff;
   background: #367AF6;
+}
+
+#chosenDateContainer {
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 0px !important;
+}
+
+#chosenDate {
+  font-weight: bold;
 }

@@ -9,12 +9,36 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 </head>
 <body>
-  <div id="header"></div>
+  <header class="top-nav">
+    <div class="header-container">
+      <nav>
+        <div class="header-logo">
+          <img src="../../res/slu-logo.png" alt="slu-Logo">
+        </div>
+
+        <ul>
+          <li><a href="cm-home.html">Home</a></li>
+          <li><a href="#" onclick="goToResources();">Resources</a></li>
+          <li><a href="cm-logs.html">Logs</a></li>
+        </ul>
+
+        <div class="header-profile">
+          <!-- <img src="pathofdadp" alt="user-dp"> -->
+          <div id="cmDetails" class="cmDets">
+            <!-- Content manager avatar and name will be displayed here -->
+          </div>
+          <div class="line"></div>
+          <div class="user-info">
+            <a href="">Username</a>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
   <div class="container">
     <h1>Resources</h1>
-    <!-- Back to Home Page Button-->
-    <button type="button" class="btn btn-secondary" onclick="backToHomePage()">Back to Home Page</button>
-    
     <div class="input-group mb-3">
       <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" id="Search">
       <div class="input-group-append">
@@ -70,6 +94,66 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   
   <script>
+// Function to fetch and display content manager details
+function displayCmDetails() {
+      // Make an AJAX request to the endpoint that provides content manager details
+      fetch('/getCmDetails')
+        .then(response => response.json())
+        .then(cmDetails => {
+          // Update the HTML with content manager details
+          const cmDetailsDiv = document.getElementById('cmDetails');
+          cmDetailsDiv.innerHTML = `
+                <div class="avatar-container">
+                    <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
+                </div>
+            
+            `;
+          const usernameLink = document.querySelector('.user-info a');
+          usernameLink.textContent = cmDetails.username;
+        })
+        .catch(error => {
+          console.error('Error fetching content manager details:', error);
+        });
+    }
+
+        // Call the function to display content manager details on page load
+        displayCmDetails();
+
+    // Function to handle logout
+    function logout() {
+      // Make an AJAX request to the logout endpoint
+      fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logout response:', data);
+          if (data.success) {
+            alert('Logout successful');
+            window.location.href = '/'
+          } else {
+            alert('Logout failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
+
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
     fetch('/res/footer.html')
         .then(response => response.text())
         .then(data => {

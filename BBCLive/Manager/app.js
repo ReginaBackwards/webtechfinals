@@ -38,6 +38,12 @@ app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
+// Enable CORS (for development purposes, you might want to tighten this in a production environment)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 // Endpoint for handling requests for admin details
 app.get('/getAdminDetails', (req, res) => {
@@ -83,41 +89,41 @@ const activeSessions = {};
 // Endpoint for handling login requests
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-
+  
   // Check if the user already has an active session
   if (activeSessions[username]) {
     req.session.destroy(err => {
-        if (err) {
-            console.error('Error destroying session:', err);
-            return res.status(500).json({ success: false, error: 'Server Error' });
-        }
-        return res.status(400).json({ success: false, error: 'User is already logged in' });
+      if (err) {
+        console.error('Error destroying session:', err);
+        return res.status(500).json({ success: false, error: 'Server Error' });
+      }
+      return res.status(400).json({ success: false, error: 'User is already logged in' });
     });
     return;
-}
-
+  }
+  
   // Query the database to verify credentials
   const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-
+  
   db.query(query, [username, password], (err, results) => {
-
-      if (results.length > 0) {
-          const user = results[0];
-
-          // Check if the user is banned
-          if (user.banstatus === 1) {
-              return res.status(403).json({ success: false, error: 'User is banned' });
-          }
-
-          req.session.theuser = user;
-
-          // Store the active session in the global variable
-          activeSessions[username] = req.sessionID;
-
-          res.json({ success: true, redirectURL: '/' });
-      } else {
-          res.status(401).json({ success: false, error: 'Invalid credentials' });
+    
+    if (results.length > 0) {
+      const user = results[0];
+      
+      // Check if the user is banned
+      if (user.banstatus === 1) {
+        return res.status(403).json({ success: false, error: 'User is banned' });
       }
+      
+      req.session.theuser = user;
+      
+      // Store the active session in the global variable
+      activeSessions[username] = req.sessionID;
+      
+      res.json({ success: true, redirectURL: '/' });
+    } else {
+      res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
   });
 });
 
@@ -369,13 +375,13 @@ app.post('/setSchedule', (req, res) => {
 // Log out endpoint
 app.get('/logout', (req, res) => {
   const user = req.session.theuser;
-
+  
   // Check if the user has an active session
   if (user) {
-      const username = user.username;
-      delete activeSessions[username];
+    const username = user.username;
+    delete activeSessions[username];
   }
-
+  
   req.session.destroy();
   res.json({ success: true });
 });
@@ -392,14 +398,6 @@ if (!fs.existsSync(contentHostingDir)) {
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// const fileTypeMapping = {
-//   '.mp3': 'audio',
-//   '.mp4': `videos/clips/${username}`,
-//   '.jpg': 'images',
-//   '.jpeg': 'images',
-//   '.png': 'images',
-// };
-
 app.use(express.json());
 
 
@@ -408,36 +406,36 @@ app.post('/upload', upload.array('file'), async (req, res) => {
     try {
       const files = req.files;
       const username = req.session.theuser.username;
-
+      
       const fileTypeMapping = {
-  '.mp3': 'audio',
-  '.mp4': `videos/clips/${username}`,
-  '.jpg': 'images',
-  '.jpeg': 'images',
-  '.png': 'images',
-};
-
+        '.mp3': 'audio',
+        '.mp4': `videos/clips/${username}`,
+        '.jpg': 'images',
+        '.jpeg': 'images',
+        '.png': 'images',
+      };
+      
       if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No files uploaded' });
       }
-
+      
       for (const file of files) {
         const fileExtension = path.extname(file.originalname).toLowerCase();
-
+        
         if (!fileTypeMapping[fileExtension]) {
           console.log('Unsupported file type:', fileExtension);
           return res.status(400).json({ error: 'Unsupported file type' });
         }
-
+        
         const fileType = fileTypeMapping[fileExtension];
         const userUploadDir = path.join(contentHostingDir, fileType);
-
+        
         if (!fs.existsSync(userUploadDir)) {
           fs.mkdirSync(userUploadDir, { recursive: true });
         }
-
+        
         let filename = path.join(userUploadDir, file.originalname);
-
+        
         // Check for duplicate filenames
         let counter = 1;
         while (fs.existsSync(filename)) {
@@ -446,32 +444,32 @@ app.post('/upload', upload.array('file'), async (req, res) => {
           filename = path.join(userUploadDir, newFileName);
           counter++;
         }
-
+        
         if (fileType === 'images') {
           await sharp(file.buffer).toFile(filename);
         } else {
           fs.writeFileSync(filename, file.buffer);
         }
-
+        
         const relativePath = path.relative(contentHostingDir, filename).replace(/\\/g, '/');;
         const adjustedFileType = fileType === `videos/clips/${username}` ? 'videos' : fileType;
-
+        
         const insertQuery =
-          'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
+        'INSERT INTO resources (filename, filepath, author, dateuploaded, type) VALUES (?, ?, ?, NOW(), ?)';
         const values = [path.basename(filename), '/Content Hosting/' +relativePath, username, adjustedFileType];
-
+        
         db.query(insertQuery, values, (err, result) => {
           if (err) {
             console.error('MySQL insert error:', err);
             return res
-              .status(500)
-              .json({ error: 'Error inserting into the database', details: err });
+            .status(500)
+            .json({ error: 'Error inserting into the database', details: err });
           } else {
             console.log('File inserted into the database:', result);
           }
         });
       }
-
+      
       res.status(200).json({ message: 'Files uploaded successfully' });
     } catch (error) {
       console.error('Error handling file upload:', error);
@@ -513,6 +511,12 @@ app.get('/gotoresources', (req, res) => {
   res.json({ success: true });
 });
 
+// Endpoint to handle the redirect to logs.html
+app.get('/gotologs', (req, res) => {
+  //if checks for user session existence
+  res.json({ success: true });
+});
+
 // Endpoint to handle the redirect to settings.html
 app.get('/gotoeditprofile', (req, res) => {
   //if checks for user session existence
@@ -534,15 +538,15 @@ app.get('/gotoeditor', (req, res) => {
 app.post('/checkCurrentPasswordMatch/:currentPassword', (req, res) => {
   const username = req.session.theuser.username;
   const currentPassword = req.params.currentPassword;
-
+  
   const checkQuery = 'SELECT password FROM users WHERE username = ?';
-
+  
   db.query(checkQuery, [username], (err, results) => {
     if (err) {
       console.error('Error checking passwords match', err);
       return res.status(500).json({ exists: false });
     }
-
+    
     if (results.length > 0) {
       const password = results[0].password;
       if (currentPassword === password) {
@@ -559,7 +563,7 @@ app.post('/updatePassword/:newPassword', (req, res) => {
   
   // Update the password in the database
   const updatePasswordQuery = 'UPDATE users SET password = ? WHERE username = ?';
-
+  
   db.query(updatePasswordQuery, [newPassword, username], (updateErr) => {
     if (updateErr) {
       console.error('Error updating password:', updateErr);
@@ -573,15 +577,15 @@ app.post('/updatePassword/:newPassword', (req, res) => {
 // Endpoint to get the profile picture
 app.post('/getProfilePicturePath', (req, res) => {
   const username = req.session.theuser.username;
-
+  
   const checkQuery = 'SELECT dp FROM users WHERE username = ?';
-
+  
   db.query(checkQuery, [username], (err, results) => {
     if (err) {
       console.error('Error getting profile picture path', err);
       return res.status(500).json({ exists: false });
     }
-
+    
     if (results.length > 0) {
       const dp = results[0].dp;  
       res.json(dp);
@@ -591,55 +595,55 @@ app.post('/getProfilePicturePath', (req, res) => {
 
 const profileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-     cb(null, '../res/avatars/');
+    cb(null, '../res/avatars/');
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname);
- }
- });
+  }
+});
 
- const uploadProfile = multer({ storage: profileStorage });
+const uploadProfile = multer({ storage: profileStorage });
 
 app.post('/updateProfilePicture', uploadProfile.single('profilePicture'), (req, res) => {
   const username = req.session.theuser.username;
   const newProfilePicture = req.file;
-
+  
   // Ensure a file was uploaded
   if (!newProfilePicture) {
     return res.status(400).json({ error: 'No picture uploaded' });
   }
-
+  
   const allowedTypes = ['.jpg', '.jpeg', '.png'];
   const fileExtension = path.extname(newProfilePicture.originalname).toLowerCase();
-
+  
   // Check if the uploaded file is of an allowed type
   if (!allowedTypes.includes(fileExtension)) {
     return res.status(400).json({ error: 'Unsupported file type' });
   }
-
+  
   const existingProfilePicturePath = path.join(`res/avatars/${username}${fileExtension}`)
-
+  
   // Check if the file exists before renaming
   if (fs.existsSync(existingProfilePicturePath)) {
     fs.unlinkSync(existingProfilePicturePath);
   }
-
+  
   // Rename the uploaded file
   fs.renameSync(newProfilePicture.path, `../${existingProfilePicturePath}`);
   
   // Update the password in the database
   const updateProfileQuery = 'UPDATE users SET dp = ? WHERE username = ?';
-
+  
   // Replace backslashes with forward slashes in the file path
   const sanitizedProfilePath = existingProfilePicturePath.replace(/\\/g, '/');
-
+  
   db.query(updateProfileQuery, [sanitizedProfilePath, username], (updateErr) => {
     if (updateErr) {
       console.error('Error updating profile picture:', updateErr);
       return res.status(500).json({ message: 'Error updating profile picture' });
     } 
   });
-
+  
   try {
     // Respond with the path of the updated profile picture
     res.json(sanitizedProfilePath);
@@ -677,10 +681,17 @@ app.get('/editor', (req, res) => {
 });
 
 app.get('/inserToScene', (req, res) => {
-    const insertQuery = 'INSERT INTO filepath VALUES ?';
+  const fetchVidQuery = 'SELECT filepath FROM resources';
   
-    const videoV = res.map((row) => [row.filePath]);
-  
+  db.query(fetchVidQuery, (err, results) => {
+    if(err) {
+      console.error("video unavailable");
+      return
+    }
+    const insertQuery = 'INSERT INTO filepath(scenes) VALUES ?';
+    
+    const videoV = results.map((row) => [row.filePath]);
+    
     db.query(insertQuery, [videoV], (err, results) => {
       if (err) {
         console.error("Can't insert video");  
@@ -691,13 +702,13 @@ app.get('/inserToScene', (req, res) => {
 
 app.get('/fetchFromRes', (req, res) => {
   const fetchQuery = 'SELECT filepath, filename, type FROM resources';
-
+  
   db.query(fetchQuery, (err, results) => {
     if (err) {
       console.error(err + "Unable to retrieve from Database");
       return
     } else {
-
+      
     }
   })
 })
@@ -708,7 +719,7 @@ app.get('/getDateTime', (req, res) => {
   const dayOfWeek = daysOfWeek[now.getDay()];
   const date = now.toLocaleDateString();
   const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+  
   res.json({ dayOfWeek, date, time });
 });
 
@@ -728,7 +739,7 @@ const fetchVideoForCurrentTime = () => {
     const queryParam = `${currentTime}%`;
     console.log('SQL Query:', queryString);
     console.log('Parameter Value:', queryParam);
-
+    
     // Execute a query to get the video with a start time that matches the hour and minute of the current time
     db.query(
       queryString,
@@ -742,62 +753,78 @@ const fetchVideoForCurrentTime = () => {
           resolve(results);
         }
       }
-    );
+      );
+    });
+  };
+  
+  app.get('/getDate', (req, res) => {
+    const currentDate = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('en-US', options);
+    
+    res.json({ date: formattedDate });
   });
-};
-
-app.get('/getDate', (req, res) => {
-  const currentDate = new Date();
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  const formattedDate = currentDate.toLocaleDateString('en-US', options);
-
-  res.json({ date: formattedDate });
-});
-
-app.get('/getResourceFilePath', (req, res) => {
-  try {
-    const content = req.query.content;
-
-    // Execute a query to get the file path based on the content
-    db.query(
-      'SELECT filePath FROM resources WHERE filename = ?',
-      [content],
-      (error, results) => {
-        if (error) {
-          console.error('Error querying the database:', error);
-          res.status(500).json({ error: 'Internal Server Error' });
-        } else {
-          if (results.length > 0) {
-            const filePath = results[0].filePath;
-            res.json(filePath); // Return only the file path
+  
+  app.get('/getResourceFilePath', (req, res) => {
+    try {
+      const content = req.query.content;
+      
+      // Execute a query to get the file path based on the content
+      db.query(
+        'SELECT filePath FROM resources WHERE filename = ?',
+        [content],
+        (error, results) => {
+          if (error) {
+            console.error('Error querying the database:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
           } else {
-            res.status(404).json({ error: 'File path not found for the given content' });
+            if (results.length > 0) {
+              const filePath = results[0].filePath;
+              res.json(filePath); // Return only the file path
+            } else {
+              res.status(404).json({ error: 'File path not found for the given content' });
+            }
           }
         }
-      }
-    );
-  } catch (error) {
-    console.error('Error handling request:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.get('/getUserSchedules', (req, res) => {
-  if (req.session.theuser) {
-    const username = req.session.theuser.username;
-    const query = 'SELECT day, username FROM schedules WHERE username = ?;';
-    db.query(query, [username], (error, results) => {
-      if (error) {
-        console.error('Error fetching schedules:', error);
-        res.status(500).send('Server Error');
-      } else {
-        const schedules = results.map(result => ({ day: result.day, username: result.username }));
-        console.log(username)
-        console.log(schedules)
-        res.json(schedules);
+        );
+      } catch (error) {
+        console.error('Error handling request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
       }
     });
-  } else {
-    res.redirect('/');
-  }
-});
+    
+    app.get('/getUserSchedules', (req, res) => {
+      if (req.session.theuser) {
+        const username = req.session.theuser.username;
+        const query = 'SELECT day, username FROM schedules WHERE username = ?;';
+        db.query(query, [username], (error, results) => {
+          if (error) {
+            console.error('Error fetching schedules:', error);
+            res.status(500).send('Server Error');
+          } else {
+            const schedules = results.map(result => ({ day: result.day, username: result.username }));
+            console.log(username)
+            console.log(schedules)
+            res.json(schedules);
+          }
+        });
+      } else {
+        res.redirect('/');
+      }
+    });
+    
+    // Endpoint to fetch scenes from the database
+    app.get('/fetchScenes', (req, res) => {
+      const query = 'SELECT * FROM scenes'; 
+      
+      db.query(query, (err, results) => {
+        if (err) {
+          console.error('Error executing query:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+        
+        res.json(results);
+      });
+    });
+    

@@ -11,64 +11,16 @@
 <body>
     <header>
         <div class="logo"><img src="../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
-        <h1>Welcome to BBC Live!</h1>
+        <?php include 'fetchDate.php'; ?>
+        <h1>Welcome to BBC Live's Livestream for <?php echo $livestreamDate; ?></h1>
     </header>
 
     <section>
     
         <div class="container">
             <iframe src="http://localhost:3000/Manager/Content%20Manager/cm-home.html#my-video" scrolling="no" frameborder="0" 
-            height="650px" width="100%" style="position:absolute; clip:rect(69px,1400px,800px,80px); margin-top: -20px;"></iframe>
-            <div class="title-below-video" id="livestream-title">
-            <?php include 'fetchDate.php'; ?>
-            <p style="margin-left: 105px;" >Livestream for <?php echo $livestreamDate; ?></p>
-            </div>
+            height="650px" width="100%" style="position:absolute; clip:rect(69px,1400px,800px,80px); margin-top: -69px;"></iframe>
         </div>
-     <!-- <script>
-        $(document).ready(function () {
-            // Use jQuery load function to load only the section with ID 'my-video'
-            $('#iframe').load('http://localhost:3000/Manager/Content%20Manager/cm-home.html #my-video');
-        });
-    </script> -->
-        <!-- <script>
-            var iframe = document.getElementById('mirror');
-            var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            var iframe = document.getElementById('my-video');
-            var videoSource = iframe.getAttribute('src');
-
-            </script> -->
-
-        <!-- <script>
-            function updateVideoPlayer() {
-                // Fetch video information from Node.js server
-                fetch('http://localhost:3000/fetchVideo')
-                    .then(response => response.json())
-                    .then(data => {
-                        const videoInfo = data.videos;
-
-                        if (videos && videos.length > 0) {
-            const video = videos[0];
-            const player = videojs('my-video');
-            console.log(video);
-
-            // Check if the video is not already playing
-            if (player.paused()) {
-              // Change the source and play the video
-              player.src({ src: `./..${video.filepath}`, type: 'video/mp4' });
-              player.load();
-              player.play();
-            }
-        
-        }
-        })
-        .catch((error) => {
-          console.error('Error fetching video:', error);
-        });
-    }
-
-            // Periodically update the video player
-            setInterval(updateVideoPlayer, 15000); 
-        </script> -->
 
     </section>
 </body>

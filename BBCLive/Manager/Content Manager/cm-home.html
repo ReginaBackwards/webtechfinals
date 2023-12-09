@@ -20,8 +20,8 @@
 
         <ul>
           <li><a href="cm-home.html">Home</a></li>
-          <li><button onclick="goToResources()" id="btn">Resources</button></li>
-          <li><a href="cm-logs.html">Logs</a></li>
+          <li><a href="#" onclick="goToResources();">Resources</a></li>
+          <li><a href="#" onclick="goToLogs()">Logs</a></li>
         </ul>
 
         <div class="header-profile">
@@ -41,6 +41,7 @@
 
   <section>
     <h1>Home</h1>
+    <button id="live-btn" onclick="toggleMedia()">Toggle Live</button>
     <div class="container" id="dashboard">
       <video id="my-video" class="video-js vjs-default-skin" controls width="640" height="360">
       </video>
@@ -48,8 +49,7 @@
     </div>
     <div class="container" id="webcamContainer">
     </div>
-    <button onclick="toggleMedia()">Toggle Live</button>
-
+  
     <div class="scheduleContainer">
       <h1>Schedules</h1>
       <div id="scheduleButtons">
@@ -93,7 +93,8 @@
         }
       })
       .catch(error => console.error('Error fetching schedules:', error));
-    // Function to fetch and display content manager details
+   
+      // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
@@ -136,20 +137,20 @@
         });
     }
 
-    function goToResources() {
+    function goToLogs() {
       // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoresources')
+      fetch('/gotoLogs')
         .then(response => response.json())
         .then(data => {
           if (data.success) {
             // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/resources.html';
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
           } else {
-            alert('Failed to go to Resources');
+            alert('Failed to go to Logs');
           }
         })
         .catch(error => {
-          console.error('Error during request to go to Resources:', error);
+          console.error('Error during request to go to Logs:', error);
         });
     }
 
@@ -169,8 +170,6 @@
           console.error('Error during request to go to Editor:', error);
         });
     }
-
-
 
     // Function to handle logout
     function logout() {
