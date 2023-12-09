@@ -1,3 +1,13 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+ 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,7 +35,6 @@
         </ul>
 
         <div class="header-profile">
-          <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
             <!-- Content manager avatar and name will be displayed here -->
           </div>
@@ -48,15 +57,17 @@
     </div>
     <div class="container" id="webcamContainer">
     </div>
-  
+
     <div class="scheduleContainer">
       <h1>Schedules</h1>
       <div id="scheduleButtons">
       </div>
     </div>
   </section>
-  
-  <footer><div id="footer"></div></footer>
+
+  <footer>
+    <div id="footer"></div>
+  </footer>
 
   <script>
 
@@ -73,15 +84,15 @@
       console.log('WebSocket connection opened');
     };
 
-//   socket.onclose = (event) => {
-//     console.error(`WebSocket closed: ${event.reason}`);
-//   };
+    //   socket.onclose = (event) => {
+    //     console.error(`WebSocket closed: ${event.reason}`);
+    //   };
 
-//   setInterval(() => {
-//   const videoUrl = getCurrentVideoUrl;
-//   console.log('Sending video URL:', videoUrl);  // Debugging message
-//   socket.send(videoUrl);
-// }, 10000);
+    //   setInterval(() => {
+    //   const videoUrl = getCurrentVideoUrl;
+    //   console.log('Sending video URL:', videoUrl);  // Debugging message
+    //   socket.send(videoUrl);
+    // }, 10000);
 
 
     fetch('/getUserSchedules')
@@ -119,8 +130,8 @@
         }
       })
       .catch(error => console.error('Error fetching schedules:', error));
-   
-      // Function to fetch and display content manager details
+
+    // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
@@ -231,10 +242,10 @@
         });
     }
     fetch('/res/footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('footer').innerHTML = data;
-        });
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
 
     // Function to handle logout
     function logout() {
@@ -256,35 +267,35 @@
     }
     function checkForVideo() {
 
-      const player = videojs('my-video'); 
+      const player = videojs('my-video');
 
-  fetch('/fetchVideo')
-    .then((response) => response.json())
-    .then((data) => {
-      const videos = data.videos;
+      fetch('/fetchVideo')
+        .then((response) => response.json())
+        .then((data) => {
+          const videos = data.videos;
 
-      if (videos && videos.length > 0) {
-        const newVideo = videos[0];
-        const currentSrc = player.currentSrc();
+          if (videos && videos.length > 0) {
+            const newVideo = videos[0];
+            const currentSrc = player.currentSrc();
 
-        // Check if the new video is different from the currently playing video
-        if (newVideo.filepath !== currentSrc || player.paused()) {
-          // Directly set the source and play the video
-          player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
-          player.play();
-        }
-      } else if (!player.paused()) {
-        // No videos available, and the player is currently playing, pause it
-        player.pause();
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching video:', error);
-    });
-}
+            // Check if the new video is different from the currently playing video
+            if (newVideo.filepath !== currentSrc || player.paused()) {
+              // Directly set the source and play the video
+              player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
+              player.play();
+            }
+          } else if (!player.paused()) {
+            // No videos available, and the player is currently playing, pause it
+            player.pause();
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching video:', error);
+        });
+    }
 
     function setVideoInfo() {
-      const player = videojs('my-video'); 
+      const player = videojs('my-video');
       const currentSrc = player.src();
       const currentTimeStamp = player.currentTime();
 
@@ -323,42 +334,42 @@
     let mediaRecord;
 
     async function toggleMedia() {
-  const videoContainer = document.getElementById('dashboard');
-  const webcamContainer = document.getElementById('webcamContainer');
-  const player = videojs('my-video');
+      const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const player = videojs('my-video');
 
-  if (isPlaying) {
-    player.pause();
-    videoContainer.style.display = 'none';
-    webcamContainer.style.display = 'block';
+      if (isPlaying) {
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
 
-    try {
-      webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        try {
+          webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-      player.src({ src: URL.createObjectURL(webcamStream), type: 'video/webm' });
-      player.load();
-      player.play();
-    } catch (error) {
-      console.error('Error accessing webcam', error);
+          player.src({ src: URL.createObjectURL(webcamStream), type: 'video/webm' });
+          player.load();
+          player.play();
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+      } else {
+        if (webcamStream) {
+          const tracks = webcamStream.getTracks();
+          tracks.forEach(track => track.stop());
+          webcamStream = null;
+        }
+
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        // Replace the video source with an empty string to stop the webcam stream
+        player.src('');
+        player.load();
+        player.play();
+      }
+
+      isPlaying = !isPlaying;
     }
-  } else {
-    if (webcamStream) {
-      const tracks = webcamStream.getTracks();
-      tracks.forEach(track => track.stop());
-      webcamStream = null;
-    }
-
-    videoContainer.style.display = 'block';
-    webcamContainer.style.display = 'none';
-
-    // Replace the video source with an empty string to stop the webcam stream
-    player.src('');
-    player.load();
-    player.play();
-  }
-
-  isPlaying = !isPlaying;
-}
 
   </script>
 </body>

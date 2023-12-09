@@ -1,13 +1,26 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+ 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resources</title>
   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-resources.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 </head>
+
 <body>
   <header class="top-nav">
     <div class="header-container">
@@ -23,9 +36,7 @@
         </ul>
 
         <div class="header-profile">
-          <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
-            <!-- Content manager avatar and name will be displayed here -->
           </div>
           <div class="line"></div>
           <div class="user-info">
@@ -40,14 +51,16 @@
   <div class="container">
     <h1>Resources</h1>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" id="Search">
+      <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"
+        id="Search">
       <div class="input-group-append">
         <span class="input-group-text"><i class="bi bi-filter"></i></span>
         <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-upload"> Upload</i></button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"><i
+            class="bi bi-upload"> Upload</i></button>
       </div>
     </div>
-    
+
     <table id="resourceTable" class="table table-striped w-100 p-3">
       <thead>
         <tr>
@@ -57,10 +70,10 @@
         </tr>
       </thead>
       <tbody id="resourceTableBody">
-        
+
       </tbody>
     </table>
-    
+
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -74,28 +87,37 @@
                 <p>Drag and Drop Files or Click to Browse</p>
                 <label class="btn btn-primary" for="fileInput">Browse</label>
               </div>
-              <input type="file" id="fileInput" name="file" accept="image/*, audio/*, video/*" multiple style="display: none">
+              <input type="file" id="fileInput" name="file" accept="image/*, audio/*, video/*" multiple
+                style="display: none">
             </div>
             <div id="fileList"></div>
           </div>
           <div class="modal-footer justify-content-center">
-            <button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal" >Close</button>
+            <button type="button" class="btn btn-secondary" id="closeButton" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" id="uploadButton">Upload</button>
-          </div>          
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <footer><div id="footer"></div></footer>
-  
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  
+  <footer>
+    <div id="footer"></div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+    integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
   <script>
-// Function to fetch and display content manager details
-function displayCmDetails() {
+    // Function to fetch and display content manager details
+    function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
         .then(response => response.json())
@@ -116,8 +138,8 @@ function displayCmDetails() {
         });
     }
 
-        // Call the function to display content manager details on page load
-        displayCmDetails();
+    // Call the function to display content manager details on page load
+    displayCmDetails();
 
     // Function to handle logout
     function logout() {
@@ -205,37 +227,38 @@ function displayCmDetails() {
         });
     }
     fetch('/res/footer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('footer').innerHTML = data;
-        });
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
 
     function backToHomePage() {
       fetch('/cm-home')
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          window.location.href = 'cm-home.html';
-        } else {ssssssss
-          alert('Failed to go back to Home Page');
-        }
-      })
-      .catch(error => {
-        console.error('Error during request to go to Home Page:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = 'cm-home.html';
+          } else {
+            ssssssss
+            alert('Failed to go back to Home Page');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Home Page:', error);
+        });
     }
-    
+
     document.addEventListener('DOMContentLoaded', function () {
       const fileInput = document.getElementById('fileInput');
       const dropArea = document.getElementById('dropArea');
       const uploadButton = document.getElementById('uploadButton');
       const closeButton = document.getElementById('closeButton');
-      
+
       $(document).ready(function () {
         // Function to filter table rows based on search input
         $('#Search').on('input', function () {
           var searchText = $(this).val().toLowerCase();
-          
+
           // Loop through each row in the table body
           $('#resourceTableBody tr').filter(function () {
             // Hide rows that do not match the search input
@@ -243,81 +266,81 @@ function displayCmDetails() {
           });
         });
       });
-      
+
       // Handle file input change
       fileInput.addEventListener('change', function (e) {
         handleFiles(e.target.files);
       });
-      
+
       // Handle drag and drop
       dropArea.addEventListener('dragover', function (e) {
         e.preventDefault();
         dropArea.classList.add('dragover');
         dropArea.style.backgroundColor = '#375BE8';
       });
-      
+
       dropArea.addEventListener('dragleave', function () {
         dropArea.classList.remove('dragover');
         dropArea.style.backgroundColor = 'white';
       });
-      
+
       dropArea.addEventListener('drop', function (e) {
         e.preventDefault();
         dropArea.classList.remove('dragover');
-        
+
         const fileList = e.dataTransfer.files;
-        
+
         if (fileList.length > 0) {
           fileInput.files = fileList;
           handleFiles(fileList);
         }
       });
-      
+
       // Handle close button click
       closeButton.addEventListener('click', function () {
         closeModal();
         displayFileList([]);
         fileInput.value = '';
       });
-      
+
       // Handle clicks outside the modal
       $('#exampleModal').on('hide.bs.modal', function () {
-        displayFileList([]); 
+        displayFileList([]);
         fileInput.value = '';
       });
-      
+
       // Handle files (common function for both file input and drag-and-drop)
       function handleFiles(files) {
         displayFileList(files);
       }
-      
+
       // Display selected files in the list
       function displayFileList(files) {
         const fileListContainer = document.getElementById('fileList');
         fileListContainer.innerHTML = '';
-        
+
         for (const file of files) {
           const fileDiv = document.createElement('div');
           fileDiv.textContent = file.name;
           fileListContainer.appendChild(fileDiv);
         }
       }
-      
+
       // Handle upload button click
       uploadButton.addEventListener('click', function () {
         const fileList = fileInput.files;
-        
+
         if (fileList.length === 0) {
           alert('Please select files to upload.');
           return;
         }
-        
+
         const formData = new FormData();
-        
+
         for (let i = 0; i < fileList.length; i++) {
           formData.append('file', fileList[i]);
         }
-        
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload', true);
         xhr.onload = function () {
@@ -325,13 +348,13 @@ function displayCmDetails() {
             alert('Files uploaded successfully!');
             closeModal();
             fetchResources(); // Fetch and update the resource table
-            
+
             displayFileList([]);
           } else if (xhr.status === 409) {
             // Handle duplicate file response
             const response = JSON.parse(xhr.responseText);
             const confirmUpload = confirm(`A file with the name "${response.filename}" already exists. Do you want to upload it again?`);
-            
+
             if (confirmUpload) {
               // User confirmed to upload duplicate file
               uploadDuplicateFile(response.filename, formData);
@@ -352,19 +375,19 @@ function displayCmDetails() {
         displayFileList([]);
         fileInput.value = '';
       });
-      
+
       // Close the modal
       function closeModal() {
         const modal = document.getElementById('exampleModal');
         modal.classList.remove('show');
         modal.style.display = 'none';
-        
+
         const modalBackdrops = document.getElementsByClassName('modal-backdrop');
         for (let i = 0; i < modalBackdrops.length; i++) {
           modalBackdrops[i].parentNode.removeChild(modalBackdrops[i]);
         }
       }
-      
+
       // Fetch resources from the server and update the table
       function fetchResources() {
         const xhr = new XMLHttpRequest();
@@ -382,24 +405,24 @@ function displayCmDetails() {
         };
         xhr.send();
       }
-      
+
       // Update the resource table with the fetched data
       function updateResourceTable(data) {
         const resourceTableBody = document.getElementById('resourceTableBody');
         resourceTableBody.innerHTML = '';
-        
+
         for (const resource of data) {
           const row = document.createElement('tr');
-          
+
           // Get the date components
           const dateObject = new Date(resource.dateuploaded);
           const year = dateObject.getFullYear();
           const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
           const day = dateObject.getDate().toString().padStart(2, '0');
-          
+
           // Format the date as "YYYY-MM-DD"
           const formattedDate = `${year}-${month}-${day}`;
-          
+
           row.innerHTML = `
           <td>${formattedDate}</td>
           <td>${resource.filename}</td>
@@ -408,10 +431,11 @@ function displayCmDetails() {
           resourceTableBody.appendChild(row);
         }
       }
-      
+
       // Initial fetch of resources when the page loads
       fetchResources();
     });
   </script>
 </body>
+
 </html>

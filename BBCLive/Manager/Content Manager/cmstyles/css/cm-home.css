@@ -1,20 +1,20 @@
 :root {
-    --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
-  
-  body {
-    font-family: var(--font-family-sans-serif);
-    background-image: url('../images/cm-bg.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100vh;
-    width: 100%;
-    background-attachment: fixed;
-    margin: 0;
-    padding: 0;
-  }
-  
+  --font-family-sans-serif: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  font-family: var(--font-family-sans-serif);
+  background-image: url('../images/cm-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+}
+
 .top-nav {
   position: fixed;
   width: 100%;
@@ -36,7 +36,7 @@
 }
 
 nav {
-  display: flex; 
+  display: flex;
   flex-wrap: wrap;
   padding-left: 0;
   margin-bottom: 0;
@@ -48,7 +48,7 @@ ul {
   justify-content: center;
   flex-direction: row;
   display: flex;
-  
+
 }
 
 li {
@@ -65,7 +65,7 @@ li a {
 
 li a:hover {
   text-decoration: none;
-  color:#8acaef;
+  color: #8acaef;
   font-weight: bold;
 }
 
@@ -79,7 +79,6 @@ li a:hover {
 
 .header-profile img {
   margin: 0px 5px 0px 5px
-  
 }
 
 .line {
@@ -110,70 +109,73 @@ li a:target {
   background-color: aqua;
 }
 
-section{
-    padding: 2%;
-    margin-left: 5%;
-    margin-right: 5%;  
+section {
+  padding: 2%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 
 .container {
-    margin-top: 10px;
-    background-color: white;
-    border: 2px solid blue;
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    border-radius: 20px;
-    overflow:auto;
-  }
+  margin-top: 10px;
+  background-color: white;
+  border: 2px solid blue;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  border-radius: 20px;
+  overflow: auto;
+}
 
-  table {
-    border-collapse: collapse;
-    min-width: 32%;
-    margin-bottom: 20px;
-    margin: 1%;
-  }
+table {
+  border-collapse: collapse;
+  min-width: 32%;
+  margin-bottom: 20px;
+  margin: 1%;
+}
 
-  th, td {
-    border: 1px solid #000066;
-    padding: 20px;
-    text-align: center;
-  }
+th,
+td {
+  border: 1px solid #000066;
+  padding: 20px;
+  text-align: center;
+}
 
-  th {
-    background-color: #000066;
-    color: white;
-  }
-  #addTableBtn {
-    background-color: #000066;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-  }
+th {
+  background-color: #000066;
+  color: white;
+}
 
-  #addTableBtn:hover {
-    background-color: #1111d8;
-  }
+#addTableBtn {
+  background-color: #000066;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
 
-  #live-btn {
-    background-color: red;
-    color: white;
-    height: 40px;
-    width: 130px;
-    border-radius: 15%;
-    font-weight: bold;
-    font-size: larger;
-  }
-  
-  h1{
-    padding-top: 4px;
-    color: #000066;
-    margin-bottom: 4px !important;
-  }
+#addTableBtn:hover {
+  background-color: #1111d8;
+}
 
-#logoutBtn, #btn{
+#live-btn {
+  background-color: red;
+  color: white;
+  height: 40px;
+  width: 130px;
+  border-radius: 15%;
+  font-weight: bold;
+  font-size: larger;
+}
+
+h1 {
+  padding-top: 4px;
+  color: #000066;
+  margin-bottom: 4px !important;
+}
+
+#logoutBtn,
+#btn {
   padding: 20px;
   cursor: pointer;
   background-color: #000066;
@@ -181,12 +183,15 @@ section{
   border: none;
   color: white;
 }
-#logoutBtn:hover{
+
+#logoutBtn:hover {
   background-color: #1111d8;
 }
-#btn:hover{
-  background-color: #1111d8 ;
+
+#btn:hover {
+  background-color: #1111d8;
 }
+
 .avatar-container {
   overflow: hidden;
   border-radius: 50%;
@@ -208,11 +213,11 @@ section{
 }
 
 #webcamContainer {
- display: none;
+  display: none;
 }
 
 .sched {
-  padding:50px;
+  padding: 50px;
   color: white;
   background-color: #000066;
   border: none;
@@ -220,22 +225,23 @@ section{
   margin-left: 10px;
   margin-right: 10px;
 }
+
 .sched:hover {
   background-color: #1111d8;
 }
-.scheduleContainer{
-    margin-top: 20px;
-    background-color: white;
-    border: 2px solid blue;
-    padding: 20px;
-    border-radius: 20px;
-    overflow:auto;
-    text-align: center;
-    margin-bottom: 80px;
+
+.scheduleContainer {
+  margin-top: 20px;
+  background-color: white;
+  border: 2px solid blue;
+  padding: 20px;
+  border-radius: 20px;
+  overflow: auto;
+  text-align: center;
+  margin-bottom: 80px;
 }
 
-
-.video-js{
+.video-js {
   height: 650px;
   width: 100%;
 }

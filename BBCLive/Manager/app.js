@@ -1,3 +1,13 @@
+/**
+ * Authors:
+      DELA CRUZ, Janbert
+      DIMACALI, Paul Ivan
+      LACORTE, Abby Gaile
+      PALAFOX, Leoneil Luis
+      ROSANTO, Marvin
+      SLAY, America Eloise
+ */
+
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');

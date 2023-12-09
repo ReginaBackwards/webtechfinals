@@ -1,3 +1,13 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+ 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,7 +38,7 @@ let currentVideoUrl = null; // Track the current video URL
 
 // Function to fetch video information
 function fetchVideoInfo() {
-  fetch('http://192.168.2.103:3000/getVideoInfo')  // Replace with the actual endpoint to fetch video info
+  fetch('http://192.168.2.103:3000/getVideoInfo')
     .then((response) => response.json())
     .then((data) => {
       const videoUrl = data.currentSrc;

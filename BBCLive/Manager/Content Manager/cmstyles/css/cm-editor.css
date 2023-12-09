@@ -16,7 +16,7 @@ body {
 }
 
 .selected-row {
-  background-color: #c0c0c0; /* Change the background color as desired */
+  background-color: #c0c0c0;
 }
 
 .top-nav {
@@ -68,7 +68,7 @@ li a {
 
 li a:hover {
   text-decoration: none;
-  color:#8acaef;
+  color: #8acaef;
   font-weight: bold;
 }
 
@@ -166,7 +166,8 @@ table {
   margin-bottom: 20px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #000066;
   padding: 10px;
   text-align: center;
@@ -177,7 +178,9 @@ th {
   color: white;
 }
 
-#addTableBtn, #logoutBtn, #btn {
+#addTableBtn,
+#logoutBtn,
+#btn {
   padding: 10px;
   cursor: pointer;
   background-color: #000066;
@@ -187,7 +190,9 @@ th {
   transition: background-color 0.3s ease;
 }
 
-#addTableBtn:hover, #logoutBtn:hover, #btn:hover {
+#addTableBtn:hover,
+#logoutBtn:hover,
+#btn:hover {
   background-color: #1111d8;
 }
 
@@ -209,26 +214,28 @@ h1 {
   border-radius: 50%;
 }
 
-#dateTimeContainer{
+#dateTimeContainer {
   text-align: center;
 }
 
 #webcamVid {
-  width: 66%; flex: 1;
+  width: 66%;
+  flex: 1;
   height: auto;
 }
 
-#dateFromServer, #timeFromServer, #dayOfWeek{
+#dateFromServer,
+#timeFromServer,
+#dayOfWeek {
   font-weight: bold;
 }
 
 .container td[contenteditable="false"] {
-  background-color:  #25257c; /* Non-editable cell background color */
+  background-color: #25257c;
   color: #fff;
   font-weight: bold;
 }
 
-/* Add these styles to your existing CSS or create a new section for it */
 .scene-cell {
   border: 1px solid #ccc;
   padding: 10px;
