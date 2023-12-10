@@ -321,21 +321,22 @@
         // Check if the resource already exists in the sceneContent
         const existingResource = Array.from(sceneContent.children).find(
         (child) => child.textContent === data
-        );
-        
-        const newRow = document.createElement('tr');
-        const newCell = document.createElement('td');
-        
-        // newCell.textContent = data;
-        
-        if (!existingResource) {
-          // Create a new draggable div for the video content
-          const newDiv = createDraggableDiv(data, data);
-          
-          // If there is a drop target, insert the new div before or after it
+      );
+
+      const newRow = document.createElement('tr');
+      const newCell = document.createElement('td');
+
+      // newCell.textContent = data;
+
+      if (!existingResource) {
+        // Create a new draggable div for the video content
+        const newDiv = createDraggableDiv(data, data);
+
+        // If there is a drop target, insert the new div before or after it
           const rect = event.target.getBoundingClientRect();
-          
+
           document.getElementById("sceneContent").appendChild(newRow);
+          newDiv.append(textBox);
           sceneContent.appendChild(newDiv);
           // Insert before or after based on the mouse position
         } 
@@ -455,103 +456,84 @@
         .catch(error => {
           console.error('Error fetching date and time:', error);
         });
-      }
-      
-      document.addEventListener('DOMContentLoaded', function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const chosenDate = urlParams.get('chosenDate');
-        console.log(`Chosen Date from URL: ${chosenDate}`);
-        
-        // Display the chosen date on the page
-        const chosenDateElement = document.getElementById('chosenDate');
-        chosenDateElement.textContent = chosenDate;
-        // Attach click event listeners to all video rows in the resource table
-        const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
-        videoRows.forEach(row => {
-          row.addEventListener('click', function () {
-            // Get the filepath from the clicked row
-            const filepath = row.dataset.filepath;
-            
-            // Call the playVideo function with the filepath and the clicked row
-            playVideo(filepath, row);
-          });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const chosenDate = urlParams.get('chosenDate');
+      console.log(`Chosen Date from URL: ${chosenDate}`);
+
+      // Display the chosen date on the page
+      const chosenDateElement = document.getElementById('chosenDate');
+      chosenDateElement.textContent = chosenDate;
+      // Attach click event listeners to all video rows in the resource table
+      const videoRows = document.querySelectorAll('#resourcesContainer .video-row');
+      videoRows.forEach(row => {
+        row.addEventListener('click', function () {
+          // Get the filepath from the clicked row
+          const filepath = row.dataset.filepath;
+
+          // Call the playVideo function with the filepath and the clicked row
+          playVideo(filepath, row);
         });
       });
-      
-      function saveScene() {
-        // Get the list of resources in the scene editor
-        const sceneContent = document.getElementById("sceneContent");
-        const resources = Array.from(sceneContent.children).map((child, index) => {
-          const titleElement = child.querySelector(".titleContent");
-          const videoElement = child.querySelector("video");
-          const startTimeElement = child.querySelector(".scene-cell div:nth-child(3)");
-          const endTimeElement = child.querySelector(".scene-cell div:nth-child(5)");
-          
-          // Check if the title is empty and skip the scene
-          const title = titleElement ? titleElement.textContent.trim() : '';
-          if (!title) {
-            return null;
-          }
-          
-          // Continue with other properties if the title is not empty
-          const videoSrc = videoElement ? videoElement.src : '';
-          const startTime = startTimeElement ? startTimeElement.textContent.split(" ")[2] : '';
-          const endTime = endTimeElement ? endTimeElement.textContent.split(" ")[2] : '';
-          
-          return {
-            title,
-            videoSrc,
-            startTime,
-            endTime,
-          };
-        }).filter(scene => scene !== null); // Remove scenes with null titles
-        
-        // Check if there are scenes to save
-        if (resources.length === 0) {
-          alert('No scenes to save. Please provide titles for at least one scene.');
-          return;
-        }
-        
-        // Make an AJAX request to save the scene to the database
-        fetch('/saveScene', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ resources }),
-        })
+    });
+
+    function saveScene() {
+      // Get the list of resources in the scene editor
+      const sceneContent = document.getElementById("sceneContent");
+      const resources = Array.from(sceneContent.children).map((child) => {
+        const title = child.querySelector(".titleContent").textContent;
+        const videoSrc = child.querySelector("video").src;
+        const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
+        const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
+
+        return {
+          title,
+          videoSrc,
+          startTime,
+          endTime,
+        };
+      });
+
+      // Make an AJAX request to save the scene to the database
+      fetch('/saveScene', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ resources }),
+      })
         .then(response => response.json())
         .then(data => {
-          console.log('Server response:', data);
-          
           if (data.success) {
-            alert('Scenes saved successfully');
+            alert('Scene saved successfully');
           } else {
-            alert('Failed to save scenes');
+            alert('Failed to save scene');
           }
         })
         .catch(error => {
-          console.error('Error saving scenes:', error);
-          alert('Failed to save scenes');
+          console.error('Error saving scene:', error);
+          alert('Failed to save scene');
         });
-      }
-      
-      function deleteScene() {
-        // Get the list of resources in the scene editor
-        const sceneContent = document.getElementById("sceneContent");
-        sceneContent.innerHTML = '';
-        startTime = getStartTime();
-      }
-      
-      // Call the function to display content manager details on page load
-      displayCmDetails();
-      
-      
-      // Fetch and display date and time when the page loads
-      fetchDateTime();
-      
-      // Fetch and update date and time every 1 minute
-      setInterval(fetchDateTime, 60000);
-    </script>
-    
-  </body>
+    }
+
+    function deleteScene() {
+      // Get the list of resources in the scene editor
+      const sceneContent = document.getElementById("sceneContent");
+      sceneContent.innerHTML = '';
+      startTime = getStartTime();
+    }
+
+    // Call the function to display content manager details on page load
+    displayCmDetails();
+
+
+    // Fetch and display date and time when the page loads
+    fetchDateTime();
+
+    // Fetch and update date and time every 1 minute
+    setInterval(fetchDateTime, 60000);
+  </script>
+
+</body>
