@@ -66,9 +66,7 @@
         </tbody>
       </table>
     </div>
-
   </div>
-
   <div id="dateTimeContainer">
     <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
         id="timeFromServer"></span> </p>
@@ -95,6 +93,7 @@
 
 
   <script>
+
     // Function to handle redirect to resources.html
     function goToResources() {
       // Make an AJAX request to the server to handle the redirection
@@ -194,6 +193,7 @@
         });
       });
     });
+
 
     let startTime = getStartTime();
 
@@ -300,33 +300,38 @@
         (child) => child.textContent === data
       );
 
+      const newRow = document.createElement('tr');
+      const newCell = document.createElement('td');
+
+      newCell.textContent = data;
+
       if (!existingResource) {
         // Create a new draggable div for the video content
         const newDiv = createDraggableDiv(data, data);
 
         // Find the div where the item is being dropped onto
-        const dropTarget = event.target.closest(".scene-cell");
 
         // If there is a drop target, insert the new div before or after it
-        if (dropTarget) {
-          const rect = dropTarget.getBoundingClientRect();
-          const midX = rect.left + rect.width / 2;
+          const rect = event.target.getBoundingClientRect();
 
+          const offsetX = event.clientX - rect.left;
+          const offsetY = event.clientY - rect.top;
+
+          newRow.style.position = 'absolute';
+          newRow.style.left = offsetX + 'px';
+          newRow.style.top = offsetY + 'px';
+
+          newRow.appendChild(newCell);
+          document.getElementById("sceneContent").appendChild(newRow);
+          sceneContent.appendChild(newDiv);
           // Insert before or after based on the mouse position
-          if (event.clientX < midX) {
-            sceneContent.insertBefore(newDiv, dropTarget);
-          } else {
-            sceneContent.insertBefore(newDiv, dropTarget.nextSibling);
-          }
         } else {
           // If there is no drop target, simply append the new div
-          sceneContent.appendChild(newDiv);
-        }
 
+        }
         // Stop the propagation of the drop event to prevent unwanted behavior
         event.stopPropagation();
       }
-    }
 
     function fetchResources() {
       fetch('/editor')
@@ -361,8 +366,8 @@
       player.src({ src: filepath, type: 'video/mp4' });
 
       // Set the video source for the currently selected row in the scenes container
-      const videoElement = clickedRow.querySelector('video');
-      videoElement.src = filepath;
+      // const videoElement = clickedRow.querySelector('video');
+      // videoElement.src = filepath;
 
       // Automatically play the video
       player.play();
@@ -465,7 +470,7 @@
       });
     });
 
-    function saveScene() {
+  function saveScene() {
   // Get the list of resources in the scene editor
   const sceneContent = document.getElementById("sceneContent");
   const resources = Array.from(sceneContent.children).map((child) => {
@@ -479,10 +484,11 @@
       videoSrc,
       startTime,
       endTime,
-    };
+    };    
   });
 
   // Make an AJAX request to save the scene to the database
+ 
   fetch('/saveScene', {
     method: 'POST',
     headers: {
@@ -502,7 +508,10 @@
       console.error('Error saving scene:', error);
       alert('Failed to save scene');
     });
-}
+  }
+
+
+
 
     function deleteScene() {
       // Get the list of resources in the scene editor
