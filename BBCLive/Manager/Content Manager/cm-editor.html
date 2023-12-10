@@ -152,6 +152,24 @@
         });
     }
 
+    function goToHome() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+
     // Function to handle logout
     function logout() {
       // Make an AJAX request to the logout endpoint
@@ -214,6 +232,7 @@
 
       // Create a unique video element for each scene
       const videoElement = document.createElement("video");
+      videoElement.id = "vid-preview";
       videoElement.controls = true;
 
       // Fetch the file path and set the source for the video element

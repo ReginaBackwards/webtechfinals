@@ -253,6 +253,8 @@ h1 {
   display: flex;
   margin-left: 10px;
   margin-bottom: 10px;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .del-btn {
@@ -315,4 +317,13 @@ h2 {
 
 .btnContainer {
   display: flex;
+}
+
+#vid-preview {
+  width: 400px;
+  height: 225px;
+}
+
+#sceneContent {
+  text-align: center;
 }
