@@ -5,6 +5,8 @@ body {
     height: 100vh;
     width: auto;
     background-attachment: fixed;
+    overflow: hidden;
+
 }
 
 * {
@@ -39,11 +41,28 @@ header {
     align-content: center;
     justify-content: center;
     text-align: center;
+    z-index: 1;
 }
 
-.canvas {
+#liveStream {
+    display: flex !important;
+    position: absolute;
+    height:fit-content;
+    width: 134%;
     align-items: center;
     align-content: center;
     justify-content: center;
     text-align: center;
+    z-index: 1;
+}
+
+.canvas {
+    display:flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    height: fit-content;
+    width: max-content;
+
 }
