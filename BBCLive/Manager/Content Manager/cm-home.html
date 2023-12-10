@@ -55,7 +55,8 @@
 
   <section>
     <h1>Home</h1>
-    <button id="live-btn" onclick="toggleMedia()">Toggle Live</button>
+    <button id="live-btn" onclick="toggleMedia()">Go Live</button>
+    <button id="liveoff-btn" onclick="stopMedia()" disabled>Stop Live</button>
     <div class="container" id="dashboard">
       <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
       </video>
@@ -333,6 +334,40 @@
       $('#mediaModal').modal('toggle');
     }
 
+    function goLive() {
+  
+  const goLiveWithScreen = document.getElementById('goLiveWithScreen').checked;
+  const goLiveWithWebcam = document.getElementById('goLiveWithWebcam').checked;
+  const liveBtn = document.getElementById('live-btn');
+  const liveOffBtn = document.getElementById('liveoff-btn');
+
+  if (goLiveWithScreen) {
+    startScreenShare();
+    
+  } else if (goLiveWithWebcam) {
+    startWebcam();
+  }
+
+  // Disable or enable 'live-btn' based on conditions
+  liveBtn.disabled = goLiveWithScreen || goLiveWithWebcam;
+  // document.getElementById('live-btn').disabled = true;
+  document.getElementById('liveoff-btn').disabled = false;
+
+  $('#mediaModal').modal('hide');
+}
+
+// Function to stop streaming
+function stopMedia() {
+  const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const liveBtn = document.getElementById('live-btn');
+  document.getElementById('liveoff-btn').disabled = true;
+  document.getElementById('live-btn').disabled = false;
+  videoContainer.style.display = 'block';
+  webcamContainer.style.display = 'none';
+
+}
+
     async function startWebcam(){
       const videoContainer = document.getElementById('dashboard');
       const webcamContainer = document.getElementById('webcamContainer');
@@ -470,16 +505,16 @@
 
         <!-- Modal Body -->
         <div class="modal-body">
-          <input type="radio" id="goLiveWithScreen">
+          <input type="radio" id="goLiveWithScreen" name="streamOption">
           <label for="sortByDate">Share Your Screen</label>
           <br>
-          <input type="radio" id="goLiveWithWebcam">
+          <input type="radio" id="goLiveWithWebcam" name="streamOption">
           <label for="sortBySceneName">Go Live With Your Webcam</label>
         </div>
 
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="goLive()">Sort</button>
+          <button type="button" class="btn btn-primary" onclick="goLive()">OK</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
 
