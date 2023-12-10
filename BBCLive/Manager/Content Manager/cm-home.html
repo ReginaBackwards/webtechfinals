@@ -18,10 +18,10 @@
   <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
   <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Bootstrap JS CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
+  <!-- Bootstrap JS CDN -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
   <title>HOME</title>
 </head>
 
@@ -55,12 +55,15 @@
 
   <section>
     <h1>Home</h1>
-    <button id="live-btn" onclick="toggleMedia()">Toggle Live</button>
+    <button id="live-btn" onclick="toggleMedia()">Go Live</button>
+    <button id="liveoff-btn" onclick="stopMedia()" disabled>Stop Live</button>
     <div class="container" id="dashboard">
       <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
+        <canvas id="videoCanvas" width="640" height="360"></canvas>
       </video>
     </div>
     <div class="container" id="webcamContainer">
+      <video id="webcam-vid"></video>
     </div>
 
     <div class="scheduleContainer">
@@ -76,14 +79,15 @@
 
   <script>
 
+    let isLive = false;
+    let isPlaying = true;
+    let mediaRecord;
     const socket = new WebSocket('ws://localhost:5000');
-    const videoElement = videojs('my-video');
-
-    function getCurrentVideoData() {
-      const videoUrl = videoElement.src().substring(3);
-      const currentTime = videoElement.currentTime();
-      return { videoUrl, currentTime };
-    }
+    const videoContainer = document.getElementById('dashboard');
+    const webcamContainer = document.getElementById('webcamContainer');
+    const canvas = document.getElementById('videoCanvas');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    let webcamVideo = document.getElementById('webcam-vid');
 
     socket.onopen = () => {
       console.log('WebSocket connection opened');
@@ -92,6 +96,24 @@
     socket.onclose = (event) => {
       console.error(`WebSocket closed: ${event.reason}`);
     };
+
+    function sendLiveFrames() {
+      if (isLive) {
+        console.log("It should send the frames here")
+        context.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        console.log(imageData);
+        // Send imageData to the server using WebSocket
+        socket.send(JSON.stringify({
+          type: 'stream',
+          width: imageData.width,
+          height: imageData.height,
+          data: Array.from(imageData.data),
+        }));
+      } else {
+        console.log("Not Live Yet.")
+      }
+    }
 
     fetch('/getUserSchedules')
       .then(response => response.json())
@@ -322,22 +344,16 @@
         });
     }
 
+
     setInterval(setVideoInfo, 1000);
     setInterval(checkForVideo, 1000);
 
-    let isPlaying = true;
-    let mediaRecord;
-
     function toggleMedia() {
-      if(isPlaying)
-      $('#mediaModal').modal('toggle');
+      if (isPlaying)
+        $('#mediaModal').modal('toggle');
     }
 
-    async function startWebcam(){
-      const videoContainer = document.getElementById('dashboard');
-      const webcamContainer = document.getElementById('webcamContainer');
-      const webcamVideo = document.getElementById('webcamVid');
-      // const webcamPlayer = videojs('webcamVid');
+    async function startWebcam() {
       const player = videojs('my-video')
 
       if (isPlaying) {
@@ -350,8 +366,6 @@
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-          const webcamVideo = document.createElement('video');
-          webcamVideo.id = 'webcamVid';
           webcamVideo.className = 'video-js';
           webcamVideo.controls = true;
           webcamVideo.srcObject = stream;
@@ -359,10 +373,12 @@
           webcamContainer.innerHTML = '';
           webcamContainer.appendChild(webcamVideo);
           console.log(stream);
-          // mediaRecord = new MediaRecorder(stream);
 
           webcamVideo.play();
           console.log(stream);
+          setInterval(() => {
+            sendLiveFrames();
+          }, 160);
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
@@ -388,11 +404,7 @@
       isPlaying = !isPlaying;
     }
 
-    async function startScreenShare(){
-      const videoContainer = document.getElementById('dashboard');
-      const webcamContainer = document.getElementById('webcamContainer');
-      const webcamVideo = document.getElementById('webcamVid');
-      // const webcamPlayer = videojs('webcamVid');
+    async function startScreenShare() {
       const player = videojs('my-video')
 
       if (isPlaying) {
@@ -405,19 +417,19 @@
         try {
           const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
 
-          const webcamVideo = document.createElement('video');
-          webcamVideo.id = 'webcamVid';
           webcamVideo.className = 'video-js';
           webcamVideo.controls = true;
           webcamVideo.srcObject = stream;
-
+          
           webcamContainer.innerHTML = '';
           webcamContainer.appendChild(webcamVideo);
           console.log(stream);
-          // mediaRecord = new MediaRecorder(stream);
 
           webcamVideo.play();
           console.log(stream);
+          setInterval(() => {
+            sendLiveFrames();
+          }, 200);
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
@@ -442,17 +454,39 @@
 
       isPlaying = !isPlaying;
     }
-    function goLive(){
+
+    function goLive() {
       const goLiveWithScreen = document.getElementById('goLiveWithScreen').checked;
       const goLiveWithWebcam = document.getElementById('goLiveWithWebcam').checked;
-      
-      if (goLiveWithScreen){
+      const liveBtn = document.getElementById('live-btn');
+      const liveOffBtn = document.getElementById('liveoff-btn');
+
+      isLive = true;
+      if (goLiveWithScreen) {
         startScreenShare();
-      }else if(goLiveWithWebcam) {
-        startWebcam(); 
+      } else if (goLiveWithWebcam) {
+        startWebcam();
       }
+
+      // Disable or enable 'live-btn' based on conditions
+      liveBtn.disabled = goLiveWithScreen || goLiveWithWebcam;
+      // document.getElementById('live-btn').disabled = true;
+      document.getElementById('liveoff-btn').disabled = false;
       $('#mediaModal').modal('hide');
-   
+
+    }
+
+    // Function to stop streaming
+    function stopMedia() {
+      const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const liveBtn = document.getElementById('live-btn');
+      document.getElementById('liveoff-btn').disabled = true;
+      document.getElementById('live-btn').disabled = false;
+      videoContainer.style.display = 'block';
+      webcamContainer.style.display = 'none';
+      webcamVideo.pause();
+      isLive = false;
     }
 
   </script>
@@ -470,16 +504,16 @@
 
         <!-- Modal Body -->
         <div class="modal-body">
-          <input type="radio" id="goLiveWithScreen">
+          <input type="radio" id="goLiveWithScreen" name="streamOption">
           <label for="sortByDate">Share Your Screen</label>
           <br>
-          <input type="radio" id="goLiveWithWebcam">
+          <input type="radio" id="goLiveWithWebcam" name="streamOption">
           <label for="sortBySceneName">Go Live With Your Webcam</label>
         </div>
 
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="goLive()">Sort</button>
+          <button type="button" class="btn btn-primary" onclick="goLive()">OK</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
 
