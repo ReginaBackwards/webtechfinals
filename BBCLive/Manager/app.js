@@ -842,7 +842,7 @@ app.get('/fetchScenes', (req, res) => {
   });
 });
 
-app.post('/saveScene', (req, res) => {
+app.post('/saveScene', async (req, res) => {
   const resources = req.body.resources;
 
   // Insert scene information into the MySQL database
@@ -850,23 +850,51 @@ app.post('/saveScene', (req, res) => {
 
   const values = resources.map(resource => [
     resource.title,
-    // Convert the full URL to a relative path
-    path.relative('http://localhost:3000', resource.videoSrc),
+    `/Content Hosting/videos/scenes/${resource.title}`, // Assuming resource.title is unique for each scene
     new Date().toISOString().split('T')[0], // Current date
     resource.startTime,
     resource.endTime,
   ]);
 
-  db.query(query, [values], (err, results) => {
+  db.query(query, [values], async (err, results) => {
     if (err) {
       console.error('Error saving scene to MySQL:', err);
       res.json({ success: false, error: err.message });
     } else {
       console.log('Scene saved to MySQL');
+
+      // Save associated files to /Content Hosting/videos/scenes/
+      for (const resource of resources) {
+        const fileExtension = path.extname(resource.videoSrc).toLowerCase();
+        const filePath = `videos/scenes/${resource.title}${fileExtension}`;
+        const absoluteFilePath = path.join(contentHostingDir, filePath);
+
+        if (fileExtension === '.mp4') {
+          // Assuming video files, adjust this part based on file types
+          fs.writeFileSync(absoluteFilePath, resource.videoSrc);
+        } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
+          // Assuming image files, adjust this part based on file types
+          await sharp(resource.videoSrc).toFile(absoluteFilePath);
+        }
+
+        // Update the filepath in the database with the correct starting path
+        const updateQuery = 'UPDATE scenes SET filepath = ? WHERE scenename = ?';
+        const updateValues = [`/Content Hosting/${filePath}`, resource.title];
+
+        db.query(updateQuery, updateValues, (updateErr, updateResult) => {
+          if (updateErr) {
+            console.error('MySQL update error:', updateErr);
+          } else {
+            console.log('Database updated with file path:', updateResult);
+          }
+        });
+      }
+
       res.json({ success: true });
     }
   });
 });
+
 
 let currentSrc = "";
 let currentTimeStamp = "";
