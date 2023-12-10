@@ -55,7 +55,7 @@ ul {
   margin-top: 20px !important;
   flex-direction: row;
   display: flex;
-  
+
 }
 
 li {
@@ -72,7 +72,7 @@ li a {
 
 li a:hover {
   text-decoration: none;
-  color:#8acaef;
+  color: #8acaef;
   font-weight: bold;
 }
 
@@ -86,7 +86,6 @@ li a:hover {
 
 .header-profile img {
   margin: 0px 5px 0px 5px
-  
 }
 
 .line {
@@ -117,13 +116,14 @@ li a:target {
   background-color: aqua;
 }
 
-section{
-    padding: 2%;
-    margin-left: 5%;
-    margin-right: 5%;  
+section {
+  padding: 2%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
-#logoutBtn, #btn{
+#logoutBtn,
+#btn {
   padding: 20px;
   cursor: pointer;
   background-color: #000066;
@@ -131,12 +131,15 @@ section{
   border: none;
   color: white;
 }
-#logoutBtn:hover{
+
+#logoutBtn:hover {
   background-color: #1111d8;
 }
-#btn:hover{
-  background-color: #1111d8 ;
+
+#btn:hover {
+  background-color: #1111d8;
 }
+
 .avatar-container {
   overflow: hidden;
   border-radius: 50%;
@@ -160,4 +163,3 @@ h1 {
   position: absolute;
   margin-left: 300px !important;
 }
-

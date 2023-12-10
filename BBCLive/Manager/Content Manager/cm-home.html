@@ -1,3 +1,13 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,19 +29,18 @@
         </div>
 
         <ul>
-          <li><a href="cm-home.html">Home</a></li>
-          <li><a href="#" onclick="goToResources();">Resources</a></li>
+          <li><a href="#" onclick="goToHome()">Home</a></li>
+          <li><a href="#" onclick="goToResources()">Resources</a></li>
           <li><a href="#" onclick="goToLogs()">Logs</a></li>
         </ul>
 
         <div class="header-profile">
-          <!-- <img src="pathofdadp" alt="user-dp"> -->
           <div id="cmDetails" class="cmDets">
             <!-- Content manager avatar and name will be displayed here -->
           </div>
           <div class="line"></div>
           <div class="user-info">
-            <a href="">Username</a>
+            <a href="#" onclick="goToProfile()">Username</a>
             <button id="logoutBtn" onclick="logout()">Logout</button>
           </div>
         </div>
@@ -48,43 +57,36 @@
     </div>
     <div class="container" id="webcamContainer">
     </div>
-  
+
     <div class="scheduleContainer">
       <h1>Schedules</h1>
       <div id="scheduleButtons">
       </div>
     </div>
   </section>
-  
+
+  <footer>
+    <div id="footer"></div>
+  </footer>
+
   <script>
 
-// const socket = new WebSocket('ws://localhost:5000');
+    const socket = new WebSocket('ws://localhost:5000');
+    const videoElement = videojs('my-video');
 
-// function getCurrentVideoUrl() {
-//   const player = videojs('my-video');
+    function getCurrentVideoData() {
+      const videoUrl = videoElement.src().substring(3);
+      const currentTime = videoElement.currentTime();
+      return { videoUrl, currentTime };
+    }
 
-//   if (!player.paused()) {
-//     return player.src();
-//   } else {
-//     return "./../../Content Hosting/videos/commercials/streamStartingSoon.mp4";
-//   }
-// }
+    socket.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
 
-
-//   socket.onopen = () => {
-//     console.log('WebSocket connection opened');
-//   };
-
-//   socket.onclose = (event) => {
-//     console.error(`WebSocket closed: ${event.reason}`);
-//   };
-
-//   setInterval(() => {
-//   const videoUrl = getCurrentVideoUrl;
-//   console.log('Sending video URL:', videoUrl);  // Debugging message
-//   socket.send(videoUrl);
-// }, 10000);
-
+    socket.onclose = (event) => {
+      console.error(`WebSocket closed: ${event.reason}`);
+    };
 
     fetch('/getUserSchedules')
       .then(response => response.json())
@@ -121,8 +123,8 @@
         }
       })
       .catch(error => console.error('Error fetching schedules:', error));
-   
-      // Function to fetch and display content manager details
+
+    // Function to fetch and display content manager details
     function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
@@ -165,6 +167,23 @@
         });
     }
 
+    function goToHome() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
     function goToLogs() {
       // Make an AJAX request to the server to handle the redirection
       fetch('/gotoLogs')
@@ -173,6 +192,23 @@
           if (data.success) {
             // Redirect to resources.html after successful request
             window.location.href = '/Manager/Content%20Manager/cm-logs.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToProfile() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/settings.html';
           } else {
             alert('Failed to go to Logs');
           }
@@ -198,6 +234,11 @@
           console.error('Error during request to go to Editor:', error);
         });
     }
+    fetch('/res/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
 
     // Function to handle logout
     function logout() {
@@ -218,34 +259,66 @@
         });
     }
     function checkForVideo() {
-  const player = videojs('my-video');
 
-  fetch('/fetchVideo')
-    .then((response) => response.json())
-    .then((data) => {
-      const videos = data.videos;
+      const player = videojs('my-video');
 
-      if (videos && videos.length > 0) {
-        const newVideo = videos[0];
-        const currentSrc = player.currentSrc();
+      fetch('/fetchVideo')
+        .then((response) => response.json())
+        .then((data) => {
+          const videos = data.videos;
 
-        // Check if the new video is different from the currently playing video
-        if (newVideo.filepath !== currentSrc || player.paused()) {
-          // Directly set the source and play the video
-          player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
-          player.play();
-        }
-      } else if (!player.paused()) {
-        // No videos available, and the player is currently playing, pause it
-        player.pause();
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching video:', error);
-    });
-}
+          if (videos && videos.length > 0) {
+            const newVideo = videos[0];
+            const currentSrc = player.currentSrc();
 
-setInterval(checkForVideo, 1000);
+            // Check if the new video is different from the currently playing video
+            if (newVideo.filepath !== currentSrc || player.paused()) {
+              // Directly set the source and play the video
+              player.src({ src: `./../..${newVideo.filepath}`, type: 'video/mp4' });
+              player.play();
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching video:', error);
+        });
+    }
+
+    function setVideoInfo() {
+      const player = videojs('my-video');
+      const currentSrc = player.src();
+      const currentTimeStamp = player.currentTime();
+
+      // Prepare the data to be sent to the server
+      const videoInfo = {
+        src: currentSrc,
+        currentTime: currentTimeStamp,
+      };
+
+      // Fetch options
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(videoInfo),
+      };
+
+      // Fetch function to send data to the server
+      fetch('/setVideoInfo', options)
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response from the server if needed
+          console.log(data);
+        })
+        .catch(error => {
+          // Handle errors during the fetch request
+          console.error('Error during fetch:', error);
+        });
+    }
+
+    setInterval(setVideoInfo, 1000);
+    setInterval(checkForVideo, 1000);
 
     let isPlaying = true;
     let mediaRecord;
@@ -300,11 +373,13 @@ setInterval(checkForVideo, 1000);
 
         const player = videojs('my-video');
         player.play();
+        player.src = stream
+        console.log(player.src)
+        setVideoInfo()
       }
 
       isPlaying = !isPlaying;
     }
-
   </script>
 </body>
 

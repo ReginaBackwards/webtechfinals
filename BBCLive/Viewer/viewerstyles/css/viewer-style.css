@@ -1,4 +1,4 @@
-body{
+body {
     background-image: url('./../../../res/bg.png');
     background-size: cover;
     background-repeat: no-repeat;
@@ -6,39 +6,37 @@ body{
     width: auto;
     background-attachment: fixed;
 }
-*{
+
+* {
     margin: 0%;
     box-sizing: border-box;
 }
-header{
+
+header {
     width: 100%;
     height: 70px;
     background-color: #000066;
     color: white;
     flex-direction: row;
-    display:flex;
+    display: flex;
     align-items: center;
 }
-.logo{
+
+.logo {
     background-color: white;
     border-radius: 1000px;
     margin-left: 50px;
     margin-right: 50px;
 }
-#sluLogo{
+
+#sluLogo {
     width: 45px;
     height: auto;
 }
-.video{
+
+.video {
     align-items: center;
     align-content: center;
     justify-content: center;
     text-align: center;
 }
-/* 
-video {
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-    text-align: center;
-} */

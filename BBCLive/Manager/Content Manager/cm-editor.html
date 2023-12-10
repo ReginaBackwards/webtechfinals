@@ -1,3 +1,13 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,17 +30,18 @@
       </div>
 
       <ul>
-        <li><a href="cm-home.html">Home</a></li>
+        <li><a href="#" onclick="goToHome()">Home</a></li>
         <li><a href="#" onclick="goToResources();">Resources</a></li>
-        <li><a href="cm-logs.html">Logs</a></li>
+        <li><a href="#" onclick="goToLogs()">Logs</a></li>
       </ul>
+
 
       <div class="header-profile">
         <div id="cmDetails" class="cmDets">
         </div>
         <div class="line"></div>
         <div class="user-info">
-          <a href="">Username</a>
+          <a href="#" onclick="goToProfile()">Username</a>
           <button id="logoutBtn" onclick="logout()">Logout</button>
         </div>
       </div>
@@ -42,73 +53,85 @@
 
   <div class="topContainer">
     <div id="videoContainer">
-      <video id='my-video' class='video-js' preload='auto' height='500' width='900' controls data-setup='{}'>
+      <video id='my-video' class='video-js' preload='auto' height='500' width='500' controls data-setup='{}'>
 
         <p>
           <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
         </p>
       </video>
     </div>
-
-    <div class="container" id="tablesContainer">
-      <table>
-        <thead>
-          <tr>
-            <th>Resources</th>
-            <th>File Type</th>
-          </tr>
-        </thead>
-        <tbody id="resourcesContainer">
-          <tr draggable="true" class="video-row">
-            <td>Looks like you dont have any content yet!</td>
-            <td>file type</td>
-          </tr>
-        </tbody>
-      </table>
+      
+    <!-- New heading and save button -->
+    <div class="sceneHeader">
+      <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
+        id="timeFromServer"></span> </p>
+      <h2>Scene Editor</h2>
+      <p>Setting Scenes For: <span id="chosenDate"></span></p>
+      <div class="btnContainer">
+      <button onclick="saveScene()" id="saveButton">Save</button>
+      <button onclick="deleteScene()" id="clearButton">Clear</button>
+    </div>
     </div>
   </div>
-  <div id="dateTimeContainer">
-    <p>Happy <span id="dayOfWeek"></span>! Today is: <span id="dateFromServer"></span>. It's currently <span
-        id="timeFromServer"></span> </p>
-  </div>
-
-  <!-- New heading and save button -->
-  <div class="sceneHeader">
-    <h2>Scene Editor</h2>
-    <p>Setting Scenes For: <span id="chosenDate"></span></p>
-    <button onclick="saveScene()" id="saveButton">Save</button>
-    <button onclick="deleteScene()" id="saveButton">Clear</button>
-  </div>
-  <div id="chosenDateContainer">
-    <p>Setting Scenes For: <span id="chosenDate"></span></p>
-  </div>
-
 
   <!-- Replace the existing div with the new structure -->
+  <div class="editor">
   <div class="container" id="sceneContainer" ondragover="dragOver(event)" ondrop="drop(event)">
     <div id="sceneContent" class="scene-content">
       <!-- Content will be dynamically added here -->
     </div>
   </div>
 
+  <div class="container" id="tablesContainer">
+    <table>
+      <thead>
+        <tr>
+          <th>Resources</th>
+          <th>File Type</th>
+        </tr>
+      </thead>
+      <tbody id="resourcesContainer">
+        <tr draggable="true" class="video-row">
+          <td>Looks like you dont have any content yet!</td>
+          <td>file type</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
   <script>
-
-    // Function to handle redirect to resources.html
-    function goToResources() {
+    function goToProfile() {
       // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoresources')
+      fetch('/gotoLogs')
         .then(response => response.json())
         .then(data => {
           if (data.success) {
             // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/resources.html';
+            window.location.href = '/Manager/Content%20Manager/settings.html';
           } else {
-            alert('Failed to go to Resources');
+            alert('Failed to go to Logs');
           }
         })
         .catch(error => {
-          console.error('Error during request to go to Resources:', error);
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToLogs() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
         });
     }
 
@@ -128,24 +151,6 @@
           console.error('Error during request to go to Resources:', error);
         });
     }
-
-    function goToEditor() {
-      // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoeditor')
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/cm-editor.html';
-          } else {
-            alert('Failed to go to Resources');
-          }
-        })
-        .catch(error => {
-          console.error('Error during request to go to Resources:', error);
-        });
-    }
-
 
     // Function to handle logout
     function logout() {
@@ -186,7 +191,7 @@
       videoRows.forEach(row => {
         row.addEventListener('click', function () {
           // Get the filepath from the clicked row
-          const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+          const filepath = row.dataset.filepath;
 
           // Call the playVideo function with the filepath and the clicked row
           playVideo(filepath, row);
@@ -216,35 +221,35 @@
       getResourceFilePath(content)
         .then(filePath => {
 
-        videoElement.src = filePath;
+          videoElement.src = filePath;
 
-        videoElement.onloadedmetadata = function() {
-          
-        const durationInSeconds = Math.floor(videoElement.duration);
-        const formattedDuration = formatDuration(durationInSeconds);
-        console.log("DURATION:", formattedDuration);
+          videoElement.onloadedmetadata = function () {
 
-        const startTimeDisplay = document.createElement("div");
-        startTimeDisplay.textContent = `Start Time: ${startTime}`;
-        draggableDiv.append(startTimeDisplay);
-        console.log(startTime);
+            const durationInSeconds = Math.floor(videoElement.duration);
+            const formattedDuration = formatDuration(durationInSeconds);
+            console.log("DURATION:", formattedDuration);
 
-        const durationDisplayer = document.createElement("div");
-        durationDisplayer.textContent = `Duration: ${formattedDuration}`;
-        draggableDiv.append(durationDisplayer);
+            const startTimeDisplay = document.createElement("div");
+            startTimeDisplay.textContent = `Start Time: ${startTime}`;
+            draggableDiv.append(startTimeDisplay);
+            console.log(startTime);
 
-        const durationParts = formattedDuration.split(":");
-        const durationInSecs = parseInt(durationParts[0]) * 3600 + parseInt(durationParts[1]) * 60 + parseInt(durationParts[2]);
+            const durationDisplayer = document.createElement("div");
+            durationDisplayer.textContent = `Duration: ${formattedDuration}`;
+            draggableDiv.append(durationDisplayer);
 
-        const endTimeDisplay = document.createElement("div");
-        const endTime = getEndTime(startTime, durationInSecs);
-        endTimeDisplay.textContent = `End Time: ${endTime}`
-        draggableDiv.append(endTimeDisplay);
-        console.log(endTime);
+            const durationParts = formattedDuration.split(":");
+            const durationInSecs = parseInt(durationParts[0]) * 3600 + parseInt(durationParts[1]) * 60 + parseInt(durationParts[2]);
 
-        startTime = endTime;
-      }
-      })
+            const endTimeDisplay = document.createElement("div");
+            const endTime = getEndTime(startTime, durationInSecs);
+            endTimeDisplay.textContent = `End Time: ${endTime}`
+            draggableDiv.append(endTimeDisplay);
+            console.log(endTime);
+
+            startTime = endTime;
+          }
+        })
         .catch(error => {
           console.error('Error fetching file path of resource:', error);
         });
@@ -252,32 +257,31 @@
 
       draggableDiv.appendChild(videoElement);
 
-      
+
 
       return draggableDiv;
     }
 
     function formatDuration(totalSecs) {
-    const hours = Math.floor(totalSecs / 3600);
-    const minutes = Math.floor((totalSecs % 3600) / 60);
-    const seconds = totalSecs % 60;
+      const hours = Math.floor(totalSecs / 3600);
+      const minutes = Math.floor((totalSecs % 3600) / 60);
+      const seconds = totalSecs % 60;
 
-    return `${hours}:${minutes}:${seconds}`;
-  }
+      return `${hours}:${minutes}:${seconds}`;
+    }
 
-  function subtractDuration(time, duration) {
-    const timeParts = time.split(":");
-    const timeInSeconds = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
+    function subtractDuration(time, duration) {
+      const timeParts = time.split(":");
+      const timeInSeconds = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
 
-    const newTimeInSeconds = timeInSeconds - duration;
+      const newTimeInSeconds = timeInSeconds - duration;
 
-    return formatDuration(newTimeInSeconds);
-  }
+      return formatDuration(newTimeInSeconds);
+    }
 
 
     async function getResourceFilePath(content) {
       try {
-        console.log(`PINAPASANG FILE NAME: ${content}`)
         const response = await fetch(`/getResourceFilePath?content=${encodeURIComponent(content)}`);
         const filePath = await response.json();
         console.log(filePath);
@@ -384,7 +388,7 @@
 
     function getStartTime() {
       const startTime = new Date();
-      startTime.setHours(8,0,0,0);
+      startTime.setHours(8, 0, 0, 0);
 
       const hours = startTime.getHours();
       const minutes = startTime.getMinutes();
@@ -403,8 +407,6 @@
       const endTime = formatDuration(endTimeInSecs);
       return endTime;
     }
-
-
 
     // Initial fetch of resources when the page loads
     fetchResources();
@@ -462,7 +464,7 @@
       videoRows.forEach(row => {
         row.addEventListener('click', function () {
           // Get the filepath from the clicked row
-          const filepath = row.dataset.filepath; // Assuming you have the filepath in a data attribute
+          const filepath = row.dataset.filepath;
 
           // Call the playVideo function with the filepath and the clicked row
           playVideo(filepath, row);
@@ -470,53 +472,49 @@
       });
     });
 
-  function saveScene() {
-  // Get the list of resources in the scene editor
-  const sceneContent = document.getElementById("sceneContent");
-  const resources = Array.from(sceneContent.children).map((child) => {
-    const title = child.querySelector(".titleContent").textContent;
-    const videoSrc = child.querySelector("video").src;
-    const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
-    const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
+    function saveScene() {
+      // Get the list of resources in the scene editor
+      const sceneContent = document.getElementById("sceneContent");
+      const resources = Array.from(sceneContent.children).map((child) => {
+        const title = child.querySelector(".titleContent").textContent;
+        const videoSrc = child.querySelector("video").src;
+        const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
+        const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
 
-    return {
-      title,
-      videoSrc,
-      startTime,
-      endTime,
-    };    
-  });
+        return {
+          title,
+          videoSrc,
+          startTime,
+          endTime,
+        };
+      });
 
-  // Make an AJAX request to save the scene to the database
- 
-  fetch('/saveScene', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ resources }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('Scene saved successfully');
-      } else {
-        alert('Failed to save scene');
-      }
-    })
-    .catch(error => {
-      console.error('Error saving scene:', error);
-      alert('Failed to save scene');
-    });
-  }
-
-
-
+      // Make an AJAX request to save the scene to the database
+      fetch('/saveScene', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ resources }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Scene saved successfully');
+          } else {
+            alert('Failed to save scene');
+          }
+        })
+        .catch(error => {
+          console.error('Error saving scene:', error);
+          alert('Failed to save scene');
+        });
+    }
 
     function deleteScene() {
       // Get the list of resources in the scene editor
       const sceneContent = document.getElementById("sceneContent");
-      sceneContent.innerHTML='';
+      sceneContent.innerHTML = '';
       startTime = getStartTime();
     }
 
@@ -527,7 +525,7 @@
     // Fetch and display date and time when the page loads
     fetchDateTime();
 
-    // Fetch and update date and time every 1 minute (adjust as needed)
+    // Fetch and update date and time every 1 minute
     setInterval(fetchDateTime, 60000);
   </script>
 

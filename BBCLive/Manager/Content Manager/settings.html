@@ -1,191 +1,337 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+ 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Edit Profile</title>
+  <title>Edit Profile</title>
 
-     <!-- Custom fonts for this template-->
-     <link
-         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-         rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
-    <!-- Bootstrap's CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <!-- Bootstrap's CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- Custom styles for this template-->
-    <link href="./cmstyles/css/cm-style.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <!-- Custom styles for this template-->
+  <link href="./cmstyles/css/cm-style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 </head>
 
 <body>
-    <div class="container">
-        <!-- Outer Row -->
-        <div class="row justify-content-center my-5" id="box">
-            <div class="col-xl-10 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-xs-6 col-md-6">
-                                <div>
-                                    <h1>Edit Profile</h1>
-                                </div>
-                                <div class="card-body">
-                                    <form class="form" role="form" autocomplete="off" id="savePassword">
-                                        <div class="form-group" id="editProfileForm">
-                                            <label for="currentPassword" class="input-label">Current Password</label>
-                                            <input type="password" class="form-control" id="currentPassword" required="">
-                                        </div>
-                                        <div class="form-group" id="editProfileForm">
-                                            <label for="newPassword">New Password</label>
-                                            <input type="password" class="form-control" id="newPassword" required="">
-                                            <span class="form-text small text-muted"> The password must be 8-20 characters, and must <em>not</em> contain spaces. </span>
-                                        </div>
-                                        <div class="form-group" id="editProfileForm">
-                                            <label for="confirmPassword">Confirm Password</label>
-                                            <input type="password" class="form-control" id="confirmPassword" required="">
-                                            <span class="form-text small text-muted"> To confirm, type the new password again. </span>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="col-xs-6 col-md-6 text-center" class="container">
-                                <div>
-                                    <div class="col-md-12 my-5 text-center" id="image-container">
-                                        <img src="./../../res/avatars/default.png" id="profilePicture" alt="profile pic" >
-                                    </div>
-                                    <div class="col-md-12 my-5 text-center">
-                                        <div class="btn btn-primary" id="editdp-container">
-                                            <label class="form-label text-white m-1" for="editButton">Edit Profile Picture</label>
-                                            <input type="file" class="form-control d-none" name="default" id="editButton"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="col-md-12 text-center" id="button-container">
-                                <button type="submit" class="btn btn-primary" id="saveButton">Save</button>
-                                <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <header class="top-nav">
+    <div class="header-container">
+      <nav>
+        <div class="header-logo">
+          <img src="../../res/slu-logo.png" alt="slu-Logo">
         </div>
-    </div>
 
-    <script>
-        $(document).ready(function () {
-            // AJAX to display current porifle picture
-            $.ajax({
+        <ul>
+          <li><a href="#" onclick="goToHome()">Home</a></li>
+          <li><a href="#" onclick="goToResources();">Resources</a></li>
+          <li><a href="#" onclick="goToLogs()">Logs</a></li>
+        </ul>
+
+        <div class="header-profile">
+          <div id="cmDetails" class="cmDets">
+          </div>
+          <div class="line"></div>
+          <div class="user-info">
+            <a href="#" onclick="goToProfile()">Username</a>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <div class="container">
+    <!-- Outer Row -->
+    <div class="row justify-content-center my-5" id="box">
+      <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-xs-6 col-md-6">
+                <div>
+                  <h1>Edit Profile</h1>
+                </div>
+                <div class="card-body">
+                  <form class="form" role="form" autocomplete="off" id="savePassword">
+                    <div class="form-group" id="editProfileForm">
+                      <label for="currentPassword" class="input-label">Current Password</label>
+                      <input type="password" class="form-control" id="currentPassword" required="">
+                    </div>
+                    <div class="form-group" id="editProfileForm">
+                      <label for="newPassword">New Password</label>
+                      <input type="password" class="form-control" id="newPassword" required="">
+                      <span class="form-text small text-muted"> The password must be 8-20 characters, and must
+                        <em>not</em> contain spaces. </span>
+                    </div>
+                    <div class="form-group" id="editProfileForm">
+                      <label for="confirmPassword">Confirm Password</label>
+                      <input type="password" class="form-control" id="confirmPassword" required="">
+                      <span class="form-text small text-muted"> To confirm, type the new password again. </span>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col-xs-6 col-md-6 text-center" class="container">
+                <div>
+                  <div class="col-md-12 my-5 text-center" id="image-container">
+                    <img src="./../../res/avatars/default.png" id="profilePicture" alt="profile pic">
+                  </div>
+                  <div class="col-md-12 my-5 text-center">
+                    <div class="btn btn-primary" id="editdp-container">
+                      <label class="form-label text-white m-1" for="editButton">Edit Profile Picture</label>
+                      <input type="file" class="form-control d-none" name="default" id="editButton" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="col-md-12 text-center" id="button-container">
+                <button type="submit" class="btn btn-primary" id="saveButton">Save</button>
+                <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div id="footer"></div>
+  </footer>
+
+  <script>
+    // Function to fetch and display content manager details
+    function displayCmDetails() {
+      // Make an AJAX request to the endpoint that provides content manager details
+      fetch('/getCmDetails')
+        .then(response => response.json())
+        .then(cmDetails => {
+          // Update the HTML with content manager details
+          const cmDetailsDiv = document.getElementById('cmDetails');
+          cmDetailsDiv.innerHTML = `
+                <div class="avatar-container">
+                    <img src="./../../${cmDetails.dp}" class="avatar" alt="Avatar">
+                </div>
+            
+            `;
+          const usernameLink = document.querySelector('.user-info a');
+          usernameLink.textContent = cmDetails.username;
+        })
+        .catch(error => {
+          console.error('Error fetching content manager details:', error);
+        });
+    }
+
+    // Call the function to display content manager details on page load
+    displayCmDetails();
+
+    $(document).ready(function () {
+      // AJAX to display current porifle picture
+      $.ajax({
+        method: 'POST',
+        url: `/getProfilePicturePath`,
+        success: function (data) {
+          const path = `./../../${data}`;
+          $('#profilePicture').attr('src', path);
+        },
+        error: function (error) {
+          console.error('Error getting profile picture', error);
+        }
+      });
+
+      $('#saveButton').click(function (event) {
+        event.preventDefault();
+
+        // Get the input values
+        const currentPassword = $('#currentPassword').val();
+        const newPassword = $('#newPassword').val();
+        const confirmPassword = $('#confirmPassword').val();
+
+        // Validates that the password is 8-20 characters, and does not contain spaces.
+        if ((newPassword.length < 8 || newPassword.length > 20) || (/\s/.test(newPassword))) {
+          alert('Password must be between 8 and 20 characters, and must not contain spaces.');
+        } else {
+          if ((confirmPassword.length < 8 || confirmPassword.length > 20) || (/\s/.test(confirmPassword))) {
+            alert('Password must be between 8 and 20 characters, and must not contain spaces.');
+          } else {
+            if (newPassword != confirmPassword) {
+              alert('New Password and Confirm Password does not match!');
+            } else {
+              // Check if current password input match the password in the database before submitting the form
+              $.ajax({
                 method: 'POST',
-                url: `/getProfilePicturePath`,
-                success: function (data) {
-                    const path = `./../../${data}`;
-                    $('#profilePicture').attr('src', path);
+                url: `/checkCurrentPasswordMatch/${currentPassword}`,
+                success: function (response) {
+                  if (response.exists) {
+                    // AJAX request to update password
+                    $.ajax({
+                      method: 'POST',
+                      url: `/updatePassword/${newPassword}`,
+                      success: function (response) {
+                        alert(`Password updated successfully`);
+                      },
+                      error: function (error) {
+                        alert('Failed to upated password. Please try again.');
+                      }
+                    });
+                  }
                 },
                 error: function (error) {
-                    console.error('Error getting profile picture', error);
+                  console.error('Error checking password match:', error);
+                  alert('Failed to check password match. Please try again.');
                 }
-            });
+              });
+            }
+          }
+        }
+      });
 
-            $('#saveButton').click(function (event) {
-                event.preventDefault();
+      $('#cancelButton').click(function (event) {
+        $('#currentPassword').val('');
+        $('#newPassword').val('');
+        $('#confirmPassword').val('');
+      });
 
-                // Get the input values
-                const currentPassword = $('#currentPassword').val();
-                const newPassword = $('#newPassword').val();
-                const confirmPassword = $('#confirmPassword').val();
+      $('#editButton').on('change', function (event) {
+        const fileInput = event.target;
+        const fileList = fileInput.files;
 
-                // Validates that the password is 8-20 characters, and does not contain spaces.
-                if ((newPassword.length < 8 || newPassword.length > 20) || (/\s/.test(newPassword))) {
-                    alert('Password must be between 8 and 20 characters, and must not contain spaces.');
-                } else {
-                    if ((confirmPassword.length < 8 || confirmPassword.length > 20) || (/\s/.test(confirmPassword))) {
-                        alert('Password must be between 8 and 20 characters, and must not contain spaces.');
-                    } else {
-                        if (newPassword != confirmPassword) {
-                            alert('New Password and Confirm Password does not match!');
-                        } else {
-                            // Check if current password input match the password in the database before submitting the form
-                            $.ajax({
-                                method: 'POST',
-                                url: `/checkCurrentPasswordMatch/${currentPassword}`,
-                                success: function (response) {
-                                    if (response.exists) {
-                                        // AJAX request to update password
-                                        $.ajax({
-                                            method: 'POST',
-                                            url: `/updatePassword/${newPassword}`,
-                                            success: function (response) {
-                                                alert(`Password updated successfully`);
-                                            },
-                                            error: function (error) {
-                                                alert('Failed to upated password. Please try again.');
-                                            }
-                                        });
-                                    }
-                                },
-                                error: function (error) {
-                                    console.error('Error checking password match:', error);
-                                    alert('Failed to check password match. Please try again.');
-                                }
-                            });
-                        }
-                    }
-                }
-            });
+        if (fileList.length === 0) {
+          alert('Please select a profile picture.');
+          return;
+        }
 
-            $('#cancelButton').click(function (event) {
-                $('#currentPassword').val('');
-                $('#newPassword').val('');
-                $('#confirmPassword').val('');
-            });
+        const formData = new FormData();
 
-            $('#editButton').on('change', function (event) {
-                const fileInput = event.target;
-                const fileList = fileInput.files;
+        formData.append('profilePicture', fileList[0]);
 
-                if (fileList.length === 0) {
-                    alert('Please select a profile picture.');
-                    return;
-                }
-
-                const formData = new FormData();
-
-                formData.append('profilePicture', fileList[0]);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/updateProfilePicture',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        alert('Profile picture updated successfully!');
-                        // Show updated profile pic
-                        // $('#profilePicture').attr('src', `./../../${data}`);
-                    },
-                    error: function (error) {
-                        alert('Error updating profile picture. Please try again.');
-                        console.error('Update profile picture error:', error);
-                    }
-                });
-            });
+        $.ajax({
+          type: 'POST',
+          url: '/updateProfilePicture',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (data) {
+            alert('Profile picture updated successfully!');
+          },
+          error: function (error) {
+            alert('Error updating profile picture. Please try again.');
+            console.error('Update profile picture error:', error);
+          }
         });
-    </script>
+      });
+    });
 
-     <!-- Bootstrap's JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    fetch('/res/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
+    // Function to handle redirect to resources.html
+    function goToResources() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoresources')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/resources.html';
+          } else {
+            alert('Failed to go to Resources');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Resources:', error);
+        });
+    }
+
+    function goToHome() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToLogs() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToProfile() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/settings.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+  </script>
+
+  <!-- Bootstrap's JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>

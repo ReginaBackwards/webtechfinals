@@ -16,7 +16,7 @@ body {
 }
 
 .selected-row {
-  background-color: #c0c0c0; /* Change the background color as desired */
+  background-color: #c0c0c0;
 }
 
 .top-nav {
@@ -68,7 +68,7 @@ li a {
 
 li a:hover {
   text-decoration: none;
-  color:#8acaef;
+  color: #8acaef;
   font-weight: bold;
 }
 
@@ -120,11 +120,15 @@ section {
 }
 
 .container {
+  align-items: center;
+  width: 40%;
   background-color: white;
   border: 2px solid #000066;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  height: 460px;
+  overflow: scroll;
 }
 
 .editor-container {
@@ -134,24 +138,26 @@ section {
 }
 
 #videoContainer {
-  flex: 1;
+  margin-left: 50px;
   padding: 20px;
-  width: 70%;
-  border-right: 1px solid #ccc;
+  width: 90%;
   padding-top: 50px;
 }
 
+.editor {
+  display:flex;
+  justify-content: center;
+}
+
 #tablesContainer {
-  border-top: 1px solid #ccc;
   justify-items: center;
-  width: 30%;
+  width: 40%;
   height: 460px;
   overflow: scroll;
-  margin-top: 50px;
 }
 
 .video-js {
-  width: 100%;
+  width: 90%;
 }
 
 .scenes {
@@ -166,7 +172,8 @@ table {
   margin-bottom: 20px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #000066;
   padding: 10px;
   text-align: center;
@@ -177,7 +184,9 @@ th {
   color: white;
 }
 
-#addTableBtn, #logoutBtn, #btn {
+#addTableBtn,
+#logoutBtn,
+#btn {
   padding: 10px;
   cursor: pointer;
   background-color: #000066;
@@ -187,7 +196,9 @@ th {
   transition: background-color 0.3s ease;
 }
 
-#addTableBtn:hover, #logoutBtn:hover, #btn:hover {
+#addTableBtn:hover,
+#logoutBtn:hover,
+#btn:hover {
   background-color: #1111d8;
 }
 
@@ -209,26 +220,28 @@ h1 {
   border-radius: 50%;
 }
 
-#dateTimeContainer{
+#dateTimeContainer {
   text-align: center;
 }
 
 #webcamVid {
-  width: 66%; flex: 1;
+  width: 66%;
+  flex: 1;
   height: auto;
 }
 
-#dateFromServer, #timeFromServer, #dayOfWeek{
+#dateFromServer,
+#timeFromServer,
+#dayOfWeek {
   font-weight: bold;
 }
 
 .container td[contenteditable="false"] {
-  background-color:  #25257c; /* Non-editable cell background color */
+  background-color: #25257c;
   color: #fff;
   font-weight: bold;
 }
 
-/* Add these styles to your existing CSS or create a new section for it */
 .scene-cell {
   border: 1px solid #ccc;
   padding: 10px;
@@ -248,24 +261,22 @@ h1 {
   color: white;
 }
 
-video {
-  height: 200px;
-  width: 400px;
-}
-
 .topContainer {
   padding: 20px;
   display: flex;
 }
 
 .sceneHeader {
+  margin-right: 90px;
+  margin-left: -100px;
   justify-content: center;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-#saveButton {
+#saveButton, #clearButton  {
+  margin: 10px;
   align-items: center;
   padding: 6px 14px;
   border-radius: 6px;
@@ -277,7 +288,7 @@ video {
   margin-bottom: 20px;
 }
 
-#saveButton:hover {
+#saveButton:hover, #clearButton:hover {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -289,6 +300,7 @@ video {
   background: #367AF6;
 }
 
+
 #chosenDateContainer {
   text-align: center;
 }
@@ -299,4 +311,8 @@ h2 {
 
 #chosenDate {
   font-weight: bold;
+}
+
+.btnContainer {
+  display: flex;
 }

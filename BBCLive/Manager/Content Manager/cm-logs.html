@@ -1,106 +1,167 @@
+<!-- 
+    Authors:
+        DELA CRUZ, Janbert
+        DIMACALI, Paul Ivan
+        LACORTE, Abby Gaile
+        PALAFOX, Leoneil Luis
+        ROSANTO, Marvin
+        SLAY, America Eloise
+ -->
+ 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="cmstyles/css/cm-logs.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>Logs</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="cmstyles/css/cm-logs.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Logs</title>
 </head>
 
 <body>
-    <header class="top-nav">
-        <div class="header-container">
-          <nav>
-            <div class="header-logo">
-              <a href=".">
-                <img src="../../res/slu-logo.png" alt="slu-Logo">
-              </a>
-            </div>
-      
-            <ul>
-              <li><a href="cm-home.html">Home</a></li>
-              <li><a href="#" onclick="goToResources();">Resources</a></li>
-              <li><a href="cm-logs.html">Logs</a></li>
-            </ul>
-      
-            <div class="header-profile">
-              <div id="cmDetails" class="cmDets">
-              </div>
-              <div class="line"></div>
-              <div class="user-info">
-                <a href="">Username</a>
-                <button id="logoutBtn" onclick="logout()">Logout</button>
-              </div>
-            </div>
-          </nav>
+  <header class="top-nav">
+    <div class="header-container">
+      <nav>
+        <div class="header-logo">
+          <a href=".">
+            <img src="../../res/slu-logo.png" alt="slu-Logo">
+          </a>
         </div>
-      </header>
 
-    <section>
-        <h1>Logs</h1>
-        <div class="container">
-            <div class="search-bar">
-                <input type="text" class="form-control" placeholder="Search" aria-label="Search" id="Search">
-                <div class="sort-icon" onclick="toggleSortModal()">
-                    <span class="input-group-text"><i class="bi bi-filter"></i></span>
-                </div>
-            </div>
-            <table id="scenesTable">
-                <tr>
-                    <th>Date</th>
-                    <th>Scene Name</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                </tr>
-            </table>
+        <ul>
+          <li><a href="#" onclick="goToHome()">Home</a></li>
+          <li><a href="#" onclick="goToResources()">Resources</a></li>
+          <li><a href="#" onclick="goToLogs()">Logs</a></li>
+        </ul>
+
+        <div class="header-profile">
+          <div id="cmDetails" class="cmDets">
+          </div>
+          <div class="line"></div>
+          <div class="user-info">
+            <a href="#" onclick="goToProfile()">Username</a>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+          </div>
         </div>
-    </section>
-
-    <!-- Sort Modal -->
-    <div class="modal" id="sortModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Sort Scenes</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal Body -->
-                <div class="modal-body">
-                    <input type="radio" id="sortByDate" name="sortCriteria" value="date">
-                    <label for="sortByDate">Sort by Date</label>
-                    <br>
-                    <input type="radio" id="sortBySceneName" name="sortCriteria" value="scenename">
-                    <label for="sortBySceneName">Sort by Scene Name</label>
-                </div>
-
-                <!-- Modal Footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="sort()">Sort</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-
-            </div>
-        </div>
+      </nav>
     </div>
+  </header>
 
-    <footer>
-        <div id="footer"></div>
-    </footer>
+  <section>
+    <h1>Logs</h1>
+    <div class="container">
+      <div class="search-bar">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search" id="Search">
+        <div class="sort-icon" onclick="toggleSortModal()">
+          <span class="input-group-text"><i class="bi bi-filter"></i></span>
+        </div>
+      </div>
+      <table id="scenesTable">
+        <tr>
+          <th>Date</th>
+          <th>Scene Name</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+        </tr>
+      </table>
+    </div>
+  </section>
 
-    <!-- Bootstrap JS CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Sort Modal -->
+  <div class="modal" id="sortModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-    <script>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Sort Scenes</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
 
-// Function to handle redirect to resources.html
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <input type="radio" id="sortByDate" name="sortCriteria" value="date">
+          <label for="sortByDate">Sort by Date</label>
+          <br>
+          <input type="radio" id="sortBySceneName" name="sortCriteria" value="scenename">
+          <label for="sortBySceneName">Sort by Scene Name</label>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="sort()">Sort</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div id="footer"></div>
+  </footer>
+
+  <!-- Bootstrap JS CDN -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+
+    function goToHome() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToLogs() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-logs.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    function goToProfile() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/settings.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+    // Function to handle redirect to resources.html
     function goToResources() {
       // Make an AJAX request to the server to handle the redirection
       fetch('/gotoresources')
@@ -118,25 +179,8 @@
         });
     }
 
-    function goToResources() {
-      // Make an AJAX request to the server to handle the redirection
-      fetch('/gotoresources')
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Redirect to resources.html after successful request
-            window.location.href = '/Manager/Content%20Manager/resources.html';
-          } else {
-            alert('Failed to go to Resources');
-          }
-        })
-        .catch(error => {
-          console.error('Error during request to go to Resources:', error);
-        });
-    }
-
-     // Function to handle logout
-     function logout() {
+    // Function to handle logout
+    function logout() {
       // Make an AJAX request to the logout endpoint
       fetch('/logout')
         .then(response => response.json())
@@ -154,8 +198,8 @@
         });
     }
 
-     // Function to fetch and display content manager details
-     function displayCmDetails() {
+    // Function to fetch and display content manager details
+    function displayCmDetails() {
       // Make an AJAX request to the endpoint that provides content manager details
       fetch('/getCmDetails')
         .then(response => response.json())
@@ -176,99 +220,99 @@
         });
     }
 
-      // Call the function to display content manager details on page load
-      displayCmDetails();
+    // Call the function to display content manager details on page load
+    displayCmDetails();
 
-        const scenesTable = document.getElementById('scenesTable');
-        const searchInput = document.getElementById('Search');
-        const sortModal = document.getElementById('sortModal');
-        let originalData;
+    const scenesTable = document.getElementById('scenesTable');
+    const searchInput = document.getElementById('Search');
+    const sortModal = document.getElementById('sortModal');
+    let originalData;
 
-        fetch('/fetchScenes')
-            .then(response => response.json())
-            .then(data => {
-                originalData = data;
+    fetch('/fetchScenes')
+      .then(response => response.json())
+      .then(data => {
+        originalData = data;
 
-                // Initial rendering of the table
-                renderTable(originalData);
+        // Initial rendering of the table
+        renderTable(originalData);
 
-                // Event listener for search input
-                searchInput.addEventListener('input', function () {
-                    const searchTerm = this.value.toLowerCase();
-                    const filteredData = originalData.filter(scene => {
-                        return scene.scenename.toLowerCase().includes(searchTerm);
-                    });
+        // Event listener for search input
+        searchInput.addEventListener('input', function () {
+          const searchTerm = this.value.toLowerCase();
+          const filteredData = originalData.filter(scene => {
+            return scene.scenename.toLowerCase().includes(searchTerm);
+          });
 
-                    // Update the table based on the search results
-                    renderTable(filteredData);
-                });
-            })
-            .catch(error => console.error('Error fetching scenes:', error));
+          // Update the table based on the search results
+          renderTable(filteredData);
+        });
+      })
+      .catch(error => console.error('Error fetching scenes:', error));
 
-        function renderTable(data) {
-            // Clear existing rows, excluding the header row
-            scenesTable.innerHTML = '<tr><th>Date</th><th>Scene Name</th><th>Start Time</th><th>End Time</th></tr>';
+    function renderTable(data) {
+      // Clear existing rows, excluding the header row
+      scenesTable.innerHTML = '<tr><th>Date</th><th>Scene Name</th><th>Start Time</th><th>End Time</th></tr>';
 
-            data.forEach(scene => {
-                const row = scenesTable.insertRow();
-                const cellDate = row.insertCell(0);
-                const cellSceneName = row.insertCell(1);
-                const cellStartTime = row.insertCell(2);
-                const cellEndTime = row.insertCell(3);
+      data.forEach(scene => {
+        const row = scenesTable.insertRow();
+        const cellDate = row.insertCell(0);
+        const cellSceneName = row.insertCell(1);
+        const cellStartTime = row.insertCell(2);
+        const cellEndTime = row.insertCell(3);
 
-                // Format date
-                const formattedDate = new Date(scene.date);
-                const options = { month: 'long', day: '2-digit', year: 'numeric' };
-                const dateString = new Intl.DateTimeFormat('en-US', options).format(formattedDate);
+        // Format date
+        const formattedDate = new Date(scene.date);
+        const options = { month: 'long', day: '2-digit', year: 'numeric' };
+        const dateString = new Intl.DateTimeFormat('en-US', options).format(formattedDate);
 
-                // Format time
-                const startTime = new Date(`1970-01-01T${scene.starttime}`);
-                const endTime = new Date(`1970-01-01T${scene.endtime}`);
-                const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-                const startTimeString = new Intl.DateTimeFormat('en-US', timeOptions).format(startTime);
-                const endTimeString = new Intl.DateTimeFormat('en-US', timeOptions).format(endTime);
+        // Format time
+        const startTime = new Date(`1970-01-01T${scene.starttime}`);
+        const endTime = new Date(`1970-01-01T${scene.endtime}`);
+        const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+        const startTimeString = new Intl.DateTimeFormat('en-US', timeOptions).format(startTime);
+        const endTimeString = new Intl.DateTimeFormat('en-US', timeOptions).format(endTime);
 
-                cellDate.textContent = dateString;
-                cellSceneName.textContent = scene.scenename;
-                cellStartTime.textContent = startTimeString;
-                cellEndTime.textContent = endTimeString;
-            });
-        }
+        cellDate.textContent = dateString;
+        cellSceneName.textContent = scene.scenename;
+        cellStartTime.textContent = startTimeString;
+        cellEndTime.textContent = endTimeString;
+      });
+    }
 
-        function toggleSortModal() {
-            $('#sortModal').modal('toggle');
-        }
+    function toggleSortModal() {
+      $('#sortModal').modal('toggle');
+    }
 
-        function sort() {
-            const sortByDate = document.getElementById('sortByDate').checked;
-            const sortBySceneName = document.getElementById('sortBySceneName').checked;
+    function sort() {
+      const sortByDate = document.getElementById('sortByDate').checked;
+      const sortBySceneName = document.getElementById('sortBySceneName').checked;
 
-            // Implement sorting logic based on the selected criteria
-            let sortedData;
-            if (sortByDate) {
-                sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
-            } else if (sortBySceneName) {
-                sortedData = originalData.sort((a, b) => a.scenename.localeCompare(b.scenename));
-            } else {
-                // Default sorting (by date)
-                sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
-            }
+      // Implement sorting logic based on the selected criteria
+      let sortedData;
+      if (sortByDate) {
+        sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      } else if (sortBySceneName) {
+        sortedData = originalData.sort((a, b) => a.scenename.localeCompare(b.scenename));
+      } else {
+        // Default sorting (by date)
+        sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
 
-            // Update the table with the sorted data
-            renderTable(sortedData);
+      // Update the table with the sorted data
+      renderTable(sortedData);
 
-            // Close the modal
-            $('#sortModal').modal('hide');
-        }
-    </script>
+      // Close the modal
+      $('#sortModal').modal('hide');
+    }
+  </script>
 
-    <script>
-        fetch('/res/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer').innerHTML = data;
-            });
-    </script>
+  <script>
+    fetch('/res/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
+  </script>
 
 </body>
 
