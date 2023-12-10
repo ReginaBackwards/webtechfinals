@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Streaming</title>
+</head>
+<body>
+    <video id="webcam" width="640" height="480" autoplay></video>
+    <canvas id="videoCanvas" width="640" height="480"></canvas>
+    <script>
+
+                    // Connect to the WebSocket server
+                    const socket = new WebSocket('ws://localhost:3001');
+            // Handle WebSocket connection opened
+            socket.addEventListener('open', () => {
+                console.log('WebSocket connection opened');
+
+            });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('videoCanvas');
+            const context = canvas.getContext('2d');
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((error) => {
+                    console.error('Error accessing webcam:', error);
+                });
+
+            // Periodically capture video frame and send it to the server
+            setInterval(() => {
+                captureAndSendFrame(socket);
+            }, 150); // Adjust the interval based on your requirements
+
+    //         navigator.mediaDevices.getDisplayMedia({ video: true })
+    // .then((stream) => {
+    //     // Do something with the stream, e.g., set it as the source for a video element
+    //     const videoElement = document.getElementById('');
+    //     videoElement.srcObject = stream;
+    // })
+    // .catch((error) => {
+    //     console.error('Error accessing screen:', error);
+    // });
+
+            // Function to capture video frame and send it to the server
+            function captureAndSendFrame(socket) {
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                // Send imageData to the server using WebSocket
+                socket.send(JSON.stringify({
+                    width: imageData.width,
+                    height: imageData.height,
+                    data: Array.from(imageData.data),
+                }));
+            }
+        });
+    </script>
+</body>
+</html>

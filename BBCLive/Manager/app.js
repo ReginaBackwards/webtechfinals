@@ -89,7 +89,7 @@ app.get('/getCmDetails', (req, res) => {
 
     res.json(cmDetails);
   } else {
-    response.redirect('/')
+    res.redirect('/')
   }
 });
 
@@ -850,7 +850,7 @@ app.post('/saveScene', async (req, res) => {
 
   const values = resources.map(resource => [
     resource.title,
-    `/Content Hosting/videos/scenes/${resource.title}`, // Assuming resource.title is unique for each scene
+    `/Content Hosting/videos/scenes/${resource.videoSrc}`, // Assuming resource.title is unique for each scene
     new Date().toISOString().split('T')[0], // Current date
     resource.startTime,
     resource.endTime,
@@ -865,32 +865,42 @@ app.post('/saveScene', async (req, res) => {
 
       // Save associated files to /Content Hosting/videos/scenes/
       for (const resource of resources) {
-        const fileExtension = path.extname(resource.videoSrc).toLowerCase();
-        const filePath = `videos/scenes/${resource.title}${fileExtension}`;
-        const absoluteFilePath = path.join(contentHostingDir, filePath);
-
-        if (fileExtension === '.mp4') {
-          // Assuming video files, adjust this part based on file types
-          fs.writeFileSync(absoluteFilePath, resource.videoSrc);
-        } else if (fileExtension === '.jpg' || fileExtension === '.jpeg' || fileExtension === '.png') {
-          // Assuming image files, adjust this part based on file types
-          await sharp(resource.videoSrc).toFile(absoluteFilePath);
-        }
+        const originalFilePath = path.join(contentHostingDir, 'videos', 'clips', `${req.session.theuser.username}`,resource.title);
+        const newFilePath = path.join(contentHostingDir, 'videos', 'scenes', resource.title);
 
         // Update the filepath in the database with the correct starting path
         const updateQuery = 'UPDATE scenes SET filepath = ? WHERE scenename = ?';
-        const updateValues = [`/Content Hosting/${filePath}`, resource.title];
+        const updateValues = [`/Content Hosting/videos/scenes/${resource.title}`, resource.title];
 
-        db.query(updateQuery, updateValues, (updateErr, updateResult) => {
+        db.query(updateQuery, updateValues, async (updateErr, updateResult) => {
           if (updateErr) {
             console.error('MySQL update error:', updateErr);
+            res.json({ success: false, error: updateErr.message });
           } else {
             console.log('Database updated with file path:', updateResult);
+
+            try {
+              // Copy the file from the original location to the new location
+              const readStream = fs.createReadStream(originalFilePath);
+              const writeStream = fs.createWriteStream(newFilePath);
+
+              readStream.pipe(writeStream);
+
+              writeStream.on('close', () => {
+                console.log(`File copied from ${originalFilePath} to ${newFilePath}`);
+
+                if (!res.headersSent) {
+                  res.json({ success: true });
+                }
+              });
+
+            } catch (copyError) {
+              console.error('Error copying file:', copyError);
+              res.status(500).json({ success: false, error: 'Error copying file' });
+            }
           }
         });
       }
-
-      res.json({ success: true });
     }
   });
 });

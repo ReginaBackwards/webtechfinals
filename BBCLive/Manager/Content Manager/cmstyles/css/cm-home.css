@@ -37,7 +37,7 @@ body {
 }
 
 nav {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
   padding-left: 0;
   margin-bottom: 0;
@@ -46,10 +46,9 @@ nav {
 }
 
 ul {
-  justify-content: center;
+  margin-top: 20px !important;
   flex-direction: row;
   display: flex;
-
 }
 
 li {
