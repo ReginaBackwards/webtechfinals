@@ -326,6 +326,11 @@
       const newRow = document.createElement('tr');
       const newCell = document.createElement('td');
 
+      const textBox = document.createElement('input');
+      textBox.type = 'text';
+      textBox.value = 'Enter Scene Name!';
+
+
       // newCell.textContent = data;
 
       if (!existingResource) {
@@ -335,7 +340,10 @@
         // If there is a drop target, insert the new div before or after it
           const rect = event.target.getBoundingClientRect();
 
+
+
           document.getElementById("sceneContent").appendChild(newRow);
+          newDiv.append(textBox);
           sceneContent.appendChild(newDiv);
           // Insert before or after based on the mouse position
         } 
@@ -479,43 +487,70 @@
     });
 
     function saveScene() {
-      // Get the list of resources in the scene editor
-      const sceneContent = document.getElementById("sceneContent");
-      const resources = Array.from(sceneContent.children).map((child) => {
-        const title = child.querySelector(".titleContent").textContent;
-        const videoSrc = child.querySelector("video").src;
-        const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
-        const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
+  // Get the list of resources in the scene editor
+  const sceneContent = document.getElementById("sceneContent");
 
-        return {
-          title,
-          videoSrc,
-          startTime,
-          endTime,
-        };
-      });
+  // Check if sceneContent is not null
+  if (!sceneContent) {
+    console.error("Error: sceneContent element not found");
+    alert("Failed to save scene");
+    return;
+  }
 
-      // Make an AJAX request to save the scene to the database
-      fetch('/saveScene', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ resources }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Scene saved successfully');
-          } else {
-            alert('Failed to save scene');
-          }
-        })
-        .catch(error => {
-          console.error('Error saving scene:', error);
-          alert('Failed to save scene');
-        });
+  const resources = Array.from(sceneContent.children).map((child) => {
+    // Check if required elements are present
+    const titleElement = child.querySelector(".titleContent");
+    const videoElement = child.querySelector("video");
+
+    if (!titleElement || !videoElement) {
+      console.error("Error: Required elements not found in scene");
+      return null;
     }
+
+    const title = titleElement.textContent;
+    const videoSrc = videoElement.src;
+
+    // Assuming these elements are always present, but you might want to add additional checks
+    const startTime = child.querySelector(".scene-cell div:nth-child(3)").textContent.split(" ")[2];
+    const endTime = child.querySelector(".scene-cell div:nth-child(5)").textContent.split(" ")[2];
+
+    return {
+      title,
+      videoSrc,
+      startTime,
+      endTime,
+    };
+  });
+
+  console.log(resources);
+
+  // Check for any null values (indicating an error in obtaining required elements)
+  if (resources.some(resource => resource === null)) {
+    alert("Failed to save scene due to missing elements");
+    return;
+  }
+
+  // Make an AJAX request to save the scene to the database
+  fetch('/saveScene', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ resources }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Scene saved successfully');
+      } else {
+        alert('Failed to save scene');
+      }
+    })
+    .catch(error => {
+      console.error('Error saving scene:', error);
+      alert('Failed to save scene');
+    });
+}
 
     function deleteScene() {
       // Get the list of resources in the scene editor

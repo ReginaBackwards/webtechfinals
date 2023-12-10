@@ -320,6 +320,26 @@
         });
     }
 
+    
+    // Function to handle logout
+    function logout() {
+      // Make an AJAX request to the logout endpoint
+      fetch('/logout')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logout response:', data);
+          if (data.success) {
+            alert('Logout successful');
+            window.location.href = '/'
+          } else {
+            alert('Logout failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error during logout:', error);
+        });
+    }
+
   </script>
 
   <!-- Bootstrap's JS -->
