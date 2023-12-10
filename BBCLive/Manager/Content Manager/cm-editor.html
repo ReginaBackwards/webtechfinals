@@ -152,6 +152,24 @@
         });
     }
 
+    function goToHome() {
+      // Make an AJAX request to the server to handle the redirection
+      fetch('/gotoLogs')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to resources.html after successful request
+            window.location.href = '/Manager/Content%20Manager/cm-home.html';
+          } else {
+            alert('Failed to go to Logs');
+          }
+        })
+        .catch(error => {
+          console.error('Error during request to go to Logs:', error);
+        });
+    }
+
+
     // Function to handle logout
     function logout() {
       // Make an AJAX request to the logout endpoint
@@ -199,6 +217,7 @@
       });
     });
 
+
     let startTime = getStartTime();
 
     function createDraggableDiv(content, title) {
@@ -214,6 +233,7 @@
 
       // Create a unique video element for each scene
       const videoElement = document.createElement("video");
+      videoElement.id = "vid-preview";
       videoElement.controls = true;
 
       // Fetch the file path and set the source for the video element
@@ -303,33 +323,25 @@
         (child) => child.textContent === data
       );
 
+      const newRow = document.createElement('tr');
+      const newCell = document.createElement('td');
+
+      // newCell.textContent = data;
+
       if (!existingResource) {
         // Create a new draggable div for the video content
         const newDiv = createDraggableDiv(data, data);
 
-        // Find the div where the item is being dropped onto
-        const dropTarget = event.target.closest(".scene-cell");
-
         // If there is a drop target, insert the new div before or after it
-        if (dropTarget) {
-          const rect = dropTarget.getBoundingClientRect();
-          const midX = rect.left + rect.width / 2;
+          const rect = event.target.getBoundingClientRect();
 
-          // Insert before or after based on the mouse position
-          if (event.clientX < midX) {
-            sceneContent.insertBefore(newDiv, dropTarget);
-          } else {
-            sceneContent.insertBefore(newDiv, dropTarget.nextSibling);
-          }
-        } else {
-          // If there is no drop target, simply append the new div
+          document.getElementById("sceneContent").appendChild(newRow);
           sceneContent.appendChild(newDiv);
-        }
-
+          // Insert before or after based on the mouse position
+        } 
         // Stop the propagation of the drop event to prevent unwanted behavior
         event.stopPropagation();
       }
-    }
 
     function fetchResources() {
       fetch('/editor')
@@ -364,8 +376,8 @@
       player.src({ src: filepath, type: 'video/mp4' });
 
       // Set the video source for the currently selected row in the scenes container
-      const videoElement = clickedRow.querySelector('video');
-      videoElement.src = filepath;
+      // const videoElement = clickedRow.querySelector('video');
+      // videoElement.src = filepath;
 
       // Automatically play the video
       player.play();

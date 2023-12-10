@@ -3,6 +3,7 @@
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+
 body {
   font-family: var(--font-family-sans-serif);
   background-image: url('../images/cm-bg.png');
@@ -207,7 +208,7 @@ h1 {
 }
 
 #my-video {
-  height: 650px;
+  height: 400px;
   width: 100%;
   pointer-events: none;
 }
@@ -242,6 +243,6 @@ h1 {
 }
 
 .video-js {
-  height: 650px;
+  height: 400px;
   width: 100%;
 }
