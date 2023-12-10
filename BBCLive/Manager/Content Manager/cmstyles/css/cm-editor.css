@@ -246,7 +246,6 @@ h1 {
   border: 1px solid #ccc;
   padding: 10px;
   margin: 5px;
-  display: block;
   cursor: move;
 }
 
@@ -330,7 +329,9 @@ h2 {
 }
 
 input {
+  display: flex;
+  justify-content: center;
   text-align: center;
   align-items: center;
-  margin-top: 10px;
+  
 }
