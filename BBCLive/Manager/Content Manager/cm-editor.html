@@ -307,32 +307,19 @@
       const newRow = document.createElement('tr');
       const newCell = document.createElement('td');
 
-      newCell.textContent = data;
+      // newCell.textContent = data;
 
       if (!existingResource) {
         // Create a new draggable div for the video content
         const newDiv = createDraggableDiv(data, data);
 
-        // Find the div where the item is being dropped onto
-
         // If there is a drop target, insert the new div before or after it
           const rect = event.target.getBoundingClientRect();
 
-          const offsetX = event.clientX - rect.left;
-          const offsetY = event.clientY - rect.top;
-
-          newRow.style.position = 'absolute';
-          newRow.style.left = offsetX + 'px';
-          newRow.style.top = offsetY + 'px';
-
-          newRow.appendChild(newCell);
           document.getElementById("sceneContent").appendChild(newRow);
           sceneContent.appendChild(newDiv);
           // Insert before or after based on the mouse position
-        } else {
-          // If there is no drop target, simply append the new div
-
-        }
+        } 
         // Stop the propagation of the drop event to prevent unwanted behavior
         event.stopPropagation();
       }
