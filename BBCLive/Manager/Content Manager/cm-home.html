@@ -17,10 +17,11 @@
   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-home.css">
   <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
   <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Bootstrap JS CDN -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+  
   <title>HOME</title>
 </head>
 
@@ -58,7 +59,6 @@
     <div class="container" id="dashboard">
       <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
       </video>
-              <canvas id="videoCanvas" class="video-js" width="640" height="360"></canvas>
     </div>
     <div class="container" id="webcamContainer">
     </div>
@@ -325,72 +325,167 @@
     setInterval(setVideoInfo, 1000);
     setInterval(checkForVideo, 1000);
 
-  //   function toggleMedia() {
-  //   // const modal = document.getElementById('mediaModal');
-  //   // modal.style.display = 'block';
-  //   $('#mediaModal').modal('toggle');
-  // }
+    let isPlaying = true;
+    let mediaRecord;
 
-  function toggleMedia() {
-    const vidPlayer = document.getElementById('my-video');
-    const livePlayer = document.getElementById('videoCanvas');
-    // const context = canvas.getContext('2d');
-    vidPlayer.style.display = 'none';
-    livePlayer.style.display = 'block'
-    vidPlayer.pause;
+    function toggleMedia() {
+      if(isPlaying)
+      $('#mediaModal').modal('toggle');
+    }
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then((stream) => {
-      livePlayer.srcObject = stream;
-    })
-    .catch((error) => {
-      console.error('Error accessing webcam:', error);
-    });
-  }
+    async function startWebcam(){
+      const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const webcamVideo = document.getElementById('webcamVid');
+      // const webcamPlayer = videojs('webcamVid');
+      const player = videojs('my-video')
 
-  function startScreenShare() {
-    // Implement screen share logic here
-    // Use navigator.mediaDevices.getDisplayMedia() to get screen share stream
-  }
+      if (isPlaying) {
+
+        // toggleBtn.textContent = 'start webcam';
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+          const webcamVideo = document.createElement('video');
+          webcamVideo.id = 'webcamVid';
+          webcamVideo.className = 'video-js';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
+
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
+          // mediaRecord = new MediaRecorder(stream);
+
+          webcamVideo.play();
+          console.log(stream);
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+      } else {
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+          };
+          webcamVideo2.srcObject = null;
+        }
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        const player = videojs('my-video');
+        player.play();
+        player.src = stream
+        console.log(player.src)
+      }
+
+      isPlaying = !isPlaying;
+    }
+
+    async function startScreenShare(){
+      const videoContainer = document.getElementById('dashboard');
+      const webcamContainer = document.getElementById('webcamContainer');
+      const webcamVideo = document.getElementById('webcamVid');
+      // const webcamPlayer = videojs('webcamVid');
+      const player = videojs('my-video')
+
+      if (isPlaying) {
+
+        // toggleBtn.textContent = 'start webcam';
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+
+          const webcamVideo = document.createElement('video');
+          webcamVideo.id = 'webcamVid';
+          webcamVideo.className = 'video-js';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
+
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
+          // mediaRecord = new MediaRecorder(stream);
+
+          webcamVideo.play();
+          console.log(stream);
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+      } else {
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+          };
+          webcamVideo2.srcObject = null;
+        }
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        const player = videojs('my-video');
+        player.play();
+        player.src = stream
+        console.log(player.src)
+      }
+
+      isPlaying = !isPlaying;
+    }
+    function goLive(){
+      const goLiveWithScreen = document.getElementById('goLiveWithScreen').checked;
+      const goLiveWithWebcam = document.getElementById('goLiveWithWebcam').checked;
+      
+      if (goLiveWithScreen){
+        startScreenShare();
+      }else if(goLiveWithWebcam) {
+        startWebcam(); 
+      }
+      $('#mediaModal').modal('hide');
+   
+    }
 
   </script>
-  <!-- Sort Modal -->
+
+  <!-- Live Media Modal -->
   <div class="modal" id="mediaModal">
     <div class="modal-dialog">
       <div class="modal-content">
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Sort Scenes</h4>
+          <h4 class="modal-title">Choose Your Live Media</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
         <!-- Modal Body -->
         <div class="modal-body">
-          <input type="radio" id="sortByDate" name="sortCriteria" value="date">
-          <label for="sortByDate">Sort by Date</label>
+          <input type="radio" id="goLiveWithScreen">
+          <label for="sortByDate">Share Your Screen</label>
           <br>
-          <input type="radio" id="sortBySceneName" name="sortCriteria" value="scenename">
-          <label for="sortBySceneName">Sort by Scene Name</label>
+          <input type="radio" id="goLiveWithWebcam">
+          <label for="sortBySceneName">Go Live With Your Webcam</label>
         </div>
 
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="sort()">Sort</button>
+          <button type="button" class="btn btn-primary" onclick="goLive()">Sort</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
 
       </div>
     </div>
   </div>
-<!-- <div id="mediaModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <button onclick="startWebcam()">Start Webcam</button>
-    <button onclick="startScreenShare()">Start Screen Share</button>
-  </div>
-</div> -->
-
 </body>
 
 </html>
