@@ -8,7 +8,7 @@
         SLAY, America Eloise
  -->
 
-<head>
+ <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,11 +30,12 @@
 
   <section>
     <video id="my-video" width="100%" height="92%" controls autoplay></video>
-    <canvas id="liveStream" ></canvas>
+    <canvas id="liveStream" width="1080" height="720"></canvas>
   </section>
 
-  <?php include '../res/footer.html';
-  ?>
+  <?php include "../res/footer.html"
+?>
+
 </body>
 
 <script>

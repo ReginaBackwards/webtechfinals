@@ -8,83 +8,86 @@
         SLAY, America Eloise
  -->
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-home.css">
-  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
-  <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Bootstrap JS CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
-  <title>HOME</title>
-</head>
-
-<body>
-  <header class="top-nav">
-    <div class="header-container">
-      <nav>
-        <div class="header-logo">
-          <img src="../../res/slu-logo.png" alt="slu-Logo">
-        </div>
-
-        <ul>
-          <li><a href="#" onclick="goToHome()">Home</a></li>
-          <li><a href="#" onclick="goToResources()">Resources</a></li>
-          <li><a href="#" onclick="goToLogs()">Logs</a></li>
-        </ul>
-
-        <div class="header-profile">
-          <div id="cmDetails" class="cmDets">
-            <!-- Content manager avatar and name will be displayed here -->
-          </div>
-          <div class="line"></div>
-          <div class="user-info">
-            <a href="#" onclick="goToProfile()">Username</a>
-            <button id="logoutBtn" onclick="logout()">Logout</button>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <section>
-    <h1>Home</h1>
-    <button id="live-btn" onclick="toggleMedia()">Go Live</button>
-    <button id="liveoff-btn" onclick="stopMedia()" disabled>Stop Live</button>
-    <div class="container" id="dashboard">
-      <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
-      </video>
-    </div>
-    <div class="container" id="webcamContainer">
-    </div>
-
-    <div class="scheduleContainer">
-      <h1>Schedules</h1>
-      <div id="scheduleButtons">
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div id="footer"></div>
-  </footer>
-
+ <!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-home.css">
+   <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+   <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <!-- Bootstrap JS CDN -->
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+   <title>HOME</title>
+ </head>
+ 
+ <body>
+   <header class="top-nav">
+     <div class="header-container">
+       <nav>
+         <div class="header-logo">
+           <img src="../../res/slu-logo.png" alt="slu-Logo">
+         </div>
+ 
+         <ul>
+           <li><a href="#" onclick="goToHome()">Home</a></li>
+           <li><a href="#" onclick="goToResources()">Resources</a></li>
+           <li><a href="#" onclick="goToLogs()">Logs</a></li>
+         </ul>
+ 
+         <div class="header-profile">
+           <div id="cmDetails" class="cmDets">
+             <!-- Content manager avatar and name will be displayed here -->
+           </div>
+           <div class="line"></div>
+           <div class="user-info">
+             <a href="#" onclick="goToProfile()">Username</a>
+             <button id="logoutBtn" onclick="logout()">Logout</button>
+           </div>
+         </div>
+       </nav>
+     </div>
+   </header>
+ 
+   <section>
+     <h1>Home</h1>
+     <button id="live-btn" onclick="toggleMedia()">Go Live</button>
+     <button id="liveoff-btn" onclick="stopMedia()" disabled>Stop Live</button>
+     <div class="container" id="dashboard">
+       <video id="my-video" src="" class="video-js vjs-default-skin" width="640" height="360" autoplay>
+         <canvas id="videoCanvas" width="640" height="360"></canvas>
+       </video>
+     </div>
+     <div class="container" id="webcamContainer">
+       <video id="webcam-vid"></video>
+     </div>
+ 
+     <div class="scheduleContainer">
+       <h1>Schedules</h1>
+       <div id="scheduleButtons">
+       </div>
+     </div>
+   </section>
+ 
+   <footer>
+     <div id="footer"></div>
+   </footer>
+ 
   <script>
 
+    let isLive = false;
+    let isPlaying = true;
+    let mediaRecord;
     const socket = new WebSocket('ws://localhost:5000');
-    const videoElement = videojs('my-video');
-
-    function getCurrentVideoData() {
-      const videoUrl = videoElement.src().substring(3);
-      const currentTime = videoElement.currentTime();
-      return { videoUrl, currentTime };
-    }
+    const videoContainer = document.getElementById('dashboard');
+    const webcamContainer = document.getElementById('webcamContainer');
+    const canvas = document.getElementById('videoCanvas');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    let webcamVideo = document.getElementById('webcam-vid');
 
     socket.onopen = () => {
       console.log('WebSocket connection opened');
@@ -93,6 +96,25 @@
     socket.onclose = (event) => {
       console.error(`WebSocket closed: ${event.reason}`);
     };
+
+    function sendLiveFrames() {
+      if (isLive) {
+        console.log("It should send the frames here")
+        context.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        console.log(imageData);
+        // Send imageData to the server using WebSocket
+        socket.send(JSON.stringify({
+          type: 'stream',
+          width: imageData.width,
+          height: imageData.height,
+          data: Array.from(imageData.data),
+        }));
+      } else {
+        console.log("Not Live Yet.")
+      }
+    }
+
 
     fetch('/getUserSchedules')
       .then(response => response.json())
@@ -326,12 +348,111 @@
     setInterval(setVideoInfo, 1000);
     setInterval(checkForVideo, 1000);
 
-    let isPlaying = true;
-    let mediaRecord;
-
     function toggleMedia() {
       if(isPlaying)
       $('#mediaModal').modal('toggle');
+    }
+
+    async function startWebcam() {
+      const player = videojs('my-video')
+
+      if (isPlaying) {
+
+        // toggleBtn.textContent = 'start webcam';
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+          webcamVideo.className = 'video-js';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
+
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
+
+          webcamVideo.play();
+          console.log(stream);
+          setInterval(() => {
+            sendLiveFrames();
+          }, 160);
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+      } else {
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+          };
+          webcamVideo2.srcObject = null;
+        }
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        const player = videojs('my-video');
+        player.play();
+        player.src = stream
+        console.log(player.src)
+      }
+
+      isPlaying = !isPlaying;
+    }
+
+    async function startScreenShare() {
+      const player = videojs('my-video')
+
+      if (isPlaying) {
+
+        // toggleBtn.textContent = 'start webcam';
+        player.pause();
+        videoContainer.style.display = 'none';
+        webcamContainer.style.display = 'block';
+
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+
+          webcamVideo.className = 'video-js';
+          webcamVideo.controls = true;
+          webcamVideo.srcObject = stream;
+          
+          webcamContainer.innerHTML = '';
+          webcamContainer.appendChild(webcamVideo);
+          console.log(stream);
+
+          webcamVideo.play();
+          console.log(stream);
+          setInterval(() => {
+            sendLiveFrames();
+          }, 200);
+        } catch (error) {
+          console.error('Error accessing webcam', error);
+        }
+      } else {
+        const webcamVideo2 = document.getElementById('webcamVid');
+        if (webcamVideo2) {
+          const webcamStream = webcamVideo2.srcObject;
+          if (webcamStream) {
+            const tracks = webcamStream.getTracks();
+            tracks.forEach(track => track.stop());
+          };
+          webcamVideo2.srcObject = null;
+        }
+        videoContainer.style.display = 'block';
+        webcamContainer.style.display = 'none';
+
+        const player = videojs('my-video');
+        player.play();
+        player.src = stream
+        console.log(player.src)
+      }
+
+      isPlaying = !isPlaying;
     }
 
     function goLive() {
@@ -341,6 +462,7 @@
   const liveBtn = document.getElementById('live-btn');
   const liveOffBtn = document.getElementById('liveoff-btn');
 
+  isLive = true;
   if (goLiveWithScreen) {
     startScreenShare();
     
@@ -356,138 +478,17 @@
   $('#mediaModal').modal('hide');
 }
 
-// Function to stop streaming
-function stopMedia() {
-  const videoContainer = document.getElementById('dashboard');
+    // Function to stop streaming
+    function stopMedia() {
+      const videoContainer = document.getElementById('dashboard');
       const webcamContainer = document.getElementById('webcamContainer');
       const liveBtn = document.getElementById('live-btn');
-  document.getElementById('liveoff-btn').disabled = true;
-  document.getElementById('live-btn').disabled = false;
-  videoContainer.style.display = 'block';
-  webcamContainer.style.display = 'none';
-
-}
-
-    async function startWebcam(){
-      const videoContainer = document.getElementById('dashboard');
-      const webcamContainer = document.getElementById('webcamContainer');
-      const webcamVideo = document.getElementById('webcamVid');
-      // const webcamPlayer = videojs('webcamVid');
-      const player = videojs('my-video')
-
-      if (isPlaying) {
-
-        // toggleBtn.textContent = 'start webcam';
-        player.pause();
-        videoContainer.style.display = 'none';
-        webcamContainer.style.display = 'block';
-
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-
-          const webcamVideo = document.createElement('video');
-          webcamVideo.id = 'webcamVid';
-          webcamVideo.className = 'video-js';
-          webcamVideo.controls = true;
-          webcamVideo.srcObject = stream;
-
-          webcamContainer.innerHTML = '';
-          webcamContainer.appendChild(webcamVideo);
-          console.log(stream);
-          // mediaRecord = new MediaRecorder(stream);
-
-          webcamVideo.play();
-          console.log(stream);
-        } catch (error) {
-          console.error('Error accessing webcam', error);
-        }
-      } else {
-        const webcamVideo2 = document.getElementById('webcamVid');
-        if (webcamVideo2) {
-          const webcamStream = webcamVideo2.srcObject;
-          if (webcamStream) {
-            const tracks = webcamStream.getTracks();
-            tracks.forEach(track => track.stop());
-          };
-          webcamVideo2.srcObject = null;
-        }
-        videoContainer.style.display = 'block';
-        webcamContainer.style.display = 'none';
-
-        const player = videojs('my-video');
-        player.play();
-        player.src = stream
-        console.log(player.src)
-      }
-
-      isPlaying = !isPlaying;
-    }
-
-    async function startScreenShare(){
-      const videoContainer = document.getElementById('dashboard');
-      const webcamContainer = document.getElementById('webcamContainer');
-      const webcamVideo = document.getElementById('webcamVid');
-      // const webcamPlayer = videojs('webcamVid');
-      const player = videojs('my-video')
-
-      if (isPlaying) {
-
-        // toggleBtn.textContent = 'start webcam';
-        player.pause();
-        videoContainer.style.display = 'none';
-        webcamContainer.style.display = 'block';
-
-        try {
-          const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-
-          const webcamVideo = document.createElement('video');
-          webcamVideo.id = 'webcamVid';
-          webcamVideo.className = 'video-js';
-          webcamVideo.controls = true;
-          webcamVideo.srcObject = stream;
-
-          webcamContainer.innerHTML = '';
-          webcamContainer.appendChild(webcamVideo);
-          console.log(stream);
-          // mediaRecord = new MediaRecorder(stream);
-
-          webcamVideo.play();
-          console.log(stream);
-        } catch (error) {
-          console.error('Error accessing webcam', error);
-        }
-      } else {
-        const webcamVideo2 = document.getElementById('webcamVid');
-        if (webcamVideo2) {
-          const webcamStream = webcamVideo2.srcObject;
-          if (webcamStream) {
-            const tracks = webcamStream.getTracks();
-            tracks.forEach(track => track.stop());
-          };
-          webcamVideo2.srcObject = null;
-        }
-        videoContainer.style.display = 'block';
-        webcamContainer.style.display = 'none';
-
-        const player = videojs('my-video');
-        player.play();
-        player.src = stream
-        console.log(player.src)
-      }
-
-      isPlaying = !isPlaying;
-    }
-    function goLive(){
-      const goLiveWithScreen = document.getElementById('goLiveWithScreen').checked;
-      const goLiveWithWebcam = document.getElementById('goLiveWithWebcam').checked;
-      
-      if (goLiveWithScreen){
-        startScreenShare();
-      }else if(goLiveWithWebcam) {
-        startWebcam(); 
-      }
-      $('#mediaModal').modal('hide');
-   
+      document.getElementById('liveoff-btn').disabled = true;
+      document.getElementById('live-btn').disabled = false;
+      videoContainer.style.display = 'block';
+      webcamContainer.style.display = 'none';
+      webcamVideo.pause();
+      isLive = false;
     }
 
   </script>

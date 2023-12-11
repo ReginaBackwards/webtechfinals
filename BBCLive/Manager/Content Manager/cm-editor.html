@@ -227,11 +227,9 @@
         
         // Create a title element and append it to the draggable div
         const titleElement = document.createElement("div");
-        titleElement.className = "titleContent";
+        titleElement.className = "titleContent"
         titleElement.textContent = title;
-        // titleElement.className = "titleContent"
-        // titleElement.textContent = title;
-        draggableDiv.appendChild(title);
+        draggableDiv.appendChild(titleElement);
         
         // Create a unique video element for each scene
         const videoElement = document.createElement("video");
@@ -327,27 +325,17 @@
         
         const newRow = document.createElement('tr');
         const newCell = document.createElement('td');
-
         
-        const textBox = document.createElement('input');
-        textBox.type = 'text';
-        textBox.id = 'sceneName';
-        textBox.placeholder = 'Enter Scene Name!';
+        // newCell.textContent = data;
         
-      if (!existingResource) {
-
-        const textValue = textBox.value;
-
-        // Create a new draggable div for the video content
-        const newDiv = createDraggableDiv(data, data);
-
-        // If there is a drop target, insert the new div before or after it
+        if (!existingResource) {
+          // Create a new draggable div for the video content
+          const newDiv = createDraggableDiv(data, data);
+          
+          // If there is a drop target, insert the new div before or after it
           const rect = event.target.getBoundingClientRect();
-
-          newDiv.appendChild(textBox);
           
           document.getElementById("sceneContent").appendChild(newRow);
-
           sceneContent.appendChild(newDiv);
           // Insert before or after based on the mouse position
         } 
@@ -495,32 +483,24 @@
         // Get the list of resources in the scene editor
         const sceneContent = document.getElementById("sceneContent");
         const resources = Array.from(sceneContent.children).map((child, index) => {
-          const titleElement = child.querySelector(".titleContent")
-          const sceneElement = child.querySelector("#sceneName");
+          const titleElement = child.querySelector(".titleContent");
           const videoElement = child.querySelector("video");
-          const startTimeElement = child.querySelector(".scene-cell div:nth-child(4)");
-          const endTimeElement = child.querySelector(".scene-cell div:nth-child(6)");
+          const startTimeElement = child.querySelector(".scene-cell div:nth-child(3)");
+          const endTimeElement = child.querySelector(".scene-cell div:nth-child(5)");
           
-          console.log(titleElement);
           // Check if the title is empty and skip the scene
-          const title = titleElement ? titleElement.value.trim() : '';
+          const title = titleElement ? titleElement.textContent.trim() : '';
           if (!title) {
             return null;
           }
-
-          console.log(title);
           
           // Continue with other properties if the title is not empty
-          const scene = sceneElement ? sceneElement.value: '';
           const videoSrc = videoElement ? videoElement.src : '';
           const startTime = startTimeElement ? startTimeElement.textContent.split(" ")[2] : '';
           const endTime = endTimeElement ? endTimeElement.textContent.split(" ")[2] : '';
           
-
-
           return {
             title,
-            scene,
             videoSrc,
             startTime,
             endTime,
