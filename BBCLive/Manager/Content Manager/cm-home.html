@@ -88,6 +88,8 @@
     const canvas = document.getElementById('videoCanvas');
     const context = canvas.getContext('2d', { willReadFrequently: true });
     let webcamVideo = document.getElementById('webcam-vid');
+    let webStream;
+    let stream;
 
     socket.onopen = () => {
       console.log('WebSocket connection opened');
@@ -379,6 +381,8 @@
           setInterval(() => {
             sendLiveFrames();
           }, 160);
+
+          webStream = stream;
         } catch (error) {
           console.error('Error accessing webcam', error);
         }
@@ -415,7 +419,7 @@
         webcamContainer.style.display = 'block';
 
         try {
-          const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+          stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
 
           webcamVideo.className = 'video-js';
           webcamVideo.controls = true;
@@ -480,6 +484,22 @@
 
     // Function to stop streaming
     function stopMedia() {
+
+      webcamVideo.pause();
+
+      const webCamVid2 = document.getElementById('webcam-vid');
+      console.log(webCamVid2);
+
+      if (webCamVid2) {
+        if (webStream) {
+        const tracks = webStream.getTracks();
+        tracks.forEach(track => track.stop());
+        webcamVideo.srcObject = null;
+      }
+        // const webcamStream = webStream;
+      }
+
+
       const videoContainer = document.getElementById('dashboard');
       const webcamContainer = document.getElementById('webcamContainer');
       const liveBtn = document.getElementById('live-btn');
@@ -487,9 +507,16 @@
       document.getElementById('live-btn').disabled = false;
       videoContainer.style.display = 'block';
       webcamContainer.style.display = 'none';
-      webcamVideo.pause();
+
+      const player = videojs('my-video');
+      player.play();
+      player.src = stream;
+      console.log(player.src);
+      // const player = webcamVideo.video;
+      // player.pause;
       isLive = false;
-    }
+    isPlaying = !isPlaying;
+  }
 
   </script>
 
