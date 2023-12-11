@@ -7,7 +7,7 @@
         ROSANTO, Marvin
         SLAY, America Eloise
  -->
- 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -102,35 +102,38 @@
       </div>
     </div>
   </div>
- <!-- Sort Modal -->
- <div class="modal" id="sortModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <!-- Sort Modal -->
+  <div class="modal" id="sortModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Sort Scenes</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Sort Scenes</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <input type="radio" id="sortByDate" name="sortCriteria" value="date">
+          <label for="sortByDate">Sort by Date</label>
+          <br>
+          <input type="radio" id="sortByFilename" name="sortCriteria" value="filename">
+          <label for="sortByFilename">Sort by Filename</label>
+          <br>
+          <input type="radio" id="sortByFiletype" name="sortCriteria" value="filetype">
+          <label for="sortByFiletype">Sort by Filetype</label>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="sortButton">Sort</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
       </div>
-
-      <!-- Modal Body -->
-      <div class="modal-body">
-        <input type="radio" id="sortByDate" name="sortCriteria" value="date">
-        <label for="sortByDate">Sort by Date</label>
-        <br>
-        <input type="radio" id="sortBySceneName" name="sortCriteria" value="scenename">
-        <label for="sortBySceneName">Sort by Scene Name</label>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="sort()">Sort</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-
     </div>
   </div>
-</div>
   <footer>
     <div id="footer"></div>
   </footer>
@@ -436,12 +439,29 @@
         xhr.send();
       }
 
+      let resources = [];
       // Update the resource table with the fetched data
-      function updateResourceTable(data) {
+      function updateResourceTable(data, sortCriteria) {
         const resourceTableBody = document.getElementById('resourceTableBody');
         resourceTableBody.innerHTML = '';
 
-        for (const resource of data) {
+        // Use the provided data to update the resources array
+        resources = data;
+
+        // Sort the resources based on the specified criteria
+        switch (sortCriteria) {
+          case 'date':
+            resources.sort((a, b) => new Date(a.dateuploaded) - new Date(b.dateuploaded));
+            break;
+          case 'filename':
+            resources.sort((a, b) => a.filename.localeCompare(b.filename));
+            break;
+          case 'filetype':
+            resources.sort((a, b) => a.type.localeCompare(b.type));
+            break;
+        }
+
+        for (const resource of resources) {
           const row = document.createElement('tr');
 
           // Get the date components
@@ -454,13 +474,22 @@
           const formattedDate = `${year}-${month}-${day}`;
 
           row.innerHTML = `
-          <td>${formattedDate}</td>
-          <td>${resource.filename}</td>
-          <td>${resource.type}</td>
-          `;
+        <td>${formattedDate}</td>
+        <td>${resource.filename}</td>
+        <td>${resource.type}</td>
+      `;
           resourceTableBody.appendChild(row);
         }
+        $('#sortModal').modal('hide');
       }
+
+      // Add an event listener for the sort button
+      document.getElementById('sortButton').addEventListener('click', function () {
+        const sortCriteria = document.querySelector('input[name="sortCriteria"]:checked');
+        if (sortCriteria) {
+          updateResourceTable(resources, sortCriteria.value);
+        }
+      });
 
       // Initial fetch of resources when the page loads
       fetchResources();
@@ -468,28 +497,6 @@
 
     function toggleSortModal() {
       $('#sortModal').modal('toggle');
-    }
-
-    function sort() {
-      const sortByDate = document.getElementById('sortByDate').checked;
-      const sortBySceneName = document.getElementById('sortBySceneName').checked;
-
-      // Implement sorting logic based on the selected criteria
-      let sortedData;
-      if (sortByDate) {
-        sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
-      } else if (sortBySceneName) {
-        sortedData = originalData.sort((a, b) => a.scenename.localeCompare(b.scenename));
-      } else {
-        // Default sorting (by date)
-        sortedData = originalData.sort((a, b) => new Date(a.date) - new Date(b.date));
-      }
-
-      // Update the table with the sorted data
-      renderTable(sortedData);
-
-      // Close the modal
-      $('#sortModal').modal('hide');
     }
   </script>
 </body>
