@@ -651,12 +651,11 @@ app.post('/updateProfilePicture', uploadProfile.single('profilePicture'), (req, 
   });
 
   try {
-    // Respond with the path of the updated profile picture
-    res.json(sanitizedProfilePath);
-  } catch (error) {
-    console.error('Update profile picture error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    res.json({ message: 'Profile picture updated successfully!' });
+    } catch (error) {
+      console.error('Update profile picture error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/editor', (req, res) => {

@@ -63,7 +63,7 @@
   </header>
   <div class="container">
     <!-- Outer Row -->
-    <div class="row justify-content-center my-5" id="box">
+    <div class="row justify-content-center" id="box">
       <div class="col-xl-10 col-lg-12 col-md-9">
         <div class="card o-hidden border-0 shadow-lg my-5">
           <div class="card-body p-0">
@@ -235,8 +235,8 @@
           data: formData,
           processData: false,
           contentType: false,
-          success: function (data) {
-            alert('Profile picture updated successfully!');
+          success: function (response) {
+            alert('Profile picture updated successfully. Please reload the page to view.');
           },
           error: function (error) {
             alert('Error updating profile picture. Please try again.');
