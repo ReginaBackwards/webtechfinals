@@ -21,12 +21,15 @@
 
 <body>
   <header>
-    <div class="logo"><img src="../res/slu-logo.png" alt="logo" id="sluLogo"> </div>
+    <div class="logo"> 
+      <img id="cheersbanner-plain" src="./../res/favicon-plain.png" alt="">
+      <img id="cheersbanner-admin" src="./../res/header-text-plain-acro.png" alt=""></div>
     <?php include 'fetchDate.php'; ?>
-    <h1>Welcome to BBC Live's Livestream for
+    <h1>Livestream for
       <?php echo $livestreamDate; ?>
     </h1>
   </header>
+
 
   <section>
     <video id="my-video" width="100%" height="92%" controls autoplay></video>
@@ -40,7 +43,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const socket = new WebSocket('ws://192.168.1.9:5000');
+    const socket = new WebSocket('ws://192.168.2.103:5000');
     const videoElement = document.getElementById('my-video');
     const streamedCanvas = document.getElementById('liveStream');
     const ctx = streamedCanvas.getContext('2d');
@@ -49,7 +52,7 @@
 
     // Function to fetch video information
     function fetchVideoInfo() {
-      fetch('http://192.168.1.9:3000/getVideoInfo')
+      fetch('http://192.168.2.103:3000/getVideoInfo')
         .then((response) => response.json())
         .then((data) => {
           const videoUrl = data.currentSrc;

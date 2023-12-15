@@ -2633,13 +2633,13 @@ fieldset:disabled a.btn {
 }
 
 .btn-primary {
-  color: #fff;
+  color: #fff !important;
   background-color: #4e73df;
   border-color: #4e73df;
 }
 
 .btn-primary:hover {
-  color: #fff;
+  color: #fff !important;
   background-color: #2e59d9;
   border-color: #2653d4;
 }
@@ -4186,6 +4186,7 @@ input[type="button"].btn-block {
   background-clip: border-box;
   border: 1px solid #e3e6f0;
   border-radius: 0.35rem;
+  margin-top: 180px;
 }
 
 .card>hr {
@@ -5773,6 +5774,9 @@ button.bg-dark:focus {
 .bg-white {
   background-color: #fff !important;
 }
+.bg-blue {
+  background-color: #000066 !important;
+}
 
 .bg-transparent {
   background-color: transparent !important;
@@ -7191,7 +7195,7 @@ button.bg-dark:focus {
 
 .mt-5,
 .my-5 {
-  margin-top: 3rem !important;
+  margin-top: 3rem;
 }
 
 .mr-5,
@@ -9825,6 +9829,10 @@ a:focus {
   color: #858796 !important;
 }
 
+.text-white-600 {
+  color: #fff !important;
+}
+
 .text-gray-700 {
   color: #6e707e !important;
 }
@@ -10119,8 +10127,25 @@ a:focus {
   color: #858796;
 }
 
+#cheersbanner {
+  margin-top: 20px;
+  width: 400px;
+  height: 150px;
+  position: absolute;
+}
+
+#cheersbanner-admin {
+  width: 220px;
+  height: 50px;
+}
+
+#cheersbanner-plain {
+  width: 70px;
+  height: 70px;
+}
+
 .bg-login-image {
-  background: url("./../../../../res/bbc-logo.png");
+  background: url("./../../../../res/favicon-plain.png");
   background-position: center;
   background-size: cover;
 }
@@ -10169,7 +10194,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 .table-title {
   padding-bottom: 15px;
-  background: #299be4;
+  background: #000066;
   color: #fff;
   padding: 16px 30px;
   margin: -20px -25px 10px;

@@ -17,7 +17,8 @@
   <link rel="stylesheet" href="./../../Manager/Content Manager/cmstyles/css/cm-editor.css">
   <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
   <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
-  <title>HOME</title>
+  <link rel="icon" type="image/x-icon" href="./../../res/favicon-plain.png">
+  <title>Editor</title>
 </head>
 
 <header class="top-nav">
@@ -25,7 +26,7 @@
     <nav>
       <div class="header-logo">
         <a href=".">
-          <img src="../../res/slu-logo.png" alt="slu-Logo">
+          <img src="../../res/favicon.png" alt="cheers-logo">
         </a>
       </div>
       
@@ -73,6 +74,8 @@
         </div>
       </div>
     </div>
+
+    <h2 id="drag-label">Drag your resources to the left panel</h2>
     
     <!-- Replace the existing div with the new structure -->
     <div class="editor">
@@ -81,6 +84,8 @@
           <!-- Content will be dynamically added here -->
         </div>
       </div>
+
+      
       
       <div class="container" id="tablesContainer">
         <table>
@@ -99,8 +104,11 @@
         </table>
       </div>
     </div>
-    
+    <footer>
+      <div id="footer"></div>
+    </footer>
     <script>
+      let chosenDate;
       function goToProfile() {
         // Make an AJAX request to the server to handle the redirection
         fetch('/gotoLogs')
@@ -460,7 +468,7 @@
       
       document.addEventListener('DOMContentLoaded', function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const chosenDate = urlParams.get('chosenDate');
+        chosenDate = urlParams.get('chosenDate');
         console.log(`Chosen Date from URL: ${chosenDate}`);
         
         // Display the chosen date on the page
@@ -504,6 +512,7 @@
             videoSrc,
             startTime,
             endTime,
+            chosenDate,
           };
         }).filter(scene => scene !== null); // Remove scenes with null titles
         
@@ -554,6 +563,12 @@
       
       // Fetch and update date and time every 1 minute
       setInterval(fetchDateTime, 60000);
+
+      fetch('/res/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      });
     </script>
     
   </body>

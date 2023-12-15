@@ -32,8 +32,9 @@ body {
 }
 
 .header-logo img {
-  height: 50px;
-  padding-top: 5px;
+  padding-left: 10px;
+  height: 55px;
+  padding-top: 10px;
 }
 
 nav {
@@ -102,7 +103,7 @@ li a:hover {
 }
 
 .user-info a:last-child {
-  color: 8acaef;
+  color: #8acaef;
 }
 
 li a:target {
@@ -158,7 +159,12 @@ th {
   background-color: #1111d8;
 }
 
-h1 {
+.scheduleContainer h1 {
+  color: #000066;
+  margin-bottom: 10px !important;
+}
+
+.home{
   margin-top: 10px !important;
   padding-top: 25px;
   color: #000066;
@@ -181,36 +187,39 @@ h1 {
   cursor: not-allowed;
 }
 
-#logoutBtn,
-#btn {
-  padding: 20px;
-  cursor: pointer;
-  background-color: #000066;
-  padding: 10px;
-  border: none;
-  color: white;
-}
-
-#logoutBtn:hover {
-  background-color: #1111d8;
-}
-
-#btn:hover {
-  background-color: #1111d8;
-}
-
 .avatar-container {
   overflow: hidden;
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .avatar {
   width: 100%;
   height: 100%;
   border-radius: 50%;
+}
+
+#username {
+ padding: 5px;
+}
+
+#username:hover {
+  color: #8acaef;
+}
+
+#logoutBtn,
+#btn {
+  cursor: pointer;
+  background-color: #000066;
+  margin-bottom: 5px;
+  border: none;
+  color: white;
+}
+
+#logoutBtn:hover {
+  background-color: #1111d8;
 }
 
 #my-video {
@@ -224,13 +233,13 @@ h1 {
 }
 
 .sched {
-  padding: 50px;
+  padding: 20px;
   color: white;
   background-color: #000066;
   border: none;
   cursor: pointer;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin: 5px;
+  border-radius: 10%;
 }
 
 .sched:hover {

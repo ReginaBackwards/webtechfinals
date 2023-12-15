@@ -18,11 +18,12 @@
    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
    <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <link rel="icon" type="image/x-icon" href="./../../res/favicon-plain.png">
    <!-- Bootstrap JS CDN -->
    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
- 
-   <title>HOME</title>
+   
+   <title>Home</title>
  </head>
  
  <body>
@@ -30,7 +31,7 @@
      <div class="header-container">
        <nav>
          <div class="header-logo">
-           <img src="../../res/slu-logo.png" alt="slu-Logo">
+          <img src="../../res/favicon.png" alt="cheers-logo">
          </div>
  
          <ul>
@@ -45,7 +46,7 @@
            </div>
            <div class="line"></div>
            <div class="user-info">
-             <a href="#" onclick="goToProfile()">Username</a>
+             <a href="#" onclick="goToProfile()" id="username">Username</a>
              <button id="logoutBtn" onclick="logout()">Logout</button>
            </div>
          </div>
@@ -54,7 +55,7 @@
    </header>
  
    <section>
-     <h1>Home</h1>
+     <h1 class="home">Home</h1>
      <button id="live-btn" onclick="toggleMedia()">Go Live</button>
      <button id="liveoff-btn" onclick="stopMedia()" disabled>Stop Live</button>
      <div class="container" id="dashboard">
@@ -67,7 +68,7 @@
      </div>
  
      <div class="scheduleContainer">
-       <h1>Schedules</h1>
+       <h1 class="schedule">Schedules</h1>
        <div id="scheduleButtons">
        </div>
      </div>

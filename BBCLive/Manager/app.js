@@ -841,6 +841,21 @@ app.get('/fetchScenes', (req, res) => {
   });
 });
 
+function convertDateFormat(inputDate) {
+  // Parse the input date string
+  const parsedDate = new Date(inputDate);
+
+  // Get year, month, and day components
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(parsedDate.getDate()).padStart(2, '0');
+
+  // Create the "yyyy-mm-dd" format
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+}
+
 app.post('/saveScene', async (req, res) => {
   const resources = req.body.resources;
 
@@ -850,17 +865,21 @@ app.post('/saveScene', async (req, res) => {
   const values = resources.map(resource => [
     resource.title,
     `/Content Hosting/videos/scenes/${resource.title}`, // Assuming resource.title is unique for each scene
-    new Date().toISOString().split('T')[0], // Current date
+    convertDateFormat(resource.chosenDate),
     resource.startTime,
     resource.endTime,
   ]);
 
+
   db.query(query, [values], async (err, results) => {
     if (err) {
+      console.log(values);
       console.error('Error saving scene to MySQL:', err);
       res.json({ success: false, error: err.message });
     } else {
+      console.log(values);
       console.log('Scene saved to MySQL');
+
 
       // Save associated files to /Content Hosting/videos/scenes/
       for (const resource of resources) {
